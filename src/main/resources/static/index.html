@@ -6,8 +6,67 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
 </head>
+<style>
+        .title {
+            padding: 32px 24px;
+            height: 100ps;
+            text-align: center;
+            font-family: "Krona One";
+            color: white;
+            font-size: 5em;
+            text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+
+            -ms-user-select: none;
+            -moz-user-select: -moz-none;
+            -html-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .search_bar_container {
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+
+        }
+
+        .search_bar {
+            position: relative;
+        }
+
+        .search_bar input {
+            font-size: 16px;
+            width: 90%;
+            padding: 15px 70px 15px 25px;
+        }
+
+        .search_bar button {
+            position: absolute;
+            right: 0px;
+            top: 7px;
+
+
+            //Only styling from here, you can discard this
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            border: none;
+            background: #e1e2e1;
+            border-radius: 3px;
+            padding: 10px;
+
+            transition: all .2s;
+        }
+
+        .search_bar button:hover {
+            background-color: #66afe9;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
 
 <body>
+    <!-- 헤더 -->
     <nav class="navbar">
         <div class="navbar_logo">
             <a href="/">KKAEMI.GG</a>
@@ -16,6 +75,21 @@
             <span>LOGIN</span>&emsp;<span>SIGN UP</span>
         </div>
     </nav>
+
+    <!-- 타이틀 -->
+    <div class="title">
+        KKAEMI.GG
+    </div>
+
+    <!-- 서치바 -->
+    <div class="search_bar_container">
+        <form action="">
+            <div class="search_bar">
+                <input type="text" placeholder="소환사명을 입력해 주세요"/>
+                <button type="submit">GG</button>
+            </div>
+        </form>
+    </div>
 </body>
 <script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
 </html>

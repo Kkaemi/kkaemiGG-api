@@ -9,6 +9,7 @@ body {
     align-items: center;
     background-color: #66afe9;
     padding: 8px 16px;
+    box-shadow: 0px 3px 5px 5px gray;
 }
 
 .navbar_logo {
@@ -23,6 +24,7 @@ body {
 
 .navbar_member_links span {
     color: white;
+    font-family: sans-serif;
     padding: 8px 16px;
 }
 
