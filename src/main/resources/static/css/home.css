@@ -1,0 +1,56 @@
+.title {
+    padding: 32px 24px;
+    height: 100ps;
+    text-align: center;
+    font-family: "Krona One";
+    color: white;
+    font-size: 5em;
+    text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -html-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.search_bar_container {
+    width: 800px;
+    margin: 0 auto;
+    text-align: center;
+
+}
+
+.search_bar {
+    position: relative;
+}
+
+.search_bar input {
+    font-size: 16px;
+    width: 90%;
+    padding: 15px 70px 15px 25px;
+}
+
+.search_bar button {
+    position: absolute;
+    right: 0px;
+    top: 8px;
+
+
+    //Only styling from here, you can discard this
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    border: none;
+    background: #e1e2e1;
+    border-radius: 3px;
+    padding: 10px;
+
+    transition: all .2s;
+}
+
+.search_bar button:hover {
+    background-color: #66afe9;
+    color: #fff;
+    cursor: pointer;
+}

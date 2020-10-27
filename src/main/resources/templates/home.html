@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>전적 검색 메인 페이지</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+</head>
+
+<body>
+    <!-- 헤더 -->
+    <nav class="navbar">
+        <div class="navbar_logo">
+            <a href="/">KKAEMI.GG</a>
+        </div>
+        <div class="navbar_member_links">
+            <span>LOGIN</span>&emsp;<span>SIGN UP</span>
+        </div>
+    </nav>
+
+    <!-- 타이틀 -->
+    <div class="title">
+        KKAEMI.GG
+    </div>
+
+    <!-- 서치바 -->
+    <div class="search_bar_container">
+        <form action="/record" method="get">
+            <div class="search_bar">
+                <input type="text" name="summonerNickName" placeholder="소환사명을 입력해 주세요"/>
+                <button type="submit">.GG</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 자유게시판 랭킹 -->
+    <div></div>
+
+    <!-- 푸터 -->
+</body>
+<script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
+</html>
