@@ -6,12 +6,95 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>소환사 전적</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+    <style>
+        .profile_container {
+            display: flex;
+            width: 1000px;
+            margin: 20px auto 0 auto;
+            padding: 5px 5px;
+            border: 1px solid gray;
+        }
+
+        .profile_icon {
+            height: 120px;
+        }
+
+        .profile_image {
+            width: 120px;
+            height: 120px;
+        }
+
+        .profile {
+            margin: 0 25px;
+        }
+
+        .profile > .information {
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .name {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: Helvetica, "Apple SD Gothic Neo", AppleGothic;
+        }
+
+        .level {
+            border: 1px solid gray;
+            border-radius: 6px;
+            padding : 1px 3px 0 3px;
+            margin: 2px 2px;
+        }
+
+        .queue_info {
+            border: 1px solid gray;
+            border-radius: 6px;
+            padding: 1px 3px 0 3px;
+            margin: 2px 2px;
+        }
+    </style>
 </head>
 <body>
-<p th:text="${summonerDTO.name}"></p>
-<p th:text="${summonerDTO.summonerLevel}"></p>
+    <!-- 헤더 -->
+    <nav class="navbar">
+        <div class="navbar_logo">
+            <a href="/">KKAEMI.GG</a>
+        </div>
+        <div class="navbar_member_links">
+            <span>LOGIN</span>&emsp;<span>SIGN UP</span>
+        </div>
+    </nav>
 
-
-<p th:text="${list}"></p>
+    <!-- 소환사 프로필 -->
+    <div class="profile_container">
+        <div class="profile_icon">
+            <img th:src="@{http://ddragon.leagueoflegends.com/cdn/10.22.1/img/profileicon/{profileIconId}.png(profileIconId = ${summonerDTO.profileIconId})}"
+                 alt=""
+                 class="profile_image">
+        </div>
+        <div class="profile">
+            <div class="information">
+                <div th:text="${summonerDTO.name}" class="name">소환사 이름</div>
+                <div class="tier_info">
+                    <span th:text="'레벨 : ' + ${summonerDTO.summonerLevel}" class="level">소환사 레벨</span>
+                    <th:block th:each="leagueEntry : ${leagueEntryList}">
+                        <th:block th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'"
+                                  th:with="queueType = '솔로랭크'">
+                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.wins} + '승 ' + ${leagueEntry.losses} + '패 '"></span>
+                        </th:block>
+                        <th:block th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'"
+                                  th:with="queueType = '자유랭크'">
+                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.wins} + '승 ' + ${leagueEntry.losses} + '패 '"></span>
+                        </th:block>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
