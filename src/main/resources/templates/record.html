@@ -57,6 +57,30 @@
             padding: 1px 3px 0 3px;
             margin: 2px 2px;
         }
+
+        .rank_container {
+            display: flex;
+            width: 1000px;
+            margin: 20px auto 0 auto;
+            padding: 5px 5px;
+            justify-content: space-between;
+        }
+
+        .solo_rank {
+            border: 1px solid gray;
+        }
+
+        .free_rank {
+            border: 1px solid gray;
+        }
+
+        .solo_rank > img {
+            width: 90px;
+        }
+
+        .free_rank > img {
+            width: 90px;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +118,20 @@
                     </th:block>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 소환사 랭크 정보 -->
+    <div class="rank_container">
+        <div class="solo_rank">
+            <th:block th:each="leagueEntry : ${leagueEntryList}" th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'">
+                <img th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.tier})}">
+            </th:block>
+        </div>
+        <div class="free_rank">
+            <th:block th:each="leagueEntry : ${leagueEntryList}" th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'">
+                <img th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.tier})}">
+            </th:block>
         </div>
     </div>
 </body>
