@@ -63,15 +63,47 @@
             width: 1000px;
             margin: 20px auto 0 auto;
             padding: 5px 5px;
+            border: 1px solid gray;
             justify-content: space-between;
         }
 
         .solo_rank {
+            display: flex;
             border: 1px solid gray;
+            width: inherit;
+            height: 150px;
+            margin-right: 2.5px;
+            justify-content: space-around;
+            align-items: center;
         }
 
         .free_rank {
+            display: flex;
             border: 1px solid gray;
+            width: inherit;
+            height: 150px;
+            margin-left: 2.5px;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .queueType {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .tier_rank {
+            font-size: 20px;
+            font-weight: bold;
+            color: #66afe9;
+        }
+
+        .league_points {
+            font-weight: bold;
+        }
+
+        .rank_info {
+            width: 150px;
         }
 
         .emblem_icon > img {
@@ -128,6 +160,20 @@
                 </th:block>
             </div>
             <div class="rank_info">
+                <div class="queueType">솔로랭크</div>
+                <br>
+                <th:block th:each="leagueEntry : ${leagueEntryList}"
+                          th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'">
+                    <div class="tier_rank" th:text="${leagueEntry.tier} + ' ' + ${leagueEntry.rank}"></div>
+                    <div class="win_lose">
+                        <span class="league_points" th:text="${leagueEntry.leaguePoints} + ' LP '"></span>
+                        <span class="wins" th:text="'/ ' + ${leagueEntry.wins} + '승 '"></span>
+                        <span class="losses" th:text="${leagueEntry.losses} + '패'"></span>
+                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.wins*1.0)/(leagueEntry.wins + leagueEntry.losses), 2, 2)}"></div>
+                    </div>
+                </th:block>
+                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_SOLO_5x5') || leagueEntryList.isEmpty()}"
+                     th:text="랭크정보없음"></div>
             </div>
         </div>
         <div class="free_rank">
@@ -139,6 +185,20 @@
                 </th:block>
             </div>
             <div class="rank_info">
+                <div class="queueType">자유 5:5 랭크</div>
+                <br>
+                <th:block th:each="leagueEntry : ${leagueEntryList}"
+                          th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'">
+                    <div class="tier_rank" th:text="${leagueEntry.tier} + ' ' + ${leagueEntry.rank}"></div>
+                    <div class="win_lose">
+                        <span class="league_points" th:text="${leagueEntry.leaguePoints} + ' LP '"></span>
+                        <span class="wins" th:text="'/ ' + ${leagueEntry.wins} + '승 '"></span>
+                        <span class="losses" th:text="${leagueEntry.losses} + '패'"></span>
+                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.wins*1.0)/(leagueEntry.wins + leagueEntry.losses), 2, 2)}"></div>
+                    </div>
+                </th:block>
+                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_FLEX_SR') || leagueEntryList.isEmpty()}"
+                     th:text="랭크정보없음"></div>
             </div>
         </div>
     </div>
