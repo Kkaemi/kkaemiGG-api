@@ -30,6 +30,7 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
 }
 
 test {

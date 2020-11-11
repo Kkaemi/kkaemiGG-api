@@ -107,7 +107,7 @@
         }
 
         .emblem_icon > img {
-            width: 90px;
+            width: 110px;
         }
     </style>
 </head>
@@ -201,6 +201,11 @@
                      th:text="랭크정보없음"></div>
             </div>
         </div>
+    </div>
+
+    <!-- 소환사 전적 리스트 -->
+    <div th:each="matches : ${matches}">
+        <div th:text="${matches.gameId}"></div>
     </div>
 </body>
 </html>

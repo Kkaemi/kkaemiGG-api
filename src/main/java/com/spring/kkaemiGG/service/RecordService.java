@@ -1,8 +1,11 @@
 package com.spring.kkaemiGG.service;
 
+import com.merakianalytics.orianna.Orianna;
+import com.merakianalytics.orianna.types.common.Platform;
 import com.spring.kkaemiGG.bean.LeagueEntryDTO;
 import com.spring.kkaemiGG.bean.MatchlistDTO;
 import com.spring.kkaemiGG.bean.SummonerDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -14,9 +17,6 @@ import java.util.*;
 
 @Service
 public class RecordService {
-
-    @Value("${API_KEY}")
-    String API_KEY;
 
     public SummonerDTO getSummoner(String summonerNickName) {
 

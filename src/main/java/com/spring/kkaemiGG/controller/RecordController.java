@@ -29,14 +29,14 @@ public class RecordController {
     public String record(@RequestParam String summonerNickName, Model model) {
 
         SummonerDTO summonerDTO = recordService.getSummoner(summonerNickName);
-//        MatchlistDTO matchlistDTO = recordService.getMatchlist(summonerDTO.getAccountId());
+        MatchlistDTO matchlistDTO = recordService.getMatchlist(summonerDTO.getAccountId());
         List<LeagueEntryDTO> leagueEntryList = recordService.getLeagueEntrySet(summonerDTO.getId());
 
         model.addAttribute("summonerDTO", summonerDTO);
-//        model.addAttribute("matchlistDTO", matchlistDTO);
+        model.addAttribute("matchlistDTO", matchlistDTO);
         model.addAttribute("leagueEntryList", leagueEntryList);
 
-//        model.addAttribute("matches", matchlistDTO.getMatches());
+        model.addAttribute("matches", matchlistDTO.getMatches());
 
         return "record";
     }
