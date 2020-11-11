@@ -125,15 +125,15 @@
     <!-- 소환사 프로필 -->
     <div class="profile_container">
         <div class="profile_icon">
-            <img th:src="@{http://ddragon.leagueoflegends.com/cdn/10.22.1/img/profileicon/{profileIconId}.png(profileIconId = ${summonerDTO.profileIconId})}"
+            <img th:src="@{http://ddragon.leagueoflegends.com/cdn/10.22.1/img/profileicon/{profileIconId}.png(profileIconId = ${summonerDTO.getProfileIcon().getId()})}"
                  alt=""
                  class="profile_image">
         </div>
         <div class="profile">
             <div class="information">
-                <div th:text="${summonerDTO.name}" class="name">소환사 이름</div>
+                <div th:text="${summonerDTO.getName()}" class="name">소환사 이름</div>
                 <div class="tier_info">
-                    <span th:text="'레벨 : ' + ${summonerDTO.summonerLevel}" class="level">소환사 레벨</span>
+                    <span th:text="'레벨 : ' + ${summonerDTO.getLevel()}" class="level">소환사 레벨</span>
                     <th:block th:each="leagueEntry : ${leagueEntryList}">
                         <th:block th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'"
                                   th:with="queueType = '솔로랭크'">
