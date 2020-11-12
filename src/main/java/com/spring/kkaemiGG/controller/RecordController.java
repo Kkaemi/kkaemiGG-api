@@ -1,10 +1,7 @@
 package com.spring.kkaemiGG.controller;
 
+import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
-import com.spring.kkaemiGG.bean.LeagueEntryDTO;
-import com.spring.kkaemiGG.bean.MatchlistDTO;
-import com.spring.kkaemiGG.bean.MiniSeriesDTO;
-import com.spring.kkaemiGG.bean.SummonerDTO;
 import com.spring.kkaemiGG.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,9 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 public class RecordController {
@@ -29,13 +24,13 @@ public class RecordController {
     @GetMapping("/record")
     public String record(@RequestParam String summonerNickName, Model model) {
 
-        Summoner summonerDTO = recordService.getSummoner(summonerNickName);
+        Summoner summoner = recordService.getSummoner(summonerNickName);
 //        MatchlistDTO matchlistDTO = recordService.getMatchlist(summonerDTO.getAccountId());
-//        List<LeagueEntryDTO> leagueEntryList = recordService.getLeagueEntrySet(summonerDTO.getId());
+        List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summonerNickName);
 //
-        model.addAttribute("summonerDTO", summonerDTO);
+        model.addAttribute("summoner", summoner);
 //        model.addAttribute("matchlistDTO", matchlistDTO);
-//        model.addAttribute("leagueEntryList", leagueEntryList);
+        model.addAttribute("leagueEntryList", leagueEntryList);
 //
 //        model.addAttribute("matches", matchlistDTO.getMatches());
 

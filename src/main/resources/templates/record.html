@@ -125,23 +125,26 @@
     <!-- 소환사 프로필 -->
     <div class="profile_container">
         <div class="profile_icon">
-            <img th:src="@{http://ddragon.leagueoflegends.com/cdn/10.22.1/img/profileicon/{profileIconId}.png(profileIconId = ${summonerDTO.getProfileIcon().getId()})}"
-                 alt=""
+            <img th:if="${not #strings.isEmpty(summoner.getProfileIcon())}"
+                 th:src="@{${summoner.getProfileIcon().getImage().getURL()}}"
+                 class="profile_image">
+            <img th:unless="${not #strings.isEmpty(summoner.getProfileIcon())}"
+                 th:src="@{img/profileIcon0.jpg}"
                  class="profile_image">
         </div>
         <div class="profile">
             <div class="information">
-                <div th:text="${summonerDTO.getName()}" class="name">소환사 이름</div>
+                <div th:text="${summoner.getName()}" class="name">소환사 이름</div>
                 <div class="tier_info">
-                    <span th:text="'레벨 : ' + ${summonerDTO.getLevel()}" class="level">소환사 레벨</span>
+                    <span th:text="'레벨 : ' + ${summoner.getLevel()}" class="level">소환사 레벨</span>
                     <th:block th:each="leagueEntry : ${leagueEntryList}">
-                        <th:block th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'"
+                        <th:block th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}"
                                   th:with="queueType = '솔로랭크'">
-                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.wins} + '승 ' + ${leagueEntry.losses} + '패 '"></span>
+                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
                         </th:block>
-                        <th:block th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'"
+                        <th:block th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}"
                                   th:with="queueType = '자유랭크'">
-                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.wins} + '승 ' + ${leagueEntry.losses} + '패 '"></span>
+                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
                         </th:block>
                     </th:block>
                 </div>
@@ -154,50 +157,50 @@
         <div class="solo_rank">
             <div class="emblem_icon">
                 <img th:if="${leagueEntryList.isEmpty()}" src="/img/ranked-emblems/Emblem_Unranked.png">
-                <img th:if="${leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_SOLO_5x5'}" src="/img/ranked-emblems/Emblem_Unranked.png">
+                <img th:if="${leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO')}" src="/img/ranked-emblems/Emblem_Unranked.png">
                 <th:block th:each="leagueEntry : ${leagueEntryList}">
-                    <img th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.tier})}">
+                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.getTier().toString()})}">
                 </th:block>
             </div>
             <div class="rank_info">
                 <div class="queueType">솔로랭크</div>
                 <br>
                 <th:block th:each="leagueEntry : ${leagueEntryList}"
-                          th:if="${leagueEntry.queueType} == 'RANKED_SOLO_5x5'">
-                    <div class="tier_rank" th:text="${leagueEntry.tier} + ' ' + ${leagueEntry.rank}"></div>
+                          th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}">
+                    <div class="tier_rank" th:text="${leagueEntry.getTier().toString()} + ' ' + ${leagueEntry.getDivision().toString()}"></div>
                     <div class="win_lose">
-                        <span class="league_points" th:text="${leagueEntry.leaguePoints} + ' LP '"></span>
-                        <span class="wins" th:text="'/ ' + ${leagueEntry.wins} + '승 '"></span>
-                        <span class="losses" th:text="${leagueEntry.losses} + '패'"></span>
-                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.wins*1.0)/(leagueEntry.wins + leagueEntry.losses), 2, 2)}"></div>
+                        <span class="league_points" th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
+                        <span class="wins" th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
+                        <span class="losses" th:text="${leagueEntry.getLosses()} + '패'"></span>
+                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.getWins() * 1.0)/(leagueEntry.getWins() + leagueEntry.getLosses()), 2, 2)}"></div>
                     </div>
                 </th:block>
-                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_SOLO_5x5') || leagueEntryList.isEmpty()}"
+                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO')) || leagueEntryList.isEmpty()}"
                      th:text="랭크정보없음"></div>
             </div>
         </div>
         <div class="free_rank">
             <div class="emblem_icon">
                 <img th:if="${leagueEntryList.isEmpty()}" src="/img/ranked-emblems/Emblem_Unranked.png">
-                <img th:if="${leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_FLEX_SR'}" src="/img/ranked-emblems/Emblem_Unranked.png">
+                <img th:if="${leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX')}" src="/img/ranked-emblems/Emblem_Unranked.png">
                 <th:block th:each="leagueEntry : ${leagueEntryList}">
-                    <img th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.tier})}">
+                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.getTier().toString()})}">
                 </th:block>
             </div>
             <div class="rank_info">
                 <div class="queueType">자유 5:5 랭크</div>
                 <br>
                 <th:block th:each="leagueEntry : ${leagueEntryList}"
-                          th:if="${leagueEntry.queueType} == 'RANKED_FLEX_SR'">
-                    <div class="tier_rank" th:text="${leagueEntry.tier} + ' ' + ${leagueEntry.rank}"></div>
+                          th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}">
+                    <div class="tier_rank" th:text="${leagueEntry.getTier().toString()} + ' ' + ${leagueEntry.getDivision().toString()}"></div>
                     <div class="win_lose">
-                        <span class="league_points" th:text="${leagueEntry.leaguePoints} + ' LP '"></span>
-                        <span class="wins" th:text="'/ ' + ${leagueEntry.wins} + '승 '"></span>
-                        <span class="losses" th:text="${leagueEntry.losses} + '패'"></span>
-                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.wins*1.0)/(leagueEntry.wins + leagueEntry.losses), 2, 2)}"></div>
+                        <span class="league_points" th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
+                        <span class="wins" th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
+                        <span class="losses" th:text="${leagueEntry.getLosses()} + '패'"></span>
+                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.getWins() * 1.0)/(leagueEntry.getWins() + leagueEntry.getLosses()), 2, 2)}"></div>
                     </div>
                 </th:block>
-                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && leagueEntryList[0].queueType != 'RANKED_FLEX_SR') || leagueEntryList.isEmpty()}"
+                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX')) || leagueEntryList.isEmpty()}"
                      th:text="랭크정보없음"></div>
             </div>
         </div>
