@@ -3,6 +3,7 @@ package com.spring.kkaemiGG.service;
 import com.merakianalytics.orianna.Orianna;
 import com.merakianalytics.orianna.types.common.Queue;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
+import com.merakianalytics.orianna.types.core.match.MatchHistory;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
 
 import java.util.ArrayList;
@@ -35,6 +36,14 @@ public class RecordService {
         }
 
         return leagueEntryList;
+
+    }
+
+    public MatchHistory getMatchHistory(String summonerNickName) {
+
+        Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
+
+        return summoner.matchHistory().withEndIndex(20).get();
 
     }
 }

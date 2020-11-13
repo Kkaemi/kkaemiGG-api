@@ -109,6 +109,25 @@
         .emblem_icon > img {
             width: 110px;
         }
+
+        .match_content {
+            display: flex;
+            width: 1000px;
+            margin: 20px auto 0 auto;
+            padding: 5px 5px;
+            border: 1px solid gray;
+            justify-content: space-between;
+        }
+
+        .champion_image > img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+        }
+
+        .kda>.kda {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -207,8 +226,74 @@
     </div>
 
     <!-- 소환사 전적 리스트 -->
-    <div th:each="matches : ${matches}">
-        <div th:text="${matches.gameId}"></div>
+    <div th:each="matches : ${matchHistory}">
+        <div class="match_content_wrapper">
+            <div class="match_content">
+                <div class="game_stats">
+                    <div class="game_type" th:text="${matches.getMode().toString()}">GameType</div>
+                    <div class="time_stamp" th:text="${matches.getCreationTime().toString('yyyy년 MM월 dd일 HH:mm')}">TimeStamp</div>
+                    <div class="bar">Bar</div>
+                    <div class="game_result">GameResult</div>
+                    <div class="game_length" th:text="${matches.getDuration().getStandardMinutes() + '분 게임'}">GameLength</div>
+                </div>
+                <div class="game_setting_info">
+                    <div class="champion_image">
+                        <img th:src="@{${matches.getParticipants()[0].getChampion().getImage().getURL()}}">
+                    </div>
+                    <div class="summoner_spell">
+                        <div class="spell">
+                            <img th:src="@{${matches.getParticipants()[0].getSummonerSpellD().getImage().getURL()}}">
+                        </div>
+                        <div class="spell">
+                            <img th:src="@{${matches.getParticipants()[0].getSummonerSpellF().getImage().getURL()}}">
+                        </div>
+                    </div>
+                    <div class="runes">
+                        <!-- 룬 이미지는 아직 지원 안해주는거 같으니 직접 정적 파일을 다운받아서 해결해야 할 듯 싶 -->
+                        <div class="rune">
+                            <p th:text="${matches.getParticipants()[0].getRuneStats()[0].getRune()}"></p>
+                        </div>
+                        <div class="rune">
+                            <p th:text="${T(com.merakianalytics.orianna.Orianna).runeNamed(matches.getParticipants()[0].getSecondaryRunePath().name()).get()}"></p>
+                        </div>
+                    </div>
+                    <div class="champion_name">
+                        <span th:text="${matches.getParticipants()[0].getChampion().getName()}"></span>
+                    </div>
+                </div>
+                <div class="kda">
+                    <div class="kda">
+                        <span class="kill" th:text="${matches.getParticipants()[0].getStats().getKills()}"></span>
+                        /
+                        <span class="death" th:text="${matches.getParticipants()[0].getStats().getDeaths()}"></span>
+                        /
+                        <span class="assist" th:text="${matches.getParticipants()[0].getStats().getAssists()}"></span>
+                    </div>
+                    <div class="kda_ratio">
+                        <th:block th:with="kda = (${matches.getParticipants()[0].getStats().getKills()}+${matches.getParticipants()[0].getStats().getAssists()})/${matches.getParticipants()[0].getStats().getDeaths()}*1.0">
+                            <span th:text="${#numbers.formatDecimal(kda, 1, 2) + ' : 1 평점'}"></span>
+                        </th:block>
+                    </div>
+                    <div class="multi_kill">
+                        <span th:text="${matches.getParticipants()[0].getStats().getLargestMultiKill()}"></span>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="level" th:text="${'레벨' + matches.getParticipants()[0].getStats().getChampionLevel()}">level</div>
+                    <div class="cs" th:text="${matches.getParticipants()[0].getStats().getCreepScore() + ' CS'}">CS</div>
+                    <!-- 킬관여율은 어떠한 데이터로 산정하는지 알수없음 -->
+                    <div class="ck_rate">CKRate</div>
+                </div>
+                <div class="items">
+                    <div class="item_list" th:each="items : ${matches.getParticipants()[0].getItems()}">
+                        <div class="item">
+                            <img th:src="@{${items.getImage().getURL()}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="follow_players">FollowPlayers</div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

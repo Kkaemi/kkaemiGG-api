@@ -1,6 +1,7 @@
 package com.spring.kkaemiGG.controller;
 
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
+import com.merakianalytics.orianna.types.core.match.MatchHistory;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
 import com.spring.kkaemiGG.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -22,19 +24,21 @@ public class RecordController {
     }
 
     @GetMapping("/record")
-    public String record(@RequestParam String summonerNickName, Model model) {
+    public ModelAndView record(@RequestParam String summonerNickName, Model model) {
 
         Summoner summoner = recordService.getSummoner(summonerNickName);
-//        MatchlistDTO matchlistDTO = recordService.getMatchlist(summonerDTO.getAccountId());
         List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summonerNickName);
-//
-        model.addAttribute("summoner", summoner);
-//        model.addAttribute("matchlistDTO", matchlistDTO);
-        model.addAttribute("leagueEntryList", leagueEntryList);
-//
-//        model.addAttribute("matches", matchlistDTO.getMatches());
+        MatchHistory matchHistory = recordService.getMatchHistory(summonerNickName);
 
-        return "record";
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("record");
+
+        modelAndView.addObject("summoner", summoner);
+        modelAndView.addObject("leagueEntryList", leagueEntryList);
+        modelAndView.addObject("matchHistory", matchHistory);
+
+        return modelAndView;
     }
 
 }
