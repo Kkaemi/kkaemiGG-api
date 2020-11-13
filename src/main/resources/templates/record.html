@@ -233,7 +233,7 @@
                     <div class="game_type" th:text="${matches.getMode().toString()}">GameType</div>
                     <div class="time_stamp" th:text="${matches.getCreationTime().toString('yyyy년 MM월 dd일 HH:mm')}">TimeStamp</div>
                     <div class="bar">Bar</div>
-                    <div class="game_result">GameResult</div>
+                    <div class="game_result" th:text="${matches.getParticipants()[0].getStats().isWinner() ? '승리' : '패배'}">GameResult</div>
                     <div class="game_length" th:text="${matches.getDuration().getStandardMinutes() + '분 게임'}">GameLength</div>
                 </div>
                 <div class="game_setting_info">
@@ -291,7 +291,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="follow_players">FollowPlayers</div>
+                <div class="follow_players">
+                    <div class="blue_team" th:each="participants : ${matches.getBlueTeam().getParticipants()}">
+                        <div class="summoner">
+                            <div class="champion_image">
+                                <img th:src="@{${participants.getChampion().getImage().getURL()}}">
+                            </div>
+                            <div class="summoner_name" th:text="${participants.getSummoner().getName()}"></div>
+                        </div>
+                    </div>
+                    <div class="red_team" th:each="participants : ${matches.getRedTeam().getParticipants()}">
+                        <div class="summoner">
+                            <div class="champion_image">
+                                <img th:src="@{${participants.getChampion().getImage().getURL()}}">
+                            </div>
+                            <div class="summoner_name" th:text="${participants.getSummoner().getName()}"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
