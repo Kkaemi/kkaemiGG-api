@@ -44,7 +44,7 @@
             font-family: Helvetica, "Apple SD Gothic Neo", AppleGothic;
         }
 
-        .level {
+        .profile > .information > .tier_info > .level {
             border: 1px solid gray;
             border-radius: 6px;
             padding : 1px 3px 0 3px;
@@ -116,17 +116,153 @@
             margin: 20px auto 0 auto;
             padding: 5px 5px;
             border: 1px solid gray;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: space-around;
         }
 
-        .champion_image > img {
-            width: 46px;
-            height: 46px;
+        /* 게임 시작 시간 승패 여부 */
+       .game_stats {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+       }
+
+        .game_stats > div {
+            font-size: 12px;
+             line-height: 16px;
+        }
+
+        .game_stats > .bar {
+            width: 27px;
+            height: 2px;
+            background-color: #99b9cf;
+            margin: 5px auto;
+        }
+
+        /* 챔피언 스펠 룬 정보 */
+        .game_setting_info {
+            display: column;
+            text-align: center;
+        }
+
+        .game_setting_info > .game_setting_info_image {
+            display: flex;
+        }
+
+        .game_setting_info > .game_setting_info_image > div {
+            margin: 2px;
+        }
+
+        .game_setting_info > .game_setting_info_image > .champion_image > img {
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
         }
 
-        .kda>.kda {
+        .game_setting_info > .game_setting_info_image > .summoner_spell > .spell > img {
+            width: 25px;
+            height: 25px;
+        }
+
+        .game_setting_info > .game_setting_info_image > .runes > .rune > img {
+            width: 25px;
+            height: 25px;
+        }
+
+        .game_setting_info > .champion_name {
+            margin-top: 20px;
+        }
+
+        /* KDA 정보 */
+        .match_content > .kda {
             display: flex;
+            flex-direction: column;
+            text-align: center;
+            justify-content: space-between;
+        }
+
+        .match_content > .kda > * {
+            margin: 3px 0;
+        }
+
+        .kda > .kda {
+            font-size: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .kda > .kda > span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #555e5e;
+            margin: 0 5px 0 5px;
+        }
+
+        .kda > .kda_ratio > span {
+            font-weight: bold;
+        }
+
+        .kda > .multi_kill > span {
+            background-color: #ef5a52;
+            font-size: 13px;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* 레벨 CS 킬관여율 */
+        .match_content > .stats {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .match_content > .stats > * {
+            margin: 2px 0;
+        }
+
+        /* 아이템 리스트 */
+        .items {
+            width: 110px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .items > .item_list > .item > img {
+            width: 25px;
+            height: 25px;
+            margin: 1px;
+        }
+
+        /* 팀 정보 */
+        .follow_players {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .follow_players > * {
+            display: flex;
+            flex-direction: column;
+            margin: 0 3px 0 3px;
+        }
+
+        .follow_players > * > .summoner {
+            display: flex;
+            align-items: center;
+        }
+
+        .follow_players > * > .summoner > .champion_image {
+            margin: 1px;
+            height: 25px;
+        }
+
+        .follow_players > * > .summoner > .champion_image > img {
+            width: 25px;
+            height: 25px;
+        }
+
+        .follow_players > * > .summoner > .summoner_name {
+            margin-left: 2px;
         }
     </style>
 </head>
@@ -232,29 +368,49 @@
                 <div class="game_stats">
                     <div class="game_type" th:text="${matches.getMode().toString()}">GameType</div>
                     <div class="time_stamp" th:text="${matches.getCreationTime().toString('yyyy년 MM월 dd일 HH:mm')}">TimeStamp</div>
-                    <div class="bar">Bar</div>
+                    <div class="bar"></div>
                     <div class="game_result" th:text="${matches.getParticipants()[0].getStats().isWinner() ? '승리' : '패배'}">GameResult</div>
                     <div class="game_length" th:text="${matches.getDuration().getStandardMinutes() + '분 게임'}">GameLength</div>
                 </div>
                 <div class="game_setting_info">
-                    <div class="champion_image">
-                        <img th:src="@{${matches.getParticipants()[0].getChampion().getImage().getURL()}}">
-                    </div>
-                    <div class="summoner_spell">
-                        <div class="spell">
-                            <img th:src="@{${matches.getParticipants()[0].getSummonerSpellD().getImage().getURL()}}">
+                    <div class="game_setting_info_image">
+                        <div class="champion_image">
+                            <img th:src="@{${matches.getParticipants()[0].getChampion().getImage().getURL()}}">
                         </div>
-                        <div class="spell">
-                            <img th:src="@{${matches.getParticipants()[0].getSummonerSpellF().getImage().getURL()}}">
+                        <div class="summoner_spell">
+                            <div class="spell">
+                                <img th:src="@{${matches.getParticipants()[0].getSummonerSpellD().getImage().getURL()}}">
+                            </div>
+                            <div class="spell">
+                                <img th:src="@{${matches.getParticipants()[0].getSummonerSpellF().getImage().getURL()}}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="runes">
-                        <!-- 룬 이미지는 아직 지원 안해주는거 같으니 직접 정적 파일을 다운받아서 해결해야 할 듯 싶 -->
-                        <div class="rune">
-                            <p th:text="${matches.getParticipants()[0].getRuneStats()[0].getRune()}"></p>
-                        </div>
-                        <div class="rune">
-                            <p th:text="${T(com.merakianalytics.orianna.Orianna).runeNamed(matches.getParticipants()[0].getSecondaryRunePath().name()).get()}"></p>
+                        <div class="runes">
+                            <!-- 룬 이미지는 아직 지원 안해주는거 같으니 직접 정적 파일을 다운받아서 해결해야 할 듯 싶 -->
+                            <div class="rune">
+                                <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8000}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/precision/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8100}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/domination/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8200}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/sorcery/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8300}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/whimsy/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8400}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/resolve/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                            </div>
+                            <div class="rune">
+                                <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8000}"
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/7201_precision.png}">
+                                <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8100}"
+                                     th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7200_domination.png}">
+                                <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8200}"
+                                     th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7202_sorcery.png}">
+                                <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8300}"
+                                     th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7203_whimsy.png}">
+                                <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8400}"
+                                     th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7204_resolve.png}">
+                            </div>
                         </div>
                     </div>
                     <div class="champion_name">
@@ -270,38 +426,52 @@
                         <span class="assist" th:text="${matches.getParticipants()[0].getStats().getAssists()}"></span>
                     </div>
                     <div class="kda_ratio">
-                        <th:block th:with="kda = (${matches.getParticipants()[0].getStats().getKills()}+${matches.getParticipants()[0].getStats().getAssists()})/${matches.getParticipants()[0].getStats().getDeaths()}*1.0">
-                            <span th:text="${#numbers.formatDecimal(kda, 1, 2) + ' : 1 평점'}"></span>
-                        </th:block>
+                        <!-- 퍼펙트 게임일 경우 에러 발생 -->
+                        <span th:if="${matches.getParticipants()[0].getStats().getDeaths() != 0}"
+                              th:with="kda = (${matches.getParticipants()[0].getStats().getKills()}+${matches.getParticipants()[0].getStats().getAssists()})/${matches.getParticipants()[0].getStats().getDeaths()}*1.0"
+                              th:text="${#numbers.formatDecimal(kda, 1, 2) + ' : 1'}">
+                        </span>
+                        <span th:unless="${matches.getParticipants()[0].getStats().getDeaths() != 0}"
+                              th:text="'Perfect'">
+                        </span>
+                        평점
                     </div>
                     <div class="multi_kill">
-                        <span th:text="${matches.getParticipants()[0].getStats().getLargestMultiKill()}"></span>
+                        <span th:if="${matches.getParticipants()[0].getStats().getLargestMultiKill() == 2}"
+                              th:text="'더블킬'"></span>
+                        <span th:if="${matches.getParticipants()[0].getStats().getLargestMultiKill() == 3}"
+                              th:text="'트리플킬'"></span>
+                        <span th:if="${matches.getParticipants()[0].getStats().getLargestMultiKill() == 4}"
+                              th:text="'쿼드라킬'"></span>
+                        <span th:if="${matches.getParticipants()[0].getStats().getLargestMultiKill() == 5}"
+                              th:text="'펜타킬'"></span>
                     </div>
                 </div>
                 <div class="stats">
                     <div class="level" th:text="${'레벨' + matches.getParticipants()[0].getStats().getChampionLevel()}">level</div>
                     <div class="cs" th:text="${matches.getParticipants()[0].getStats().getCreepScore() + ' CS'}">CS</div>
                     <!-- 킬관여율은 어떠한 데이터로 산정하는지 알수없음 -->
-                    <div class="ck_rate">CKRate</div>
+                    <div class="ck_rate"></div>
                 </div>
                 <div class="items">
                     <div class="item_list" th:each="items : ${matches.getParticipants()[0].getItems()}">
                         <div class="item">
-                            <img th:src="@{${items.getImage().getURL()}}">
+                            <!-- 첫번째 아이템이 공백이면 다음 값을 못 불러오는 문제 발생 -->
+                            <img th:if="${items.exists()}" th:src="@{${items.getImage().getURL()}}">
                         </div>
                     </div>
                 </div>
                 <div class="follow_players">
-                    <div class="blue_team" th:each="participants : ${matches.getBlueTeam().getParticipants()}">
-                        <div class="summoner">
+                    <div class="blue_team">
+                        <div class="summoner" th:each="participants : ${matches.getBlueTeam().getParticipants()}">
                             <div class="champion_image">
                                 <img th:src="@{${participants.getChampion().getImage().getURL()}}">
                             </div>
                             <div class="summoner_name" th:text="${participants.getSummoner().getName()}"></div>
                         </div>
                     </div>
-                    <div class="red_team" th:each="participants : ${matches.getRedTeam().getParticipants()}">
-                        <div class="summoner">
+                    <div class="red_team">
+                        <div class="summoner" th:each="participants : ${matches.getRedTeam().getParticipants()}">
                             <div class="champion_image">
                                 <img th:src="@{${participants.getChampion().getImage().getURL()}}">
                             </div>

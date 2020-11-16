@@ -43,7 +43,7 @@ public class RecordService {
 
         Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
 
-        return summoner.matchHistory().withEndIndex(20).get();
+        return summoner.matchHistory().withEndIndex(10).get();
 
     }
 }
