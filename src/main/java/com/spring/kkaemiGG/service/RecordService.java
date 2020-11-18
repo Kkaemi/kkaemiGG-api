@@ -19,11 +19,9 @@ public class RecordService {
 
     }
 
-    public List<LeagueEntry> getLeagueEntryList(String summonerNickName) {
+    public List<LeagueEntry> getLeagueEntryList(Summoner summoner) {
 
         List<LeagueEntry> leagueEntryList = new ArrayList<LeagueEntry>();
-
-        Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
 
         Queue[] queueType = {Queue.RANKED_SOLO, Queue.RANKED_FLEX};
 
@@ -39,11 +37,9 @@ public class RecordService {
 
     }
 
-    public MatchHistory getMatchHistory(String summonerNickName) {
+    public MatchHistory getMatchHistory(Summoner summoner) {
 
-        Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
-
-        return summoner.matchHistory().withEndIndex(10).get();
+        return summoner.matchHistory().withEndIndex(20).get();
 
     }
 }

@@ -6,16 +6,35 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+    <style>
+        footer {
+            clear: both;
+            background-color: #333333;
+            color: white;
+            text-align: center;
+            padding: 1em 0px;
+        }
+
+        footer > div {
+            width: 400px;
+            text-align: left;
+            margin-left: 100px;
+        }
+
+        .temp {
+            margin: 800px;
+        }
+    </style>
 </head>
 
 <body>
     <!-- 헤더 -->
-    <nav class="navbar">
+    <nav class="my_navbar">
         <div class="navbar_logo">
             <a href="/">KKAEMI.GG</a>
         </div>
         <div class="navbar_member_links">
-            <span>LOGIN</span>&emsp;<span>SIGN UP</span>
+            <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span>SIGN UP</span>
         </div>
     </nav>
 
@@ -26,7 +45,7 @@
 
     <!-- 서치바 -->
     <div class="search_bar_container">
-        <form action="/record" method="get">
+        <form th:action="@{/record}" method="get">
             <div class="search_bar">
                 <input type="text" name="summonerNickName" placeholder="소환사명을 입력해 주세요"/>
                 <button type="submit">.GG</button>
@@ -35,9 +54,22 @@
     </div>
 
     <!-- 자유게시판 랭킹 -->
-    <div></div>
+    <div>
+        <div class="temp"></div>
+    </div>
 
     <!-- 푸터 -->
+    <footer>
+        <div>
+            <br>
+            EMAIL. kitys2k3@naver.com
+            <br>
+            <br>
+            © KKAEMI Corp.
+            <br>
+            <br>
+        </div>
+    </footer>
 </body>
 <script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
 </html>

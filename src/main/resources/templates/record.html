@@ -7,273 +7,36 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>소환사 전적</title>
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/record.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
     <style>
-        .profile_container {
-            display: flex;
-            width: 1000px;
-            margin: 20px auto 0 auto;
-            padding: 5px 5px;
-            border: 1px solid gray;
+        .match_content_wrapper {
+            margin-bottom: 50px;
         }
 
-        .profile_icon {
-            height: 120px;
-        }
-
-        .profile_image {
-            width: 120px;
-            height: 120px;
-        }
-
-        .profile {
-            margin: 0 25px;
-        }
-
-        .profile > .information {
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .name {
-            display: block;
-            font-size: 20px;
-            font-weight: bold;
-            font-family: Helvetica, "Apple SD Gothic Neo", AppleGothic;
-        }
-
-        .profile > .information > .tier_info > .level {
-            border: 1px solid gray;
-            border-radius: 6px;
-            padding : 1px 3px 0 3px;
-            margin: 2px 2px;
-        }
-
-        .queue_info {
-            border: 1px solid gray;
-            border-radius: 6px;
-            padding: 1px 3px 0 3px;
-            margin: 2px 2px;
-        }
-
-        .rank_container {
-            display: flex;
-            width: 1000px;
-            margin: 20px auto 0 auto;
-            padding: 5px 5px;
-            border: 1px solid gray;
-            justify-content: space-between;
-        }
-
-        .solo_rank {
-            display: flex;
-            border: 1px solid gray;
-            width: inherit;
-            height: 150px;
-            margin-right: 2.5px;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .free_rank {
-            display: flex;
-            border: 1px solid gray;
-            width: inherit;
-            height: 150px;
-            margin-left: 2.5px;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .queueType {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .tier_rank {
-            font-size: 20px;
-            font-weight: bold;
-            color: #66afe9;
-        }
-
-        .league_points {
-            font-weight: bold;
-        }
-
-        .rank_info {
-            width: 150px;
-        }
-
-        .emblem_icon > img {
-            width: 110px;
-        }
-
-        .match_content {
-            display: flex;
-            width: 1000px;
-            margin: 20px auto 0 auto;
-            padding: 5px 5px;
-            border: 1px solid gray;
-            align-items: center;
-            justify-content: space-around;
-        }
-
-        /* 게임 시작 시간 승패 여부 */
-       .game_stats {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-       }
-
-        .game_stats > div {
-            font-size: 12px;
-             line-height: 16px;
-        }
-
-        .game_stats > .bar {
-            width: 27px;
-            height: 2px;
-            background-color: #99b9cf;
-            margin: 5px auto;
-        }
-
-        /* 챔피언 스펠 룬 정보 */
-        .game_setting_info {
-            display: column;
-            text-align: center;
-        }
-
-        .game_setting_info > .game_setting_info_image {
-            display: flex;
-        }
-
-        .game_setting_info > .game_setting_info_image > div {
-            margin: 2px;
-        }
-
-        .game_setting_info > .game_setting_info_image > .champion_image > img {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-        }
-
-        .game_setting_info > .game_setting_info_image > .summoner_spell > .spell > img {
-            width: 25px;
-            height: 25px;
-        }
-
-        .game_setting_info > .game_setting_info_image > .runes > .rune > img {
-            width: 25px;
-            height: 25px;
-        }
-
-        .game_setting_info > .champion_name {
-            margin-top: 20px;
-        }
-
-        /* KDA 정보 */
-        .match_content > .kda {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            justify-content: space-between;
-        }
-
-        .match_content > .kda > * {
-            margin: 3px 0;
-        }
-
-        .kda > .kda {
-            font-size: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .kda > .kda > span {
-            font-size: 20px;
-            font-weight: bold;
-            color: #555e5e;
-            margin: 0 5px 0 5px;
-        }
-
-        .kda > .kda_ratio > span {
-            font-weight: bold;
-        }
-
-        .kda > .multi_kill > span {
-            background-color: #ef5a52;
-            font-size: 13px;
+        footer {
+            clear: both;
+            background-color: #333333;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        /* 레벨 CS 킬관여율 */
-        .match_content > .stats {
-            display: flex;
-            flex-direction: column;
             text-align: center;
+            padding: 1em 0px;
         }
 
-        .match_content > .stats > * {
-            margin: 2px 0;
-        }
-
-        /* 아이템 리스트 */
-        .items {
-            width: 110px;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .items > .item_list > .item > img {
-            width: 25px;
-            height: 25px;
-            margin: 1px;
-        }
-
-        /* 팀 정보 */
-        .follow_players {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .follow_players > * {
-            display: flex;
-            flex-direction: column;
-            margin: 0 3px 0 3px;
-        }
-
-        .follow_players > * > .summoner {
-            display: flex;
-            align-items: center;
-        }
-
-        .follow_players > * > .summoner > .champion_image {
-            margin: 1px;
-            height: 25px;
-        }
-
-        .follow_players > * > .summoner > .champion_image > img {
-            width: 25px;
-            height: 25px;
-        }
-
-        .follow_players > * > .summoner > .summoner_name {
-            margin-left: 2px;
+        footer > div {
+            width: 400px;
+            text-align: left;
+            margin-left: 100px;
         }
     </style>
 </head>
 <body>
     <!-- 헤더 -->
-    <nav class="navbar">
+    <nav class="my_navbar">
         <div class="navbar_logo">
             <a href="/">KKAEMI.GG</a>
         </div>
         <div class="navbar_member_links">
-            <span>LOGIN</span>&emsp;<span>SIGN UP</span>
+            <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span>SIGN UP</span>
         </div>
     </nav>
 
@@ -362,15 +125,19 @@
     </div>
 
     <!-- 소환사 전적 리스트 -->
-    <div th:each="matches : ${matchHistory}">
-        <div class="match_content_wrapper">
-            <div class="match_content">
+    <div class="match_content_wrapper">
+        <th:block th:each="matches : ${matchHistory}">
+            <div th:class="${matches.getParticipants()[0].getStats().isWinner() ? 'match_content_win' : 'match_content_loss'}">
                 <div class="game_stats">
-                    <div class="game_type" th:text="${matches.getMode().toString()}">GameType</div>
-                    <div class="time_stamp" th:text="${matches.getCreationTime().toString('yyyy년 MM월 dd일 HH:mm')}">TimeStamp</div>
+                    <div th:if="${matches.getQueue().toString().equals('RANKED_SOLO')}" th:text="'솔랭'"></div>
+                    <div th:if="${matches.getQueue().toString().equals('RANKED_FLEX')}" th:text="'자유 5:5 랭크'"></div>
+                    <div th:if="${matches.getQueue().toString().equals('ALL_RANDOM_URF')}" th:text="'우르프'"></div>
+                    <div th:if="${matches.getQueue().toString().equals('ARAM')}" th:text="'무작위 총력전'"></div>
+                    <div th:with="dayDiff = ${T(org.joda.time.DateTimeComparator).getDateOnlyInstance().compare(T(org.joda.time.DateTime).now(), matches.getCreationTime())}"
+                         th:text="${dayDiff == 0 ? new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 전').printZeroNever().toFormatter().print(new org.joda.time.Period(matches.getCreationTime().plusMinutes(28), new org.joda.time.DateTime())) : dayDiff + '일 전'}">GameCreationTime</div>
                     <div class="bar"></div>
                     <div class="game_result" th:text="${matches.getParticipants()[0].getStats().isWinner() ? '승리' : '패배'}">GameResult</div>
-                    <div class="game_length" th:text="${matches.getDuration().getStandardMinutes() + '분 게임'}">GameLength</div>
+                    <div class="game_length" th:text="${new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 ').appendSeconds().appendSuffix('초').printZeroNever().toFormatter().print(matches.getDuration().toPeriod())}">GameLength</div>
                 </div>
                 <div class="game_setting_info">
                     <div class="game_setting_info_image">
@@ -480,7 +247,20 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </div>
+
+    <!-- 푸터 -->
+    <footer>
+        <div>
+            <br>
+            EMAIL. kitys2k3@naver.com
+            <br>
+            <br>
+            © KKAEMI Corp.
+            <br>
+            <br>
+        </div>
+    </footer>
 </body>
 </html>
