@@ -8,6 +8,8 @@
   - template engine으로 Thymeleaf를 사용했습니다.
 
   이 프로젝트를 진행하면서 JSON을 JAVA객체로 바꿔주는 JACKSON과 RestTemplate에 대해서 알게되었습니다.
+  역시 개발하기 편하게 Orianna 라이브러리가 존재했었습니다.
+  java에서는 기본 Date 클래스보다 joda time을 사용하는게 더 좋다는걸 Orianna를 사용하면서 알게되었습니다.
   
   2020.10.27까지의 홈페이지 작업입니다
   
@@ -39,8 +41,12 @@
 
 
 
-**로그인 폼을 만들었습니다.**
+**로그인폼입니다.**
 
 <img width="1284" alt="스크린샷 2020-11-18 오후 5 59 09" src="https://user-images.githubusercontent.com/64781807/99508521-0809f380-29c8-11eb-8fb7-deb33ee12e38.png">
 
-앞으로 회원가입 폼과 로그인 회원가입 기능 구현, 서버 구축까지 할 예정입니다.
+**회원가입폼입니다.**
+
+<img width="1284" alt="스크린샷 2020-11-18 오후 8 52 22" src="https://user-images.githubusercontent.com/64781807/99527344-fdf3ef00-29df-11eb-87b6-b3271e127140.png">
+
+**로그인폼과 회원가입폼 모두 https://colorlib.com/에서 가져왔습니다.**
