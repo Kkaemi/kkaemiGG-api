@@ -134,7 +134,7 @@
                     <div th:if="${matches.getQueue().toString().equals('ALL_RANDOM_URF')}" th:text="'우르프'"></div>
                     <div th:if="${matches.getQueue().toString().equals('ARAM')}" th:text="'무작위 총력전'"></div>
                     <div th:with="dayDiff = ${T(org.joda.time.DateTimeComparator).getDateOnlyInstance().compare(T(org.joda.time.DateTime).now(), matches.getCreationTime())}"
-                         th:text="${dayDiff == 0 ? new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 전').printZeroNever().toFormatter().print(new org.joda.time.Period(matches.getCreationTime().plusMinutes(28), new org.joda.time.DateTime())) : dayDiff + '일 전'}">GameCreationTime</div>
+                         th:text="${dayDiff == 0 ? new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 전').printZeroNever().toFormatter().print(new org.joda.time.Period(matches.getCreationTime().plusMinutes(28), new org.joda.time.DateTime())) : new org.joda.time.Interval(matches.getCreationTime().toInstant(), T(org.joda.time.Instant).now()).toDuration().getStandardDays() + '일 전'}">GameCreationTime</div>
                     <div class="bar"></div>
                     <div class="game_result" th:text="${matches.getParticipants()[0].getStats().isWinner() ? '승리' : '패배'}">GameResult</div>
                     <div class="game_length" th:text="${new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 ').appendSeconds().appendSuffix('초').printZeroNever().toFormatter().print(matches.getDuration().toPeriod())}">GameLength</div>
