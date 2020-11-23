@@ -22,15 +22,21 @@ repositories {
 
 dependencies {
 	compile 'org.apache.httpcomponents:httpclient:4.5.13'
+
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.security:spring-security-test'
+	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
+	implementation 'org.hibernate.validator:hibernate-validator'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
 }
 
 test {

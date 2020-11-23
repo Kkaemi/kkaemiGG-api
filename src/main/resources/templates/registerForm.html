@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원가입</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="/registerForm/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="/registerForm/css/style.css">
+
+    <style>
+        .validationError {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main">
+
+        <section class="signup">
+            <!-- <img src="images/signup-bg.jpg" alt=""> -->
+            <div class="container">
+                <div class="signup-content">
+                    <form method="POST" th:action="@{/memberRegister}" th:object="${memberDTO}" id="signup-form" class="signup-form">
+                        <h2 class="form-title">회원가입</h2>
+                        <div class="form-group">
+                            <input type="text" th:field="*{name}" class="form-input" name="name" id="name" placeholder="이름"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('name')}"
+                                  th:errors="*{name}"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" th:field="*{email}" class="form-input" name="email" id="email" placeholder="이메일 주소"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('email')}"
+                                  th:errors="*{email}"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" th:field="*{password}" class="form-input" name="password" id="password" placeholder="비밀번호"/>
+                            <span toggle="#password" class="zmdi zmdi-eye-off field-icon toggle-password"></span>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('password')}"
+                                  th:errors="*{password}"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up"/>
+                        </div>
+                    </form>
+                    <p class="loginhere">
+                        이미 회원이신가요? <a href="/loginForm/" class="loginhere-link">로그인하기</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="/registerForm/vendor/jquery/jquery.min.js"></script>
+    <script src="/registerForm/js/main.js"></script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
