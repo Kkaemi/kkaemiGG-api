@@ -27,13 +27,11 @@
             <!-- <img src="images/signup-bg.jpg" alt=""> -->
             <div class="container">
                 <div class="signup-content">
-                    <form method="POST" th:action="@{/memberRegister}" th:object="${memberDTO}" id="signup-form" class="signup-form">
+                    <form method="POST" th:action="@{/memberRegister}" th:object="${member}" id="signup-form" class="signup-form" autocomplete="off">
                         <h2 class="form-title">회원가입</h2>
                         <div class="form-group">
                             <input type="text" th:field="*{name}" class="form-input" name="name" id="name" placeholder="이름"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('name')}"
-                                  th:errors="*{name}"></span>
+                            <span id="validateName"></span>
                         </div>
                         <div class="form-group">
                             <input type="email" th:field="*{email}" class="form-input" name="email" id="email" placeholder="이메일 주소"/>
@@ -63,6 +61,8 @@
 
     <!-- JS -->
     <script src="/registerForm/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
     <script src="/registerForm/js/main.js"></script>
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

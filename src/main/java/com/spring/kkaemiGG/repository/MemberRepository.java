@@ -1,10 +1,11 @@
 package com.spring.kkaemiGG.repository;
 
-import com.spring.kkaemiGG.bean.MemberDTO;
+import com.spring.kkaemiGG.domain.Member;
 
 import java.util.Optional;
 
 public interface MemberRepository {
-    public MemberDTO save(MemberDTO memberDTO);
-    public Optional<MemberDTO> findByEmail(String email);
+    public Member save(Member member);
+    public Optional<Member> findById(Long id);
+    public Optional<Member> findByEmail(String email);
 }

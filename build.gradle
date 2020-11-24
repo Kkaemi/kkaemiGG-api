@@ -28,6 +28,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.security:spring-security-test'
+
+	runtimeOnly 'com.h2database:h2'
+
 	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
 	implementation 'org.hibernate.validator:hibernate-validator'
 

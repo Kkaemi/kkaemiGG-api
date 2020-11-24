@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.controller;
 
-import com.spring.kkaemiGG.bean.MemberDTO;
+import com.spring.kkaemiGG.domain.Member;
 import com.spring.kkaemiGG.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,17 +29,17 @@ public class MemberController {
     @GetMapping("/registerForm")
     public String registerForm(Model model) {
 
-        model.addAttribute("memberDTO", new MemberDTO());
+        model.addAttribute("member", new Member());
 
         return "registerForm";
     }
 
     @PostMapping("/memberRegister")
-    public String processMember(@Valid MemberDTO memberDTO, Errors errors) {
+    public String processMember(@Valid Member member, Errors errors) {
 
         if (errors.hasErrors()) return "registerForm";
 
-        memberService.memberRegister(memberDTO);
+        memberService.save(member);
 
         return "redirect:/";
     }
