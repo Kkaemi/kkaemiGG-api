@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.service;
 
-import com.spring.kkaemiGG.domain.Member;
+import com.spring.kkaemiGG.entity.Member;
 import com.spring.kkaemiGG.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

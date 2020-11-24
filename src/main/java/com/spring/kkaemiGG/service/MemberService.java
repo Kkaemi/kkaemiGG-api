@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.service;
 
-import com.spring.kkaemiGG.domain.Member;
+import com.spring.kkaemiGG.entity.Member;
 import com.spring.kkaemiGG.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,18 +17,12 @@ public class MemberService {
 
     public Long save(Member member) {
 
-        // 멤버 중복 검사
-        validateDuplicateMember(member);
-
         memberRepository.save(member);
 
         return member.getId();
     }
 
-    private void validateDuplicateMember(Member member) {
-        memberRepository.findByEmail(member.getEmail())
-                .ifPresent(m -> {
-                    throw new IllegalStateException("이미 존재하는 회원입니다.");
-                });
+    public boolean validateDuplicateMember(String email) {
+        return !memberRepository.findByEmail(email).isPresent();
     }
 }

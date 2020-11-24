@@ -27,7 +27,7 @@
             <!-- <img src="images/signup-bg.jpg" alt=""> -->
             <div class="container">
                 <div class="signup-content">
-                    <form method="POST" th:action="@{/memberRegister}" th:object="${member}" id="signup-form" class="signup-form" autocomplete="off">
+                    <form method="POST" th:action="@{/memberRegister}" th:object="${memberDto}" id="signup-form" class="signup-form" autocomplete="off">
                         <h2 class="form-title">회원가입</h2>
                         <div class="form-group">
                             <input type="text" th:field="*{name}" class="form-input" name="name" id="name" placeholder="이름"/>
@@ -35,16 +35,10 @@
                         </div>
                         <div class="form-group">
                             <input type="email" th:field="*{email}" class="form-input" name="email" id="email" placeholder="이메일 주소"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('email')}"
-                                  th:errors="*{email}"></span>
                         </div>
                         <div class="form-group">
                             <input type="password" th:field="*{password}" class="form-input" name="password" id="password" placeholder="비밀번호"/>
                             <span toggle="#password" class="zmdi zmdi-eye-off field-icon toggle-password"></span>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('password')}"
-                                  th:errors="*{password}"></span>
                         </div>
                         <div class="form-group">
                             <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up"/>

@@ -1,12 +1,10 @@
-package com.spring.kkaemiGG.domain;
+package com.spring.kkaemiGG.entity;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor

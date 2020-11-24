@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.repository;
 
-import com.spring.kkaemiGG.domain.Member;
+import com.spring.kkaemiGG.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
