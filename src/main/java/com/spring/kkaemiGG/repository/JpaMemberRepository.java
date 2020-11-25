@@ -2,11 +2,13 @@ package com.spring.kkaemiGG.repository;
 
 import com.spring.kkaemiGG.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class JpaMemberRepository implements MemberRepository {
 
     private final EntityManager em;

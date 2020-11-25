@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 .DS_Store
 application.properties
+application-oauth.properties
 
 ### STS ###
 .apt_generated

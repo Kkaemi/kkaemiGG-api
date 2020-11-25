@@ -34,7 +34,12 @@
             <a href="/">KKAEMI.GG</a>
         </div>
         <div class="navbar_member_links">
-            <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span th:onclick="location.href='/registerForm/'">SIGN UP</span>
+            <th:block th:if="${#strings.isEmpty(memberName)}">
+                <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span th:onclick="location.href='/registerForm/'">SIGN UP</span>
+            </th:block>
+            <th:block th:if="${!#strings.isEmpty(memberName)}">
+                <span th:onclick="location.href='/logout'">LOGOUT</span>
+            </th:block>
         </div>
     </nav>
 
