@@ -6,39 +6,14 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>소환사 전적</title>
-    <link rel="stylesheet" href="/css/header.css">
+    <!-- config fragment 사용 -->
+    <th:block th:replace="fragment/config :: configFragment" ></th:block>
     <link rel="stylesheet" href="/css/record.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
-    <style>
-        .match_content_wrapper {
-            margin-bottom: 50px;
-        }
-
-        footer {
-            clear: both;
-            background-color: #333333;
-            color: white;
-            text-align: center;
-            padding: 1em 0px;
-        }
-
-        footer > div {
-            width: 400px;
-            text-align: left;
-            margin-left: 100px;
-        }
-    </style>
 </head>
 <body>
     <!-- 헤더 -->
-    <nav class="my_navbar">
-        <div class="navbar_logo">
-            <a href="/">KKAEMI.GG</a>
-        </div>
-        <div class="navbar_member_links">
-            <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span th:onclick="location.href='/registerForm/'">SIGN UP</span>
-        </div>
-    </nav>
+    <th:block th:replace="fragment/header :: headerFragment"></th:block>
 
     <!-- 소환사 프로필 -->
     <div class="profile_container">
@@ -251,16 +226,6 @@
     </div>
 
     <!-- 푸터 -->
-    <footer>
-        <div>
-            <br>
-            EMAIL. kitys2k3@naver.com
-            <br>
-            <br>
-            © KKAEMI Corp.
-            <br>
-            <br>
-        </div>
-    </footer>
+    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
 </body>
 </html>

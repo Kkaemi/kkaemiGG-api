@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.repository;
 
+import com.spring.kkaemiGG.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +33,23 @@ public class JpaMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmail(String email) {
+
         List<Member> resultList = em.createQuery("select m from Member m where m.email = :email", Member.class)
                 .setParameter("email", email)
                 .getResultList();
 
         return resultList.stream().findAny();
 
+    }
+
+    @Override
+    public Optional<Member> findByDto(MemberDto memberDto) {
+
+        List<Member> resultList = em.createQuery("select m from Member m where m.email = :email and m.password = :password", Member.class)
+                .setParameter("email", memberDto.getEmail())
+                .setParameter("password", memberDto.getPassword())
+                .getResultList();
+
+        return resultList.stream().findAny();
     }
 }

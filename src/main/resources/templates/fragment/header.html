@@ -1,0 +1,20 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- 헤더 -->
+<th:block th:fragment="headerFragment">
+    <nav class="my_navbar">
+        <div class="navbar_logo">
+            <a href="/">KKAEMI.GG</a>
+        </div>
+        <div class="navbar_member_links">
+            <th:block th:if="${#strings.isEmpty(memberName)}">
+                <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span
+                    th:onclick="location.href='/registerForm/'">SIGN UP</span>
+            </th:block>
+            <th:block th:if="${!#strings.isEmpty(memberName)}">
+                <member_name th:text="'WELCOME ' + ${memberName}"></member_name>
+                <span th:onclick="location.href='/logout'">LOGOUT</span>
+            </th:block>
+        </div>
+    </nav>
+</th:block>
+</html>

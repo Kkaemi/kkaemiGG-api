@@ -3,45 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>전적 검색 메인 페이지</title>
-    <link rel="stylesheet" href="/css/header.css">
+    <!-- config fragment 사용 -->
+    <th:block th:replace="fragment/config :: configFragment" ></th:block>
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
-    <style>
-        footer {
-            clear: both;
-            background-color: #333333;
-            color: white;
-            text-align: center;
-            padding: 1em 0px;
-        }
-
-        footer > div {
-            width: 400px;
-            text-align: left;
-            margin-left: 100px;
-        }
-
-        .temp {
-            margin: 800px;
-        }
-    </style>
 </head>
 
 <body>
     <!-- 헤더 -->
-    <nav class="my_navbar">
-        <div class="navbar_logo">
-            <a href="/">KKAEMI.GG</a>
-        </div>
-        <div class="navbar_member_links">
-            <th:block th:if="${#strings.isEmpty(memberName)}">
-                <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span th:onclick="location.href='/registerForm/'">SIGN UP</span>
-            </th:block>
-            <th:block th:if="${!#strings.isEmpty(memberName)}">
-                <span th:onclick="location.href='/logout'">LOGOUT</span>
-            </th:block>
-        </div>
-    </nav>
+    <th:block th:replace="fragment/header :: headerFragment"></th:block>
 
     <!-- 타이틀 -->
     <div class="title">
@@ -64,17 +34,7 @@
     </div>
 
     <!-- 푸터 -->
-    <footer>
-        <div>
-            <br>
-            EMAIL. kitys2k3@naver.com
-            <br>
-            <br>
-            © KKAEMI Corp.
-            <br>
-            <br>
-        </div>
-    </footer>
+    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
 </body>
 <script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
 </html>

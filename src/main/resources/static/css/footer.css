@@ -1,0 +1,13 @@
+footer {
+    clear: both;
+    background-color: #333333;
+    color: white;
+    text-align: center;
+    padding: 1em 0px;
+}
+
+footer > div {
+    width: 400px;
+    text-align: left;
+    margin-left: 100px;
+}

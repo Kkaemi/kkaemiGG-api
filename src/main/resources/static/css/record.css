@@ -286,3 +286,7 @@
 .follow_players > * > .summoner > .summoner_name {
     margin-left: 2px;
 }
+
+.match_content_wrapper {
+    margin-bottom: 50px;
+}

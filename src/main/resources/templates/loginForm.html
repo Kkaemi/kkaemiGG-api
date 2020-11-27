@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>로그인</title>
     <meta charset="UTF-8">
@@ -19,8 +19,6 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="/loginForm/css/util.css">
     <link rel="stylesheet" type="text/css" href="/loginForm/css/main.css">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
     <!--===============================================================================================-->
 </head>
 <body>
@@ -28,21 +26,22 @@
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-l-50 p-r-50 p-t-77 p-b-30">
-            <form class="login100-form validate-form">
+            <form class="login100-form validate-form" method="post" th:action="@{/login}">
 					<span class="login100-form-title p-b-55">
 						KKAEMI.GG
 					</span>
 
-                <div class="wrap-input100 validate-input m-b-16" data-validate="Valid email is required: ex@abc.xyz">
-                    <input class="input100" type="text" name="email" placeholder="Email">
+                <div class="wrap-input100 validate-input m-b-16" data-validate="유효한 이메일이 필요합니다: ex@abc.xyz">
+                    <input class="input100" type="text" name="email" placeholder="이메일">
+                    <input class="username" type="hidden" name="username">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
 							<span class="lnr lnr-envelope"></span>
 						</span>
                 </div>
 
-                <div class="wrap-input100 validate-input m-b-16" data-validate="Password is required">
-                    <input class="input100" type="password" name="pass" placeholder="Password">
+                <div class="wrap-input100 validate-input m-b-16" data-validate="비밀번호가 필요합니다">
+                    <input class="input100" type="password" name="pass" placeholder="비밀번호">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
 							<span class="lnr lnr-lock"></span>
@@ -58,7 +57,7 @@
 
                 <div class="container-login100-form-btn p-t-25">
                     <button class="login100-form-btn">
-                        Login
+                        로그인
                     </button>
                 </div>
 
@@ -92,9 +91,11 @@
     </div>
 </div>
 
-
 <!--===============================================================================================-->
 <script src="/loginForm/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
 <!--===============================================================================================-->
 <script src="/loginForm/vendor/bootstrap/js/popper.js"></script>
 <script src="/loginForm/vendor/bootstrap/js/bootstrap.min.js"></script>

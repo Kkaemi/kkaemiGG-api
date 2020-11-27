@@ -17,7 +17,10 @@
             }
         }
 
+        $('.username').val($(input[0]).val())
+
         return check;
+
     });
 
 
@@ -34,7 +37,7 @@
             }
         }
         else {
-            if($(input).val().trim() == ''){
+            if($(input).val().trim().match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) == null){
                 return false;
             }
         }

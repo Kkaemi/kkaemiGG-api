@@ -1,13 +1,10 @@
 package com.spring.kkaemiGG.dto;
 
 import com.spring.kkaemiGG.entity.Member;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.spring.kkaemiGG.entity.Role;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class MemberDto {
 
@@ -27,6 +24,7 @@ public class MemberDto {
                 .name(name)
                 .email(email)
                 .password(password)
+                .role(Role.USER)
                 .build();
     }
 }
