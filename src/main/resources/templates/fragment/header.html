@@ -6,12 +6,12 @@
             <a href="/">KKAEMI.GG</a>
         </div>
         <div class="navbar_member_links">
-            <th:block th:if="${#strings.isEmpty(memberName)}">
+            <th:block th:if="${session.member == null}">
                 <span th:onclick="location.href='/loginForm/'">LOGIN</span>&emsp;<span
                     th:onclick="location.href='/registerForm/'">SIGN UP</span>
             </th:block>
-            <th:block th:if="${!#strings.isEmpty(memberName)}">
-                <member_name th:text="'WELCOME ' + ${memberName}"></member_name>
+            <th:block th:if="${session.member != null}">
+                <member_name th:text="'WELCOME ' + ${session.member.getName()}"></member_name>
                 <span th:onclick="location.href='/logout'">LOGOUT</span>
             </th:block>
         </div>

@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
                 .permitAll()
                 .and()
                 .oauth2Login()

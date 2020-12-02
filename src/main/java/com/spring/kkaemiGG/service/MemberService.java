@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.service;
 
+import com.spring.kkaemiGG.config.auth.dto.SessionMember;
 import com.spring.kkaemiGG.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
 import com.spring.kkaemiGG.entity.Role;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final HttpSession httpSession;
 
     public Long join(MemberDto memberDto) {
 
@@ -51,7 +54,13 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        if (!memberRepository.findByEmail(username).isPresent()) {
+            throw new UsernameNotFoundException("ID가 존재하지 않거나 비밀번호가 일치하지 않습니다. 다시 시도해주세요.");
+        }
+
         Member member = memberRepository.findByEmail(username).get();
+
+        httpSession.setAttribute("member", new SessionMember(member));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(member.getRoleKey()));
