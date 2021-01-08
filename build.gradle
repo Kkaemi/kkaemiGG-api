@@ -31,7 +31,7 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'org.springframework.security:spring-security-test'
 
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
 	implementation 'org.hibernate.validator:hibernate-validator'
