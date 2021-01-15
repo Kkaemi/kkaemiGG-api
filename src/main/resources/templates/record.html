@@ -52,7 +52,7 @@
                 <img th:if="${leagueEntryList.isEmpty()}" src="/img/ranked-emblems/Emblem_Unranked.png">
                 <img th:if="${leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO')}" src="/img/ranked-emblems/Emblem_Unranked.png">
                 <th:block th:each="leagueEntry : ${leagueEntryList}">
-                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.getTier().toString()})}">
+                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${#strings.capitalize(leagueEntry.getTier().toString().toLowerCase())})}">
                 </th:block>
             </div>
             <div class="rank_info">
