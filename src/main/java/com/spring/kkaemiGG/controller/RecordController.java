@@ -25,17 +25,23 @@ public class RecordController {
     @GetMapping("/record")
     public ModelAndView record(@RequestParam String summonerNickName) {
 
-        Summoner summoner = recordService.getSummoner(summonerNickName);
-        List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summoner);
-        MatchHistory matchHistory = recordService.getMatchHistory(summoner);
-
         ModelAndView modelAndView = new ModelAndView();
 
-        modelAndView.setViewName("record");
+        Summoner summoner = recordService.getSummoner(summonerNickName);
+
+        if (!summoner.exists()) {
+            modelAndView.setViewName("recordErrorPage");
+            return modelAndView;
+        }
+
+        List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summoner);
+        MatchHistory matchHistory = recordService.getMatchHistory(summoner);
 
         modelAndView.addObject("summoner", summoner);
         modelAndView.addObject("leagueEntryList", leagueEntryList);
         modelAndView.addObject("matchHistory", matchHistory);
+
+        modelAndView.setViewName("record");
 
         return modelAndView;
     }

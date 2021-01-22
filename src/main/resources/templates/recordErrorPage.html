@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>소환사 전적</title>
+    <!-- config fragment 사용 -->
+    <th:block th:replace="fragment/config :: configFragment" ></th:block>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+    <style>
+        .error_message {
+            display: flex;
+            flex-direction: column;
+            width: 1000px;
+            margin: 50px auto 700px auto;
+        }
+    </style>
+</head>
+<body>
+<!-- 헤더 -->
+<th:block th:replace="fragment/header :: headerFragment"></th:block>
+
+<div class="error_message">
+    <h1>등록되지 않은 소환사입니다. 😅</h1>
+    <a href="/">돌아가기</a>
+</div>
+
+<!-- 푸터 -->
+<th:block th:replace="fragment/footer :: footerFragment"></th:block>
+</body>
+</html>
