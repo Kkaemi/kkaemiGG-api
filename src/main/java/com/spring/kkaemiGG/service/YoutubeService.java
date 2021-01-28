@@ -1,3 +1,4 @@
+package com.spring.kkaemiGG.service;
 /*
  * Copyright (c) 2012 Google Inc.
  *
@@ -38,7 +39,7 @@ import java.util.Properties;
  *
  * @author Jeremy Walker
  */
-public class Search {
+public class YoutubeService {
 
     /** Global instance properties filename. */
     private static String PROPERTIES_FILENAME = "youtube.properties";
@@ -66,7 +67,7 @@ public class Search {
         // Read the developer key from youtube.properties
         Properties properties = new Properties();
         try {
-            InputStream in = Search.class.getResourceAsStream("/" + PROPERTIES_FILENAME);
+            InputStream in = YoutubeService.class.getResourceAsStream("/" + PROPERTIES_FILENAME);
             properties.load(in);
 
         } catch (IOException e) {
@@ -169,7 +170,7 @@ public class Search {
 
             // Double checks the kind is video.
             if (rId.getKind().equals("youtube#video")) {
-                Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().get("default");
+                Thumbnail thumbnail = (Thumbnail) singleVideo.getSnippet().getThumbnails().get("default");
 
                 System.out.println(" Video Id" + rId.getVideoId());
                 System.out.println(" Title: " + singleVideo.getSnippet().getTitle());
