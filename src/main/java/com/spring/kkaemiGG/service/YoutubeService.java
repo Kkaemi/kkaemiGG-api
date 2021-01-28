@@ -19,7 +19,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -48,10 +49,10 @@ public class YoutubeService {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
     /** Global instance of the JSON factory. */
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
     /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
-    private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
+    private static final long NUMBER_OF_VIDEOS_RETURNED = 5;
 
     /** Global instance of Youtube object to make all API requests. */
     private static YouTube youtube;
@@ -89,7 +90,7 @@ public class YoutubeService {
             // Get query term from user.
             String queryTerm = getInputQuery();
 
-            YouTube.Search.List search = youtube.search().list("id,snippet");
+            YouTube.Search.List search = youtube.search().list(Arrays.asList("id", "snippet"));
             /*
              * It is important to set your API key from the Google Developer Console for
              * non-authenticated requests (found under the Credentials tab at this link:
@@ -102,7 +103,7 @@ public class YoutubeService {
              * We are only searching for videos (not playlists or channels). If we were searching for
              * more, we would add them as a string like this: "video,playlist,channel".
              */
-            search.setType("video");
+            search.setType(Arrays.asList("video"));
             /*
              * This method reduces the info returned to only the fields we need and makes calls more
              * efficient.
@@ -139,7 +140,7 @@ public class YoutubeService {
 
         if (inputQuery.length() < 1) {
             // If nothing is entered, defaults to "YouTube Developers Live."
-            inputQuery = "YouTube Developers Live";
+            inputQuery = "롤";
         }
         return inputQuery;
     }

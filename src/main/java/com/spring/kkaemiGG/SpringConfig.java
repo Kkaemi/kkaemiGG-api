@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 @Configuration
 public class SpringConfig {
 
-    @Value("${API_KEY}")
+    @Value("${RIOT_API_KEY}")
     private String apiKey;
 
     private final DataSource dataSource;

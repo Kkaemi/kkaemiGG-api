@@ -7,6 +7,7 @@ build/
 .DS_Store
 application.properties
 application-oauth.properties
+youtube.properties
 
 ### STS ###
 .apt_generated
