@@ -25,6 +25,7 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.util.Properties;
  *
  * @author Jeremy Walker
  */
+@Service
 public class YoutubeService {
 
     /** Global instance properties filename. */
@@ -52,7 +54,7 @@ public class YoutubeService {
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
     /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
-    private static final long NUMBER_OF_VIDEOS_RETURNED = 5;
+    private static final long NUMBER_OF_VIDEOS_RETURNED = 12;
 
     /** Global instance of Youtube object to make all API requests. */
     private static YouTube youtube;
@@ -64,7 +66,7 @@ public class YoutubeService {
      *
      * @param args command line args.
      */
-    public static void main(String[] args) {
+    public List<SearchResult> getSearchList() {
         // Read the developer key from youtube.properties
         Properties properties = new Properties();
         try {
@@ -88,35 +90,26 @@ public class YoutubeService {
             }).setApplicationName("youtube-cmdline-search-sample").build();
 
             // Get query term from user.
-            String queryTerm = getInputQuery();
+            String queryTerm = "롤";
 
-            YouTube.Search.List search = youtube.search().list(Arrays.asList("id", "snippet"));
-            /*
-             * It is important to set your API key from the Google Developer Console for
-             * non-authenticated requests (found under the Credentials tab at this link:
-             * console.developers.google.com/). This is good practice and increased your quota.
-             */
+            YouTube.Search.List search = youtube.search().list(Arrays.asList("id"));
+
             String apiKey = properties.getProperty("youtube.apikey");
-            search.setKey(apiKey);
-            search.setQ(queryTerm);
-            /*
-             * We are only searching for videos (not playlists or channels). If we were searching for
-             * more, we would add them as a string like this: "video,playlist,channel".
-             */
-            search.setType(Arrays.asList("video"));
-            /*
-             * This method reduces the info returned to only the fields we need and makes calls more
-             * efficient.
-             */
-            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
-            search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
-            SearchListResponse searchResponse = search.execute();
+
+//            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+
+            SearchListResponse searchResponse = search.setKey(apiKey)
+                    .setQ(queryTerm)
+                    .setType(Arrays.asList("video"))
+                    .setOrder("relevance")
+                    .setMaxResults(NUMBER_OF_VIDEOS_RETURNED)
+                    .setFields("items(id/videoId)")
+                    .execute();
 
             List<SearchResult> searchResultList = searchResponse.getItems();
 
-            if (searchResultList != null) {
-                prettyPrint(searchResultList.iterator(), queryTerm);
-            }
+            return searchResultList;
+
         } catch (GoogleJsonResponseException e) {
             System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
                     + e.getDetails().getMessage());
@@ -125,59 +118,6 @@ public class YoutubeService {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-    }
-
-    /*
-     * Returns a query term (String) from user via the terminal.
-     */
-    private static String getInputQuery() throws IOException {
-
-        String inputQuery = "";
-
-        System.out.print("Please enter a search term: ");
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(System.in));
-        inputQuery = bReader.readLine();
-
-        if (inputQuery.length() < 1) {
-            // If nothing is entered, defaults to "YouTube Developers Live."
-            inputQuery = "롤";
-        }
-        return inputQuery;
-    }
-
-    /*
-     * Prints out all SearchResults in the Iterator. Each printed line includes title, id, and
-     * thumbnail.
-     *
-     * @param iteratorSearchResults Iterator of SearchResults to print
-     *
-     * @param query Search query (String)
-     */
-    private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
-
-        System.out.println("\n=============================================================");
-        System.out.println(
-                "   First " + NUMBER_OF_VIDEOS_RETURNED + " videos for search on \"" + query + "\".");
-        System.out.println("=============================================================\n");
-
-        if (!iteratorSearchResults.hasNext()) {
-            System.out.println(" There aren't any results for your query.");
-        }
-
-        while (iteratorSearchResults.hasNext()) {
-
-            SearchResult singleVideo = iteratorSearchResults.next();
-            ResourceId rId = singleVideo.getId();
-
-            // Double checks the kind is video.
-            if (rId.getKind().equals("youtube#video")) {
-                Thumbnail thumbnail = (Thumbnail) singleVideo.getSnippet().getThumbnails().get("default");
-
-                System.out.println(" Video Id" + rId.getVideoId());
-                System.out.println(" Title: " + singleVideo.getSnippet().getTitle());
-                System.out.println(" Thumbnail: " + thumbnail.getUrl());
-                System.out.println("\n-------------------------------------------------------------\n");
-            }
-        }
+        return null;
     }
 }

@@ -7,6 +7,19 @@
     <th:block th:replace="fragment/config :: configFragment" ></th:block>
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+
+    <style>
+        .youtube_video_list {
+            width: 90%;
+            height: 700px;
+            margin: 100px auto;
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -28,9 +41,15 @@
         </form>
     </div>
 
-    <!-- 자유게시판 랭킹 -->
-    <div>
-        <div class="temp"></div>
+    <!-- 유튜브 동영상 리스트 -->
+    <div class="youtube_video_list">
+        <th:block th:each="youtubeSearchResult : ${youtubeSearchResultList}">
+            <iframe th:src="@{https://www.youtube.com/embed/{videoId}(videoId = ${youtubeSearchResult.getId().getVideoId()})}"
+                    style="height: 169px; margin: 0 5px;"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+        </th:block>
     </div>
 
     <!-- 푸터 -->
