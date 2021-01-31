@@ -11,6 +11,8 @@ import java.util.List;
 
 public class RecordService {
 
+    Queue[] queueType = {Queue.RANKED_SOLO, Queue.RANKED_FLEX};
+
     public Summoner getSummoner(String summonerNickName) {
 
         Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
@@ -21,15 +23,16 @@ public class RecordService {
 
     public List<LeagueEntry> getLeagueEntryList(Summoner summoner) {
 
-        List<LeagueEntry> leagueEntryList = new ArrayList<LeagueEntry>();
+        List<LeagueEntry> leagueEntryList = new ArrayList<>();
 
-        Queue[] queueType = {Queue.RANKED_SOLO, Queue.RANKED_FLEX};
-
-        for (int i = 0; i < queueType.length; i++) {
+        for (Queue queue : queueType) {
 
             // 랭크정보가 없으면 리스트에 리그포지션을 추가하지 않음
-            if (summoner.getLeaguePosition(queueType[i]) == null) continue;
-            leagueEntryList.add(summoner.getLeaguePosition(queueType[i]));
+            if (summoner.getLeaguePosition(queue) == null) {
+                continue;
+            }
+
+            leagueEntryList.add(summoner.getLeaguePosition(queue));
 
         }
 
