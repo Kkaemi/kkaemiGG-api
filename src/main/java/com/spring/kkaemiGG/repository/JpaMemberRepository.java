@@ -2,22 +2,18 @@ package com.spring.kkaemiGG.repository;
 
 import com.spring.kkaemiGG.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Transactional
 public class JpaMemberRepository implements MemberRepository {
 
     private final EntityManager em;
-
-    @Autowired
-    public JpaMemberRepository(EntityManager em) {
-        this.em = em;
-    }
 
     @Override
     public Member save(Member member) {

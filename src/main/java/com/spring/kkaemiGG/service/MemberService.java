@@ -3,7 +3,6 @@ package com.spring.kkaemiGG.service;
 import com.spring.kkaemiGG.config.auth.dto.SessionMember;
 import com.spring.kkaemiGG.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
-import com.spring.kkaemiGG.entity.Role;
 import com.spring.kkaemiGG.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public boolean validateDuplicateMember(String email) {
-        return !memberRepository.findByEmail(email).isPresent();
+        return memberRepository.findByEmail(email).isEmpty();
     }
 
     public boolean validateMember(MemberDto memberDto) {
@@ -48,23 +47,25 @@ public class MemberService implements UserDetailsService {
 
         memberDto.setPassword(passwordEncoder.encode(password));
 
-        return !memberRepository.findByDto(memberDto).isPresent();
+        return memberRepository.findByDto(memberDto).isEmpty();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        if (!memberRepository.findByEmail(username).isPresent()) {
-            throw new UsernameNotFoundException("ID가 존재하지 않거나 비밀번호가 일치하지 않습니다. 다시 시도해주세요.");
-        }
+        return memberRepository.findByEmail(username).map(
+                // Email 검색한 유저가 있을 경우
+                member -> {
+                    // Session 추가
+                    httpSession.setAttribute("member", new SessionMember(member));
 
-        Member member = memberRepository.findByEmail(username).get();
+                    // User 객체 생성하고 반환
+                    List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(member.getRoleKey()));
+                    return new User(member.getEmail(), member.getPassword(), authorities);
+                }).orElseThrow(
+                        // Email 검색한 유저가 없을 겨우 Exception 발생
+                        () -> new UsernameNotFoundException("ID가 존재하지 않거나 비밀번호가 일치하지 않습니다. 다시 시도해주세요.")
+        );
 
-        httpSession.setAttribute("member", new SessionMember(member));
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(member.getRoleKey()));
-
-        return new User(member.getEmail(), member.getPassword(), authorities);
     }
 }
