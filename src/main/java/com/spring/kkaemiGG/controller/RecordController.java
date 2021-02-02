@@ -2,7 +2,6 @@ package com.spring.kkaemiGG.controller;
 
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.match.MatchHistory;
-import com.merakianalytics.orianna.types.core.summoner.Summoner;
 import com.spring.kkaemiGG.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,21 +22,19 @@ public class RecordController {
 
         ModelAndView modelAndView = new ModelAndView();
 
-        Summoner summoner = recordService.getSummoner(summonerNickName);
+        recordService.getSummoner(summonerNickName).ifPresentOrElse(
+                summoner -> {
+                    modelAndView.setViewName("record");
 
-        if (!summoner.exists()) {
-            modelAndView.setViewName("recordErrorPage");
-            return modelAndView;
-        }
+                    List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summoner);
+                    MatchHistory matchHistory = recordService.getMatchHistory(summoner);
 
-        List<LeagueEntry> leagueEntryList = recordService.getLeagueEntryList(summoner);
-        MatchHistory matchHistory = recordService.getMatchHistory(summoner);
-
-        modelAndView.addObject("summoner", summoner);
-        modelAndView.addObject("leagueEntryList", leagueEntryList);
-        modelAndView.addObject("matchHistory", matchHistory);
-
-        modelAndView.setViewName("record");
+                    modelAndView.addObject("summoner", summoner);
+                    modelAndView.addObject("leagueEntryList", leagueEntryList);
+                    modelAndView.addObject("matchHistory", matchHistory);
+                },
+                () -> modelAndView.setViewName("recordErrorPage")
+        );
 
         return modelAndView;
     }

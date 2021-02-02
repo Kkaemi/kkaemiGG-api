@@ -8,16 +8,15 @@ import com.merakianalytics.orianna.types.core.summoner.Summoner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RecordService {
 
-    Queue[] queueType = {Queue.RANKED_SOLO, Queue.RANKED_FLEX};
-
-    public Summoner getSummoner(String summonerNickName) {
+    public Optional<Summoner> getSummoner(String summonerNickName) {
 
         Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
 
-        return summoner;
+        return Optional.ofNullable(summoner);
 
     }
 
@@ -25,16 +24,13 @@ public class RecordService {
 
         List<LeagueEntry> leagueEntryList = new ArrayList<>();
 
-        for (Queue queue : queueType) {
-
-            // 랭크정보가 없으면 리스트에 리그포지션을 추가하지 않음
-            if (summoner.getLeaguePosition(queue) == null) {
-                continue;
-            }
-
-            leagueEntryList.add(summoner.getLeaguePosition(queue));
-
-        }
+        Queue.RANKED.forEach(
+                queue -> {
+                    if (summoner.getLeaguePosition(queue) != null) {
+                        leagueEntryList.add(summoner.getLeaguePosition(queue));
+                    }
+                }
+        );
 
         return leagueEntryList;
 
@@ -42,7 +38,7 @@ public class RecordService {
 
     public MatchHistory getMatchHistory(Summoner summoner) {
 
-        return summoner.matchHistory().withEndIndex(20).get();
+        return MatchHistory.forSummoner(summoner).withEndIndex(20).get();
 
     }
 }
