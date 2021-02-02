@@ -17,27 +17,47 @@
 
     <!-- 소환사 프로필 -->
     <div class="profile_container">
+
+        <!-- 프로필 아이콘 -->
         <div class="profile_icon">
+            <!-- 프로필 아이콘 있을 경우 -->
             <img th:if="${not #strings.isEmpty(summoner.getProfileIcon())}"
                  th:src="@{${summoner.getProfileIcon().getImage().getURL()}}"
                  class="profile_image">
-            <img th:unless="${not #strings.isEmpty(summoner.getProfileIcon())}"
+
+            <!-- 프로필 아이콘 없을 경우 -->
+            <img th:if="${#strings.isEmpty(summoner.getProfileIcon())}"
                  th:src="@{img/profileIcon0.jpg}"
                  class="profile_image">
         </div>
+
+        <!-- 프로필 이름, 레벨, 솔로랭크 자유랭크 승패 -->
         <div class="profile">
+
             <div class="information">
+
+                <!-- 이름 -->
                 <div th:text="${summoner.getName()}" class="name">소환사 이름</div>
+
                 <div class="tier_info">
+
+                    <!-- 레벨 -->
                     <span th:text="'레벨 : ' + ${summoner.getLevel()}" class="level">소환사 레벨</span>
+
+                    <!-- 승패 정보 -->
                     <th:block th:each="leagueEntry : ${leagueEntryList}">
+                        <!-- 솔로랭크 -->
                         <th:block th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}"
                                   th:with="queueType = '솔로랭크'">
-                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
+                            <span class="queue_info" th:text="${queueType} + ' : '
+                            + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
                         </th:block>
+
+                        <!-- 자유랭크 -->
                         <th:block th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}"
                                   th:with="queueType = '자유랭크'">
-                            <span class="queue_info" th:text="${queueType} + ' : ' + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
+                            <span class="queue_info" th:text="${queueType} + ' : '
+                            + ${leagueEntry.getWins()} + '승 ' + ${leagueEntry.getLosses()} + '패 '"></span>
                         </th:block>
                     </th:block>
                 </div>
@@ -47,53 +67,131 @@
 
     <!-- 소환사 랭크 정보 -->
     <div class="rank_container">
+
+        <!-- 솔로랭크 -->
         <div class="solo_rank">
+
+            <!-- 엠블렘 아이콘 -->
             <div class="emblem_icon">
-                <img th:if="${leagueEntryList.isEmpty()}" src="/img/ranked-emblems/Emblem_Unranked.png">
-                <img th:if="${leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO')}" src="/img/ranked-emblems/Emblem_Unranked.png">
+
+                <!-- 랭크 정보가 하나밖에 없고 솔로랭크 정보가 아니거나 랭크 정보가 없는 경우 -->
+                <img th:if="${(leagueEntryList.size() == 1
+                        && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO'))
+                            || leagueEntryList.isEmpty()}"
+                     src="/img/ranked-emblems/Emblem_Unranked.png">
+
+                <!-- 솔로랭크 엠블렘 아이콘 로드 -->
                 <th:block th:each="leagueEntry : ${leagueEntryList}">
-                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${#strings.capitalize(leagueEntry.getTier().toString().toLowerCase())})}">
+                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}"
+                         th:src="@{/img/ranked-emblems/Emblem_{tier}.png(
+                            tier = ${#strings.capitalize(leagueEntry.getTier().toString().toLowerCase())}
+                         )}">
                 </th:block>
             </div>
+
+            <!-- 솔로랭크 정보 -->
             <div class="rank_info">
                 <div class="queueType">솔로랭크</div>
                 <br>
                 <th:block th:each="leagueEntry : ${leagueEntryList}"
                           th:if="${leagueEntry.getQueue().toString().equals('RANKED_SOLO')}">
-                    <div class="tier_rank" th:text="${leagueEntry.getTier().toString()} + ' ' + ${leagueEntry.getDivision().toString()}"></div>
+
+                    <!-- 티어와 단계 정보 -->
+                    <div class="tier_rank"
+                         th:text="${leagueEntry.getTier().toString()} + ' '
+                          + ${leagueEntry.getDivision().toString()}"></div>
+
                     <div class="win_lose">
-                        <span class="league_points" th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
-                        <span class="wins" th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
-                        <span class="losses" th:text="${leagueEntry.getLosses()} + '패'"></span>
-                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.getWins() * 1.0)/(leagueEntry.getWins() + leagueEntry.getLosses()), 2, 2)}"></div>
+
+                        <!-- 리그 포인트 -->
+                        <span class="league_points"
+                              th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
+
+                        <!-- 승리 -->
+                        <span class="wins"
+                              th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
+
+                        <!-- 패배 -->
+                        <span class="losses"
+                              th:text="${leagueEntry.getLosses()} + '패'"></span>
+
+                        <!-- 승률 계산 -->
+                        <div class="win_ratio"
+                             th:text="${'승률 ' + #numbers.formatPercent(
+                                (leagueEntry.getWins() * 1.0) / (leagueEntry.getWins() + leagueEntry.getLosses()
+                             ), 2, 2)}"></div>
                     </div>
                 </th:block>
-                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO')) || leagueEntryList.isEmpty()}"
+
+                <!-- 랭크 정보가 하나밖에 없고 솔로랭크 정보가 아니거나 랭크 정보가 없는 경우 -->
+                <div class="rank_info_is_empty"
+                     th:if="${(leagueEntryList.size() == 1
+                        && !leagueEntryList[0].getQueue().toString().equals('RANKED_SOLO'))
+                            || leagueEntryList.isEmpty()}"
                      th:text="랭크정보없음"></div>
             </div>
         </div>
+
+        <!-- 자유랭크 -->
         <div class="free_rank">
+
+            <!-- 엠블렘 아이콘 -->
             <div class="emblem_icon">
-                <img th:if="${leagueEntryList.isEmpty()}" src="/img/ranked-emblems/Emblem_Unranked.png">
-                <img th:if="${leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX')}" src="/img/ranked-emblems/Emblem_Unranked.png">
+
+                <!-- 랭크 정보가 하나밖에 없고 자유랭크 정보가 아니거나 랭크 정보가 없는 경우 -->
+                <img th:if="${(leagueEntryList.size() == 1
+                        && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX'))
+                            || leagueEntryList.isEmpty()}"
+                     src="/img/ranked-emblems/Emblem_Unranked.png">
+
+                <!-- 자유랭크 엠블렘 아이콘 로드 -->
                 <th:block th:each="leagueEntry : ${leagueEntryList}">
-                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}" th:src="@{/img/ranked-emblems/Emblem_{tier}.png(tier = ${leagueEntry.getTier().toString()})}">
+                    <img th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}"
+                         th:src="@{/img/ranked-emblems/Emblem_{tier}.png(
+                            tier = ${leagueEntry.getTier().toString()}
+                         )}">
                 </th:block>
             </div>
+
+            <!-- 자유랭크 정보 -->
             <div class="rank_info">
                 <div class="queueType">자유 5:5 랭크</div>
                 <br>
                 <th:block th:each="leagueEntry : ${leagueEntryList}"
                           th:if="${leagueEntry.getQueue().toString().equals('RANKED_FLEX')}">
-                    <div class="tier_rank" th:text="${leagueEntry.getTier().toString()} + ' ' + ${leagueEntry.getDivision().toString()}"></div>
+
+                    <!-- 티어와 단계 정보 -->
+                    <div class="tier_rank"
+                         th:text="${leagueEntry.getTier().toString()} + ' '
+                         + ${leagueEntry.getDivision().toString()}"></div>
+
                     <div class="win_lose">
-                        <span class="league_points" th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
-                        <span class="wins" th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
-                        <span class="losses" th:text="${leagueEntry.getLosses()} + '패'"></span>
-                        <div class="win_ratio" th:text="${'승률 ' + #numbers.formatPercent((leagueEntry.getWins() * 1.0)/(leagueEntry.getWins() + leagueEntry.getLosses()), 2, 2)}"></div>
+
+                        <!-- 리그 포인트 -->
+                        <span class="league_points"
+                              th:text="${leagueEntry.getLeaguePoints()} + ' LP '"></span>
+
+                        <!-- 승리 -->
+                        <span class="wins"
+                              th:text="'/ ' + ${leagueEntry.getWins()} + '승 '"></span>
+
+                        <!-- 패배 -->
+                        <span class="losses"
+                              th:text="${leagueEntry.getLosses()} + '패'"></span>
+
+                        <!-- 승률 계산 -->
+                        <div class="win_ratio"
+                             th:text="${'승률 ' + #numbers.formatPercent(
+                                (leagueEntry.getWins() * 1.0)/(leagueEntry.getWins() + leagueEntry.getLosses()
+                             ), 2, 2)}"></div>
                     </div>
                 </th:block>
-                <div class="rank_info_is_empty" th:if="${(leagueEntryList.size() == 1 && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX')) || leagueEntryList.isEmpty()}"
+
+                <!-- 랭크 정보가 하나밖에 없고 자유랭크 정보가 아니거나 랭크 정보가 없는 경우 -->
+                <div class="rank_info_is_empty"
+                     th:if="${(leagueEntryList.size() == 1
+                        && !leagueEntryList[0].getQueue().toString().equals('RANKED_FLEX'))
+                            || leagueEntryList.isEmpty()}"
                      th:text="랭크정보없음"></div>
             </div>
         </div>
@@ -102,82 +200,198 @@
     <!-- 소환사 전적 리스트 -->
     <div class="match_content_wrapper">
         <th:block th:each="matches : ${matchHistory}">
-            <div th:class="${matches.getParticipants()[0].getStats().isWinner() ? 'match_content_win' : 'match_content_loss'}">
+
+            <!-- 승패 정보에 따라 색상 변경 -->
+            <div th:class="${matches.getParticipants()[0].getStats().isWinner() ?
+                    'match_content_win' :
+                    'match_content_loss'}">
+
+                <!-- 게임 큐 정보 -->
                 <div class="game_stats">
-                    <div th:if="${matches.getQueue().toString().equals('RANKED_SOLO')}" th:text="'솔랭'"></div>
-                    <div th:if="${matches.getQueue().toString().equals('RANKED_FLEX')}" th:text="'자유 5:5 랭크'"></div>
-                    <div th:if="${matches.getQueue().toString().equals('BLIND_PICK')}" th:text="'일반'"></div>
-                    <div th:if="${matches.getQueue().toString().equals('ALL_RANDOM_URF')}" th:text="'우르프'"></div>
-                    <div th:if="${matches.getQueue().toString().equals('ARAM')}" th:text="'무작위 총력전'"></div>
-                    <div th:with="dayDiff = ${new org.joda.time.Interval(matches.getCreationTime().toInstant(), T(org.joda.time.Instant).now()).toDuration().getStandardDays()}"
-                         th:text="${dayDiff == 0 ? new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 전').printZeroNever().toFormatter().print(new org.joda.time.Period(matches.getCreationTime().plusMinutes(28), new org.joda.time.DateTime())) : new org.joda.time.Interval(matches.getCreationTime().toInstant(), T(org.joda.time.Instant).now()).toDuration().getStandardDays() + '일 전'}">GameCreationTime</div>
+                    <div th:if="${matches.getQueue().toString().equals('RANKED_SOLO')}"
+                         th:text="'솔랭'"></div>
+
+                    <div th:if="${matches.getQueue().toString().equals('RANKED_FLEX')}"
+                         th:text="'자유 5:5 랭크'"></div>
+
+                    <div th:if="${matches.getQueue().toString().equals('BLIND_PICK')}"
+                         th:text="'일반'"></div>
+
+                    <div th:if="${matches.getQueue().toString().equals('ALL_RANDOM_URF')}"
+                         th:text="'우르프'"></div>
+
+                    <div th:if="${matches.getQueue().toString().equals('ARAM')}"
+                         th:text="'무작위 총력전'"></div>
+
+                    <!-- 게임 생성 시간 -->
+                    <div th:with="dayDiff = ${new org.joda.time.Interval(
+                                matches.getCreationTime().toInstant(), T(org.joda.time.Instant).now()
+                            ).toDuration().getStandardDays()}"
+                         th:text="${dayDiff == 0 ?
+                            new org.joda.time.format.PeriodFormatterBuilder()
+                                .appendHours()
+                                .appendSuffix('시간 ')
+                                .appendMinutes()
+                                .appendSuffix('분 전')
+                                .printZeroNever()
+                                .toFormatter()
+                                .print(
+                                    new org.joda.time.Period(
+                                        matches.getCreationTime().plusMinutes(28), new org.joda.time.DateTime()
+                                    )
+                                ) :
+                            new org.joda.time.Interval(
+                                matches.getCreationTime().toInstant(), T(org.joda.time.Instant).now()
+                            ).toDuration().getStandardDays() + '일 전'}"></div>
+
+                    <!-- 구분선 -->
                     <div class="bar"></div>
-                    <div class="game_result" th:text="${matches.getParticipants()[0].getStats().isWinner() ? '승리' : '패배'}">GameResult</div>
-                    <div class="game_length" th:text="${new org.joda.time.format.PeriodFormatterBuilder().appendHours().appendSuffix('시간 ').appendMinutes().appendSuffix('분 ').appendSeconds().appendSuffix('초').printZeroNever().toFormatter().print(matches.getDuration().toPeriod())}">GameLength</div>
+
+                    <!-- 게임 승패 정보 -->
+                    <div class="game_result"
+                         th:text="${matches.getParticipants()[0].getStats().isWinner() ?
+                             '승리' :
+                             '패배'}"></div>
+
+                    <!-- 게임 플레이 시간 -->
+                    <div class="game_length"
+                         th:text="${new org.joda.time.format.PeriodFormatterBuilder()
+                            .appendHours()
+                            .appendSuffix('시간 ')
+                            .appendMinutes()
+                            .appendSuffix('분 ')
+                            .appendSeconds()
+                            .appendSuffix('초')
+                            .printZeroNever()
+                            .toFormatter().print(matches.getDuration().toPeriod())}"></div>
                 </div>
+
+                <!-- 챔피언, 스펠, 룬 정보 -->
                 <div class="game_setting_info">
                     <div class="game_setting_info_image">
+
+                        <!-- 챔피언 이미지 -->
                         <div class="champion_image">
                             <img th:src="@{${matches.getParticipants()[0].getChampion().getImage().getURL()}}">
                         </div>
+
+                        <!-- 소환사 스펠 -->
                         <div class="summoner_spell">
+
+                            <!-- D 스펠 -->
                             <div class="spell">
                                 <img th:src="@{${matches.getParticipants()[0].getSummonerSpellD().getImage().getURL()}}">
                             </div>
+
+                            <!-- F 스펠 -->
                             <div class="spell">
                                 <img th:src="@{${matches.getParticipants()[0].getSummonerSpellF().getImage().getURL()}}">
                             </div>
                         </div>
+
+                        <!-- 룬 이미지 -->
                         <div class="runes">
+
+                            <!-- 룬 스탯 -->
                             <div class="rune">
+
+                                <!-- Precision -->
                                 <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8000}"
-                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/precision/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/precision/{runeName}/{runeName}.png(
+                                        runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()}
+                                     )}">
+
+                                <!-- Domination -->
                                 <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8100}"
-                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/domination/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/domination/{runeName}/{runeName}.png(
+                                        runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()}
+                                     )}">
+
+                                <!-- Sorcery -->
                                 <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8200}"
-                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/sorcery/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/sorcery/{runeName}/{runeName}.png(
+                                        runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()}
+                                     )}">
+
+                                <!-- Whimsy -->
                                 <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8300}"
-                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/whimsy/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/whimsy/{runeName}/{runeName}.png(
+                                        runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()}
+                                     )}">
+
+                                <!-- Resolve -->
                                 <img th:if="${matches.getParticipants()[0].getRuneStats()[0].getRune().getPath().getId() == 8400}"
-                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/resolve/{runeName}/{runeName}.png(runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()})}">
+                                     th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/resolve/{runeName}/{runeName}.png(
+                                        runeName = ${matches.getParticipants()[0].getRuneStats()[0].getRune().getKey().toLowerCase()}
+                                     )}">
                             </div>
+
+                            <!-- 세컨더리 룬 -->
                             <div class="rune">
+
+                                <!-- Precision -->
                                 <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8000}"
                                      th:src="@{https://raw.communitydragon.org/10.23/game/assets/perks/styles/7201_precision.png}">
+
+                                <!-- Domination -->
                                 <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8100}"
                                      th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7200_domination.png}">
+
+                                <!-- Sorcery -->
                                 <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8200}"
                                      th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7202_sorcery.png}">
+
+                                <!-- Whimsy -->
                                 <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8300}"
                                      th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7203_whimsy.png}">
+
+                                <!-- Resolve -->
                                 <img th:if="${matches.getParticipants()[0].getSecondaryRunePath().getId() == 8400}"
                                      th:src="@{https://raw.communitydragon.org/latest/game/assets/perks/styles/7204_resolve.png}">
                             </div>
                         </div>
                     </div>
+
+                    <!-- 챔피언 이름 -->
                     <div class="champion_name">
                         <span th:text="${matches.getParticipants()[0].getChampion().getName()}"></span>
                     </div>
                 </div>
+
+                <!-- KDA -->
                 <div class="kda">
                     <div class="kda">
+
+                        <!-- Kill -->
                         <span class="kill" th:text="${matches.getParticipants()[0].getStats().getKills()}"></span>
                         /
+
+                        <!-- Death -->
                         <span class="death" th:text="${matches.getParticipants()[0].getStats().getDeaths()}"></span>
                         /
+
+                        <!-- Assist -->
                         <span class="assist" th:text="${matches.getParticipants()[0].getStats().getAssists()}"></span>
                     </div>
+
                     <div class="kda_ratio">
-                        <!-- 퍼펙트 게임일 경우 에러 발생 -->
+
+                        <!-- KDA 계산 -->
                         <span th:if="${matches.getParticipants()[0].getStats().getDeaths() != 0}"
-                              th:with="kda = (${matches.getParticipants()[0].getStats().getKills()}+${matches.getParticipants()[0].getStats().getAssists()})/${matches.getParticipants()[0].getStats().getDeaths()}*1.0"
+                              th:with="kda = (
+                                  ${matches.getParticipants()[0].getStats().getKills()} + ${matches.getParticipants()[0].getStats().getAssists()}
+                              ) / ${matches.getParticipants()[0].getStats().getDeaths()} * 1.0"
                               th:text="${#numbers.formatDecimal(kda, 1, 2) + ' : 1'}">
                         </span>
-                        <span th:unless="${matches.getParticipants()[0].getStats().getDeaths() != 0}"
+
+                        <!-- Death가 0이면 Perfect 게임 -->
+                        <span th:if="${matches.getParticipants()[0].getStats().getDeaths() == 0}"
                               th:text="'Perfect'">
                         </span>
                         평점
                     </div>
+
+                    <!-- 멀티킬 정보 -->
                     <div class="multi_kill">
                         <span th:if="${matches.getParticipants()[0].getStats().getLargestMultiKill() == 2}"
                               th:text="'더블킬'"></span>
@@ -190,34 +404,62 @@
                     </div>
                 </div>
                 <div class="stats">
-                    <div class="level" th:text="${'레벨' + matches.getParticipants()[0].getStats().getChampionLevel()}">level</div>
-                    <div class="cs" th:text="${matches.getParticipants()[0].getStats().getCreepScore() + ' CS'}">CS</div>
-                    <!-- 킬관여율은 어떠한 데이터로 산정하는지 알수없음 -->
+
+                    <!-- 챔피언 레벨 -->
+                    <div class="level"
+                         th:text="${'레벨' + matches.getParticipants()[0].getStats().getChampionLevel()}"></div>
+
+                    <!-- CS -->
+                    <div class="cs"
+                         th:text="${matches.getParticipants()[0].getStats().getCreepScore() + ' CS'}"></div>
+
+                    <!-- 킬관여율 -->
                     <div class="ck_rate"></div>
                 </div>
                 <div class="items">
-                    <div class="item_list" th:each="items : ${matches.getParticipants()[0].getItems()}">
-                        <div class="item">
-                            <!-- 첫번째 아이템이 공백이면 다음 값을 못 불러오는 문제 발생 -->
-                            <img th:if="${items.exists()}" th:src="@{${items.getImage().getURL()}}">
+
+                    <!-- 아이템 이미지 순서대로 로드 -->
+                    <div class="item_list"
+                         th:each="items : ${matches.getParticipants()[0].getItems()}">
+
+                        <!-- 아이템이 존재할 경우에만 로드 -->
+                        <div th:if="${items.exists()}"
+                             th:class="item">
+                            <img th:src="@{${items.getImage().getURL()}}">
                         </div>
                     </div>
                 </div>
                 <div class="follow_players">
+
+                    <!-- 블루팀 정보 -->
                     <div class="blue_team">
-                        <div class="summoner" th:each="participants : ${matches.getBlueTeam().getParticipants()}">
+                        <div class="summoner"
+                             th:each="participants : ${matches.getBlueTeam().getParticipants()}">
+
+                            <!-- 블루팀 소환사 챔피언 이미지 -->
                             <div class="champion_image">
                                 <img th:src="@{${participants.getChampion().getImage().getURL()}}">
                             </div>
-                            <div class="summoner_name" th:text="${participants.getSummoner().getName()}"></div>
+
+                            <!-- 블루팀 소환사 닉네임 -->
+                            <div class="summoner_name"
+                                 th:text="${participants.getSummoner().getName()}"></div>
                         </div>
                     </div>
+
+                    <!-- 레드팀 정보 -->
                     <div class="red_team">
-                        <div class="summoner" th:each="participants : ${matches.getRedTeam().getParticipants()}">
+                        <div class="summoner"
+                             th:each="participants : ${matches.getRedTeam().getParticipants()}">
+
+                            <!-- 레드팀 소환사 챔피언 이미지 -->
                             <div class="champion_image">
                                 <img th:src="@{${participants.getChampion().getImage().getURL()}}">
                             </div>
-                            <div class="summoner_name" th:text="${participants.getSummoner().getName()}"></div>
+
+                            <!-- 레드팀 소환사 닉네임 -->
+                            <div class="summoner_name"
+                                 th:text="${participants.getSummoner().getName()}"></div>
                         </div>
                     </div>
                 </div>

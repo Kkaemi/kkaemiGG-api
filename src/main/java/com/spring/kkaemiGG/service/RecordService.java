@@ -26,6 +26,7 @@ public class RecordService {
 
         Queue.RANKED.forEach(
                 queue -> {
+                    // 존재하는 리그 포지션만 리스트에 추가
                     if (summoner.getLeaguePosition(queue) != null) {
                         leagueEntryList.add(summoner.getLeaguePosition(queue));
                     }
