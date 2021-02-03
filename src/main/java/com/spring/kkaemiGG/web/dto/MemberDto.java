@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.dto;
+package com.spring.kkaemiGG.web.dto;
 
 import com.spring.kkaemiGG.entity.Member;
 import com.spring.kkaemiGG.entity.Role;

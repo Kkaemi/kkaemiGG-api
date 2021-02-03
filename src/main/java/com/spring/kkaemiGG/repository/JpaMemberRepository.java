@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.repository;
 
-import com.spring.kkaemiGG.dto.MemberDto;
+import com.spring.kkaemiGG.web.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;

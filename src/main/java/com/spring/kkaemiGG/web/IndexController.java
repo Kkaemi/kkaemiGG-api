@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.controller;
+package com.spring.kkaemiGG.web;
 
 import com.google.api.services.youtube.model.SearchResult;
 import com.spring.kkaemiGG.service.YoutubeService;
@@ -11,18 +11,18 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-public class HomeController {
+public class IndexController {
 
     private final YoutubeService youtubeService;
 
-    @GetMapping
-    public String home(Model model) {
+    @GetMapping("/")
+    public String index(Model model) {
 
         List<SearchResult> youtubeSearchResultList = youtubeService.getSearchList();
 
         model.addAttribute("youtubeSearchResultList", youtubeSearchResultList);
 
-        return "home";
+        return "index";
     }
 
 }

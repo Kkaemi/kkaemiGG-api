@@ -1,7 +1,7 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.config.auth.dto.SessionMember;
-import com.spring.kkaemiGG.dto.MemberDto;
+import com.spring.kkaemiGG.web.dto.MemberDto;
 import com.spring.kkaemiGG.entity.Member;
 import com.spring.kkaemiGG.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -60,7 +60,7 @@ public class MemberService implements UserDetailsService {
                     httpSession.setAttribute("member", new SessionMember(member));
 
                     // User 객체 생성하고 반환
-                    List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(member.getRoleKey()));
+                    List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(member.getRoleKey()));
                     return new User(member.getEmail(), member.getPassword(), authorities);
                 }).orElseThrow(
                         // Email 검색한 유저가 없을 겨우 Exception 발생

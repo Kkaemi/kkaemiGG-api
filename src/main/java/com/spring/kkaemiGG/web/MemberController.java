@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.controller;
+package com.spring.kkaemiGG.web;
 
-import com.spring.kkaemiGG.dto.MemberDto;
+import com.spring.kkaemiGG.web.dto.MemberDto;
 import com.spring.kkaemiGG.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

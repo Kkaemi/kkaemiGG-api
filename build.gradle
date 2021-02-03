@@ -22,13 +22,11 @@ repositories {
 }
 
 dependencies {
-	compile 'org.apache.httpcomponents:httpclient:4.5.13'
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'org.springframework.security:spring-security-test'
 
@@ -36,14 +34,22 @@ dependencies {
 	implementation 'com.google.http-client:google-http-client:1.38.1'
 	implementation 'com.google.apis:google-api-services-youtube:v3-rev20201214-1.31.0'
 
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	// DB
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation("org.mariadb.jdbc:mariadb-java-client")
+	implementation('com.h2database:h2')
+
+	// lombok
+	implementation('org.projectlombok:lombok')
+	annotationProcessor('org.projectlombok:lombok')
+	testImplementation('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
 
 	implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7"
 	implementation 'org.hibernate.validator:hibernate-validator'
 
-	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

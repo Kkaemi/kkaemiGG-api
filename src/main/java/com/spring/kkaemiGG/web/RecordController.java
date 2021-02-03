@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.controller;
+package com.spring.kkaemiGG.web;
 
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.match.MatchHistory;

@@ -58,3 +58,13 @@
 .temp {
     margin: 800px;
 }
+
+.youtube_video_list {
+    width: 90%;
+    height: 700px;
+    margin: 100px auto;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
