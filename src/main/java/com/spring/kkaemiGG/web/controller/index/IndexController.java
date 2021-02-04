@@ -1,7 +1,7 @@
-package com.spring.kkaemiGG.web;
+package com.spring.kkaemiGG.web.controller.index;
 
 import com.google.api.services.youtube.model.SearchResult;
-import com.spring.kkaemiGG.service.YoutubeService;
+import com.spring.kkaemiGG.service.youtube.YoutubeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

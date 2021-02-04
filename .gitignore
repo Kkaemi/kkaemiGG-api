@@ -5,9 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .DS_Store
-application.properties
 application-oauth.properties
-youtube.properties
+application-riot.properties
+application-youtube.properties
 
 ### STS ###
 .apt_generated

@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.web;
+package com.spring.kkaemiGG.web.controller.posts;
 
-import com.spring.kkaemiGG.service.Posts.PostsService;
+import com.spring.kkaemiGG.service.posts.PostsService;
 import com.spring.kkaemiGG.web.dto.PostsResponseDto;
 import com.spring.kkaemiGG.web.dto.PostsSaveRequestDto;
 import com.spring.kkaemiGG.web.dto.PostsUpdateRequestDto;

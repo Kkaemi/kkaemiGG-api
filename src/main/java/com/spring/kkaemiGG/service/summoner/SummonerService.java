@@ -1,23 +1,28 @@
-package com.spring.kkaemiGG.service;
+package com.spring.kkaemiGG.service.summoner;
 
 import com.merakianalytics.orianna.Orianna;
+import com.merakianalytics.orianna.types.common.Platform;
 import com.merakianalytics.orianna.types.common.Queue;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.match.MatchHistory;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
+import com.spring.kkaemiGG.Development;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class RecordService {
+@Service
+public class SummonerService {
 
-    public Optional<Summoner> getSummoner(String summonerNickName) {
+    public SummonerService() {
+        Orianna.setRiotAPIKey(Development.RIOT.getApiKey());
+        Orianna.setDefaultPlatform(Platform.KOREA);
+        Orianna.setDefaultLocale(Platform.KOREA.getDefaultLocale());
+    }
 
-        Summoner summoner = Orianna.summonerNamed(summonerNickName).get();
-
-        return Optional.ofNullable(summoner);
-
+    public Summoner getSummoner(String userName) {
+        return Summoner.named(userName).get();
     }
 
     public List<LeagueEntry> getLeagueEntryList(Summoner summoner) {
@@ -38,8 +43,6 @@ public class RecordService {
     }
 
     public MatchHistory getMatchHistory(Summoner summoner) {
-
         return MatchHistory.forSummoner(summoner).withEndIndex(20).get();
-
     }
 }

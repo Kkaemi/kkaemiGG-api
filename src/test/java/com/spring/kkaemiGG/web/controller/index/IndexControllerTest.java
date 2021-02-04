@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.web;
+package com.spring.kkaemiGG.web.controller.index;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.service.Posts;
+package com.spring.kkaemiGG.service.posts;
 
 import com.spring.kkaemiGG.domain.posts.Posts;
 import com.spring.kkaemiGG.domain.posts.PostsRepository;
