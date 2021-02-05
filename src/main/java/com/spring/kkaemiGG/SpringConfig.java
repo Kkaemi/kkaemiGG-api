@@ -7,8 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.persistence.EntityManager;
+import javax.servlet.ServletContext;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,4 +28,5 @@ public class SpringConfig {
     public MemberRepository memberRepository() {
         return new JpaMemberRepository(em);
     }
+
 }

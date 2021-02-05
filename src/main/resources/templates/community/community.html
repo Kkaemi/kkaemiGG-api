@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티</title>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <th:block th:replace="fragment/header :: headerFragment"></th:block>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>게시글 번호</td>
+                    <td>제목</td>
+                    <td>작성자</td>
+                    <td>최종수정일</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post : ${posts}">
+                    <td th:text="${post.getId()}">id</td>
+                    <td th:text="${post.getTitle()}">title</td>
+                    <td th:text="${post.getAuthor()}">author</td>
+                    <td th:text="${post.getModifiedDate()}">modifiedDate</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/community/posts-save/">게시글 등록</a>
+
+    <!-- 푸터 -->
+    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+
+</body>
+</html>

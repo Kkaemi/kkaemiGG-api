@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.web;
+package com.spring.kkaemiGG.web.controller.user;
 
 import com.spring.kkaemiGG.web.dto.MemberDto;
 import com.spring.kkaemiGG.service.MemberService;
@@ -6,16 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @Controller
 public class MemberController {
 
