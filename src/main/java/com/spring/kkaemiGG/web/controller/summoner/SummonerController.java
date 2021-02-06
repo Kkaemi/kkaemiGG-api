@@ -25,13 +25,13 @@ public class SummonerController {
 
         // 등록되지 않은 유저면 user-not-found 뷰로 이동
         if (!summoner.exists()) {
-            return new ModelAndView("user-not-found");
+            return new ModelAndView("/summoner/user-not-found");
         }
 
         List<LeagueEntry> leagueEntryList = summonerService.getLeagueEntryList(summoner);
         MatchHistory matchHistory = summonerService.getMatchHistory(summoner);
 
-        return new ModelAndView("user-record")
+        return new ModelAndView("/summoner/user-record")
                 .addObject("summoner", summoner)
                 .addObject("leagueEntryList", leagueEntryList)
                 .addObject("matchHistory", matchHistory);
