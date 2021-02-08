@@ -1,9 +1,9 @@
 package com.spring.kkaemiGG.config.auth;
 
 import com.spring.kkaemiGG.config.auth.dto.OAuthAttributes;
-import com.spring.kkaemiGG.config.auth.dto.SessionMember;
-import com.spring.kkaemiGG.entity.Member;
-import com.spring.kkaemiGG.repository.MemberRepository;
+import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.domain.user.User;
+import com.spring.kkaemiGG.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -21,7 +21,7 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final HttpSession httpSession;
 
     @Override
@@ -41,13 +41,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .of(registrationId, userNameAttributeName,
                         oAuth2User.getAttributes());
 
-        Member member = saveOrUpdate(attributes);
+        User user = saveOrUpdate(attributes);
 
-        httpSession.setAttribute("member", new SessionMember(member));
+        httpSession.setAttribute("member", new SessionUser(user));
 
         return new DefaultOAuth2User(
                 Collections.singleton(
-                        new SimpleGrantedAuthority(member.getRoleKey())
+                        new SimpleGrantedAuthority(user.getRoleKey())
                 ),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey()
@@ -55,20 +55,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     }
 
-    private Member saveOrUpdate(OAuthAttributes attributes) {
+    private User saveOrUpdate(OAuthAttributes attributes) {
 
-        if (!memberRepository.findByEmail(attributes.getEmail()).isPresent()) {
-            return memberRepository.save(attributes.toEntity());
-        } else {
+        com.spring.kkaemiGG.domain.user.User user = userRepository.findByEmail(attributes.getEmail())
+                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+                .orElse(attributes.toEntity());
 
-            Member member = memberRepository.findByEmail(attributes.getEmail()).get();
-
-            if (member.getName().equals(attributes.getName())) {
-                return member;
-            } else {
-                return memberRepository.save(member.update(attributes.getName()));
-            }
-        }
+        return userRepository.save(user);
 
     }
 

@@ -7,9 +7,9 @@
         </div>
         <div class="navbar_member_links">
             <span th:onclick="location.href='/community/community/'">커뮤니티</span>&emsp;
-            <span th:if="${session.member == null}"
+            <span th:if="${session.user == null}"
                   th:onclick="location.href='/user/login-form/'">LOGIN</span>
-            <span th:if="${session.member != null}"
+            <span th:if="${session.user != null}"
                   th:onclick="location.href='/user/logout'">LOGOUT</span>
         </div>
     </nav>

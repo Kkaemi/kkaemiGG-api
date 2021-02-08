@@ -1,5 +1,6 @@
-package com.spring.kkaemiGG.entity;
+package com.spring.kkaemiGG.domain.user;
 
+import com.spring.kkaemiGG.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,11 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Member {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -21,22 +22,25 @@ public class Member {
     @Column(nullable = false)
     private String email;
 
-    private String password;
+    @Column(nullable = false)
+    private String picture;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @Builder
-    public Member(String name, String email, String password, Role role) {
+    public User(String name, String email, String picture, Role role) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.picture = picture;
         this.role = role;
     }
 
-    public Member update(String name) {
+    public User update(String name, String picture) {
         this.name = name;
+        this.picture = picture;
+
         return this;
     }
 
