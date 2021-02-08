@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG;
+package com.spring.kkaemiGG.development;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,12 @@ public class ApiKey {
 
     @Value("${RIOT_API_KEY}")
     public void setRiotApiKey(String riotApiKey) {
-        this.riotApiKey = riotApiKey;
+        ApiKey.riotApiKey = riotApiKey;
     }
 
     @Value("${YOUTUBE_API_KEY}")
     public void setYoutubeApiKey(String youtubeApiKey) {
-        this.youtubeApiKey = youtubeApiKey;
+        ApiKey.youtubeApiKey = youtubeApiKey;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG;
+package com.spring.kkaemiGG.development;
 
 public enum Development {
 

@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.config.auth;
 
+import com.spring.kkaemiGG.domain.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,28 +19,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
-                .authorizeRequests()
-                .antMatchers("/",
-                        "/**",
-                        "/resources/**").permitAll()
-                .anyRequest().authenticated()
+                    .authorizeRequests()
+                    .antMatchers("/", "/css/**", "/img/**",
+                            "/js/**", "/h2-console/**").permitAll()
+                    .antMatchers("/api/v1/**").hasRole(Role.USER.name())
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/loginForm")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .failureUrl("/loginFail")
-                .usernameParameter("email")
-                .passwordParameter("pass")
+                    .logout()
+                        .logoutSuccessUrl("/")
                 .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .permitAll()
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                    .oauth2Login()
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService);
 
     }
 

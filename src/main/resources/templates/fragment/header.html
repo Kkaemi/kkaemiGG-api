@@ -10,7 +10,7 @@
             <span th:if="${session.user == null}"
                   th:onclick="location.href='/user/login-form/'">LOGIN</span>
             <span th:if="${session.user != null}"
-                  th:onclick="location.href='/user/logout'">LOGOUT</span>
+                  th:onclick="location.href='/logout'">LOGOUT</span>
         </div>
     </nav>
 </th:block>

@@ -6,7 +6,7 @@ import com.merakianalytics.orianna.types.common.Queue;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.match.MatchHistory;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
-import com.spring.kkaemiGG.Development;
+import com.spring.kkaemiGG.development.Development;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
