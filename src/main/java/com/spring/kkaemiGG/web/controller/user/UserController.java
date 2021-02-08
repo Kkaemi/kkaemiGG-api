@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/login-form")
+    @GetMapping("/login")
     public String loginForm() {
         return "/user/login-form";
+    }
+
+    @GetMapping("/join")
+    public String registerForm() {
+        return "/user/register-form";
     }
 
 }

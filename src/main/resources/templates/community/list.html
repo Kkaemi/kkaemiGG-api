@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티</title>
+    <th:block th:replace="fragment/config :: configFragment" ></th:block>
+    <style>
+        .list {
+            width: 1000px;
+            margin: 50px auto;
+        }
+
+        .list-item {
+            background-color: azure;
+            border: 1px solid #dcdfe3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <th:block th:replace="fragment/header :: headerFragment"></th:block>
+
+    <div class="list">
+        <div class="list-item" th:each="post : ${posts}">
+            <div class="list-item__content">
+                <a href="" class="list-item__info">
+                    <div class="list-item__title">
+                        <span class="post-title" th:text="${post.getTitle()}"></span>
+                        <em>[댓글수]</em>
+                    </div>
+                </a>
+                <div class="list-item-meta">
+                    <div class="list-item-meta__item"></div>
+                    <div class="list-item-meta__item">
+                        <span th:text="${post.getModifiedDate()}"></span>
+                    </div>
+                    <div class="list-item-meta__item list-item-meta__item--author">
+                        <span th:text="${post.getAuthor()}">작성자</span>
+                    </div>
+                </div>
+            </div>
+            <div class="list-item-thumbnail">
+                <a href="">
+                    <img src="" alt="" class="list-item__thumbnail">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <a href="/community/write/">게시글 등록</a>
+
+    <!-- 푸터 -->
+    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+
+</body>
+</html>

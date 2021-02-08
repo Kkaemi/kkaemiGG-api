@@ -15,14 +15,14 @@ public class CommunityController {
 
     private final PostsService postsService;
 
-    @GetMapping("/community")
+    @GetMapping("/list")
     public ModelAndView community() {
-        return new ModelAndView("/community/community", "posts", postsService.findAllDesc());
+        return new ModelAndView("/community/list", "posts", postsService.findAllDesc());
     }
 
-    @GetMapping("/posts-save")
-    public ModelAndView postsSave() {
-        return new ModelAndView("/community/posts-save", "requestDto", new PostsSaveRequestDto());
+    @GetMapping("/write")
+    public String postsSave() {
+        return "/community/write";
     }
 
 }

@@ -6,9 +6,9 @@
             <a href="/">KKAEMI.GG</a>
         </div>
         <div class="navbar_member_links">
-            <span th:onclick="location.href='/community/community/'">커뮤니티</span>&emsp;
+            <span th:onclick="location.href='/community/list/'">커뮤니티</span>&emsp;
             <span th:if="${session.user == null}"
-                  th:onclick="location.href='/user/login-form/'">LOGIN</span>
+                  th:onclick="location.href='/user/login/'">LOGIN</span>
             <span th:if="${session.user != null}"
                   th:onclick="location.href='/logout'">LOGOUT</span>
         </div>
