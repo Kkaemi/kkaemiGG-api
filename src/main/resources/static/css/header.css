@@ -36,3 +36,7 @@ body {
     cursor: pointer;
     border-radius: 4px;
 }
+
+.navbar_member_links form {
+    display: contents;
+}

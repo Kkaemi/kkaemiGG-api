@@ -1,9 +1,9 @@
 package com.spring.kkaemiGG.web.controller.posts;
 
 import com.spring.kkaemiGG.service.posts.PostsService;
-import com.spring.kkaemiGG.web.dto.PostsResponseDto;
-import com.spring.kkaemiGG.web.dto.PostsSaveRequestDto;
-import com.spring.kkaemiGG.web.dto.PostsUpdateRequestDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsResponseDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsSaveRequestDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

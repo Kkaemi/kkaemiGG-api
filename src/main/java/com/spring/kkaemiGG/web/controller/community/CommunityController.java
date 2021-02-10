@@ -1,7 +1,6 @@
 package com.spring.kkaemiGG.web.controller.community;
 
 import com.spring.kkaemiGG.service.posts.PostsService;
-import com.spring.kkaemiGG.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

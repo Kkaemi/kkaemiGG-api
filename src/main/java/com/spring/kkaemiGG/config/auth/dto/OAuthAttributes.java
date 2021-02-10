@@ -10,21 +10,25 @@ import java.util.Map;
 @Getter
 public class OAuthAttributes {
 
-    private Map<String, Object> attributes;
-    private String nameAttributeKey;
-    private String name;
-    private String email;
-    private String picture;
+    private final Map<String, Object> attributes;
+    private final String nameAttributeKey;
+    private String nickname;
+    private final String email;
+    private final String picture;
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     @Builder
-    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture) {
+    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String nickname, String email, String picture) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
-        this.name = name;
+        this.nickname = nickname;
         this.email = email;
         this.picture = picture;
     }
-    
+
     public static OAuthAttributes of(String registrationId,
                                       String userNameAttributeName,
                                       Map<String, Object> attributes) {
@@ -37,9 +41,9 @@ public class OAuthAttributes {
                                             Map<String, Object> attributes) {
 
         return OAuthAttributes.builder()
-                .name((String) attributes.get("name"))
-                .email((String) attributes.get("email"))
-                .picture((String) attributes.get("picture"))
+                .nickname(attributes.get("name").toString())
+                .email(attributes.get("email").toString())
+                .picture(attributes.get("picture").toString())
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -48,7 +52,7 @@ public class OAuthAttributes {
 
     public User toEntity() {
         return User.builder()
-                .name(name)
+                .nickname(nickname)
                 .email(email)
                 .picture(picture)
                 .role(Role.USER)

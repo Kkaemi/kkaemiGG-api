@@ -2,10 +2,10 @@ package com.spring.kkaemiGG.service.posts;
 
 import com.spring.kkaemiGG.domain.posts.Posts;
 import com.spring.kkaemiGG.domain.posts.PostsRepository;
-import com.spring.kkaemiGG.web.dto.PostsListResponseDto;
-import com.spring.kkaemiGG.web.dto.PostsResponseDto;
-import com.spring.kkaemiGG.web.dto.PostsSaveRequestDto;
-import com.spring.kkaemiGG.web.dto.PostsUpdateRequestDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsListResponseDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsResponseDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsSaveRequestDto;
+import com.spring.kkaemiGG.web.dto.posts.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

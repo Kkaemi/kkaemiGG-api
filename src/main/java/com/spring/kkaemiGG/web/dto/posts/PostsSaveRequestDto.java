@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.web.dto;
+package com.spring.kkaemiGG.web.dto.posts;
 
 import com.spring.kkaemiGG.domain.posts.Posts;
 import lombok.Builder;

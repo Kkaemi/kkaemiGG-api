@@ -9,8 +9,11 @@
             <span th:onclick="location.href='/community/list/'">커뮤니티</span>&emsp;
             <span th:if="${session.user == null}"
                   th:onclick="location.href='/user/login/'">LOGIN</span>
-            <span th:if="${session.user != null}"
-                  th:onclick="location.href='/logout'">LOGOUT</span>
+            <form method="POST"
+                  th:if="${session.user != null}"
+                  th:action="@{/logout}">
+                <span onclick="this.parentNode.submit()">LOGOUT</span>
+            </form>
         </div>
     </nav>
 </th:block>
