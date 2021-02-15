@@ -37,9 +37,11 @@ public class User implements UserDetails {
     private Role role;
 
     @Builder
-    public User(String nickname, String email, String picture, Role role) {
+    public User(Long id, String nickname, String email, String password, String picture, Role role) {
+        this.id = id;
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.picture = picture;
         this.role = role;
     }
