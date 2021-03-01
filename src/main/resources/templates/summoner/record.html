@@ -1,18 +1,10 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>소환사 전적</title>
-    <!-- config fragment 사용 -->
-    <th:block th:replace="fragment/config :: configFragment" ></th:block>
-    <link rel="stylesheet" href="/css/record.css">
+<head th:insert="fragment/general.html :: headerfiles (pageTitle='게임 전적')">
 </head>
-<body>
-    <!-- 헤더 -->
-    <th:block th:replace="fragment/header :: headerFragment"></th:block>
+<body style="background-color: #dee2e6;">
+    <!-- navbar -->
+    <nav th:insert="fragment/general.html :: navbar" />
 
     <!-- 소환사 프로필 -->
     <div class="profile_container">
@@ -466,7 +458,10 @@
         </th:block>
     </div>
 
-    <!-- 푸터 -->
-    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+    <!-- footer -->
+    <footer th:insert="fragment/general.html :: footer" />
+
+    <!-- scripts -->
+    <th:block th:replace="fragment/general.html :: scripts" />
 </body>
 </html>

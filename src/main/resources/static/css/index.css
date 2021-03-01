@@ -27,7 +27,7 @@
 
 .search_bar input {
     font-size: 16px;
-    width: 90%;
+    width: 810px;
     padding: 15px 70px 15px 25px;
 }
 
@@ -53,10 +53,6 @@
     background-color: #66afe9;
     color: #fff;
     cursor: pointer;
-}
-
-.temp {
-    margin: 800px;
 }
 
 .youtube_video_list {

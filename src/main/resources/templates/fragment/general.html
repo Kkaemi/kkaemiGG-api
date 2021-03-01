@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="headerfiles (pageTitle)">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
+        <link rel="stylesheet" th:href="@{/css/index.css}">
+        <link rel="stylesheet" th:href="@{/css/record.css}">
+        <title th:text="${pageTitle}"></title>
+    </head>
+    <body style="background-color: #dee2e6;">
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg p-0 navbar-light" style="background-color: #223046;" th:fragment="navbar">
+        <div class="container-fluid p-0">
+            <a class="navbar-brand text-white fs-4 fw-bold px-2 align-self-stretch" style="background-color: #3d8bfd;" href="/">KKAEMI.GG</a>
+            <button class="navbar-toggler bg-white m-1" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <div class="d-flex m-2">
+                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white me-2">커뮤니티</button>
+                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white">로그인</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- footer -->
+    <footer class="footer mt-auto py-3 bg-secondary" th:fragment="footer">
+        <div class="container">
+            <span class="text-white">
+                KKAEMI.GG ©2021 Created by kkaemi
+                <br>
+                <br>
+                Email : kitys2k3@naver.com
+            </span>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <th:block th:fragment="scripts">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
+    </th:block>
+
+    </body>
+</html>

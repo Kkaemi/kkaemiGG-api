@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>전적 검색 메인 페이지</title>
-    <!-- config fragment 사용 -->
-    <th:block th:replace="fragment/config :: configFragment" ></th:block>
-    <link rel="stylesheet" href="/css/index.css">
+<head th:insert="fragment/general.html :: headerfiles (pageTitle='KKAEMI.GG')">
 </head>
+<body style="background-color: #dee2e6;">
+    <!-- navbar -->
+    <nav th:insert="fragment/general.html :: navbar"></nav>
 
-<body>
-    <!-- 헤더 -->
-    <th:block th:replace="fragment/header :: headerFragment"></th:block>
-
-    <!-- 타이틀 -->
+    <!-- logo -->
     <div class="title">
         KKAEMI.GG
     </div>
 
-    <!-- 서치바 -->
+    <!-- search_bar -->
     <div class="search_bar_container">
         <form th:action="@{/summoner}" method="get">
             <div class="search_bar">
@@ -38,8 +32,10 @@
         </th:block>
     </div>
 
-    <!-- 푸터 -->
-    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+    <!-- footer -->
+    <footer th:insert="fragment/general.html :: footer"></footer>
+
+    <!-- scripts -->
+    <th:block th:replace="fragment/general.html :: scripts" />
 </body>
-<script src="https://kit.fontawesome.com/580e6d9306.js" crossorigin="anonymous"></script>
 </html>

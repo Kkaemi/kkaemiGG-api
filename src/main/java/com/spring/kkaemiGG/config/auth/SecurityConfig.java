@@ -1,24 +1,30 @@
 package com.spring.kkaemiGG.config.auth;
 
 import com.spring.kkaemiGG.domain.user.Role;
+import com.spring.kkaemiGG.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.sql.DataSource;
-
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/api/v1/**", "/community/**").hasRole(Role.USER.name())
+                    .antMatchers("/api/v1/**", "/community/write").hasRole(Role.USER.name())
                 .and()
                     .formLogin()
                         .loginPage("/user/login")
@@ -43,15 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(
+                        email -> userRepository.findByEmail(email)
+                        .orElseThrow(
+                                () ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
+                        )
+                )
+                .passwordEncoder(encoder());
     }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService(userDetailsService) // 생성자로 UserDetailsService의 구현체를 주입받는다.
-//                .passwordEncoder(encoder());
-//    }
 }
