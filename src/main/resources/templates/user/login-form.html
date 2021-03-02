@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="fragment/general.html :: headerfiles (pageTitle='로그인')">
-</head>
-<body>
-<div style="padding-top: 170px; padding-bottom: 200px;">
-    <div class="border border-1 mx-auto my-0 py-6 shadow-sm" style="width: 450px;">
-        <div class="p-5">
-            <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
-            <br>
-            <form>
-                <h2 class="fs-6">간편 로그인</h2>
-                <div class="d-grid">
-                    <button type="button" class="btn btn-outline-dark py-2 fs-5">
-                        <i class="bi bi-google"></i>
-                        &nbsp;
-                        구글로 로그인
-                    </button>
+    <head th:insert="fragment/general.html :: headerfiles (pageTitle='로그인')">
+    </head>
+    <body style="background-color: #dee2e6;">
+        <div style="padding-top: 170px; padding-bottom: 200px;">
+            <div class="bg-white border border-1 mx-auto my-0 py-6 shadow-sm" style="width: 450px;">
+                <div class="p-5">
+                    <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
+                    <br>
+                    <form>
+                        <h2 class="fs-6">간편 로그인</h2>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-outline-dark py-2 fs-5">
+                                <i class="bi bi-google"></i>
+                                &nbsp;
+                                구글로 로그인
+                            </button>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-around text-muted">
+                            <hr class="dropdown-divider col-5">
+                            OR
+                            <hr class="dropdown-divider col-5">
+                        </div>
+                        <br>
+                        <h2 class="fs-6">이메일 로그인</h2>
+                        <br>
+                        <div class="form-floating">
+                            <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput">이메일 주소</label>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div class="form-floating">
+                            <input type="password" class="form-control border-0" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">비밀번호</label>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <br>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary fw-bold py-3 disabled">로그인</button>
+                        </div>
+                        <br>
+                        <div class="text-center">
+                            KKAEMI.GG에 처음이세요?
+                            &emsp;
+                            <a href="/user/join">회원가입하기</a>
+                        </div>
+                    </form>
                 </div>
-                <br>
-                <div class="d-flex justify-content-around text-muted">
-                    <hr class="dropdown-divider col-5">
-                    OR
-                    <hr class="dropdown-divider col-5">
-                </div>
-                <br>
-                <h2 class="fs-6">이메일 로그인</h2>
-                <br>
-                <div class="form-floating">
-                    <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">이메일 주소</label>
-                </div>
-                <hr class="dropdown-divider">
-                <div class="form-floating">
-                    <input type="password" class="form-control border-0" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">비밀번호</label>
-                </div>
-                <hr class="dropdown-divider">
-                <br>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary fw-bold py-3 disabled">로그인</button>
-                </div>
-                <br>
-                <div class="text-center">
-                    KKAEMI.GG에 처음이세요?
-                    &emsp;
-                    <a href="">회원가입하기</a>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
-    <!-- scripts -->
-    <th:block th:replace="fragment/general.html :: scripts" />
-</body>
+        <!-- scripts -->
+        <th:block th:replace="fragment/general.html :: scripts" />
+    </body>
 </html>
