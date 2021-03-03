@@ -9,8 +9,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query(value =
-            "select concat('kkaemiGG', next value for nickname_number) " +
+    Optional<User> findByNickname(String nickname);
+
+    @Query(value = "select concat('kkaemiGG', next value for nickname_number) " +
                     "as auto_generated_nickname " +
                     "from dual",
             nativeQuery = true)

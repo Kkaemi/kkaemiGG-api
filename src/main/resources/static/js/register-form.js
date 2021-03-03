@@ -13,24 +13,15 @@ let registerForm = {
         // Enter키 입력 시 자동 submit 방지
         $('form').on('keydown', function(event) {
           if (event.keyCode === 13) {
-            event.preventDefault();
+            if (!(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword)) {
+                event.preventDefault();
+            }
           };
-        });
-
-        // email 유효성 검사
-        $('#floatingInput').on('keyup', function() {
-            isValidatedEmail = _this.validateEmail();
-            $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
-        });
-
-        // email 중복 검사
-        $('#floatingInput').on('blur', function() {
-            isDuplicatedEmail = _this.checkEmailIsDuplicated(isValidatedEmail);
-            $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
         });
 
         // nickname 유효성 검사
         $('#floatingNickname').on('keyup', function() {
+        isDuplicatedNickname = false;
             isValidatedNickname = _this.validateNickname();
             $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
         });
@@ -41,13 +32,24 @@ let registerForm = {
             $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
         });
 
+        // email 유효성 검사
+        $('#floatingInput').on('keyup', function() {
+        isDuplicatedEmail = false;
+            isValidatedEmail = _this.validateEmail();
+            $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
+        });
+
+        // email 중복 검사
+        $('#floatingInput').on('blur', function() {
+            isDuplicatedEmail = _this.checkEmailIsDuplicated(isValidatedEmail);
+            $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
+        });
+
         // password 유효성 검사
         $('#floatingPassword').on('keyup', function() {
             isValidatedPassword = _this.validatePassword();
             $('#submitButton').toggleClass('disabled', !(isDuplicatedEmail && isDuplicatedNickname && isValidatedPassword));
         });
-
-
 
     },
 
@@ -55,6 +57,7 @@ let registerForm = {
 
         let email = $('#floatingInput').val();
         let isValidatedEmail = false;
+        $('#floatingInput').toggleClass('is-valid', isValidatedEmail);
 
         $('#invalidEmail').empty();
 
@@ -77,13 +80,33 @@ let registerForm = {
 
     checkEmailIsDuplicated : function(isValidatedEmail) {
 
+        let email = $('#floatingInput').val();
         let isDuplicatedEmail = false;
+        $('#floatingInput').toggleClass('is-valid', isDuplicatedEmail);
 
         if (!isValidatedEmail) {
             return isDuplicatedEmail;
         }
 
-        isDuplicatedEmail = true;
+        $.ajax({
+            type: 'GET',
+            url: `/api/v1/users/email/${email}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false
+        }).done(function(data) {
+            if (data.status === 'OK') {
+                isDuplicatedEmail = data.success;
+                $('#floatingInput').toggleClass('is-valid', isDuplicatedEmail);
+            } else if (data.status === 'CONFLICT') {
+                isDuplicatedEmail = data.success;
+                $('#invalidEmail').html("<i class='bi bi-exclamation-circle'></i> 이미 사용중인 이메일입니다.");
+                $('#invalidEmail').show();
+            }
+        }).fail(function(error) {
+            alert('서버와의 통신에 에러가 났습니다!!!\n다시 시도해 주세요...');
+            console.log(error);
+        });
 
         return isDuplicatedEmail;
 
@@ -93,6 +116,7 @@ let registerForm = {
 
         let nickname = $('#floatingNickname').val();
         let isValidatedNickname = false;
+        $('#floatingNickname').toggleClass('is-valid', isValidatedNickname);
 
         $('#invalidNickname').empty();
 
@@ -121,13 +145,33 @@ let registerForm = {
 
     checkNicknameIsDuplicated : function(isValidatedNickname) {
 
+        let nickname = $('#floatingNickname').val();
         let isDuplicatedNickname = false;
+        $('#floatingNickname').toggleClass('is-valid', isDuplicatedNickname);
 
         if (!isValidatedNickname) {
             return isDuplicatedNickname;
         }
 
-        isDuplicatedNickname = true;
+        $.ajax({
+            type: 'GET',
+            url: `/api/v1/users/nickname/${nickname}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false
+        }).done(function(data) {
+            if (data.status === 'OK') {
+                isDuplicatedNickname = data.success;
+                $('#floatingNickname').toggleClass('is-valid', isDuplicatedNickname);
+            } else if (data.status === 'CONFLICT') {
+                isDuplicatedNickname = data.success;
+                $('#invalidEmail').html("<i class='bi bi-exclamation-circle'></i> 이미 사용중인 닉네임입니다.");
+                $('#invalidEmail').show();
+            }
+        }).fail(function(error) {
+            alert('서버와의 통신에 에러가 났습니다!!!\n다시 시도해 주세요...');
+            console.log(error);
+        });
 
         return isDuplicatedNickname;
 
