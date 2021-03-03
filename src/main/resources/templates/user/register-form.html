@@ -12,23 +12,26 @@
                         <h2 class="fs-5">기본정보입력</h2>
                         <br>
                         <div class="form-floating">
-                            <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com">
+                            <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com" autocomplete="off">
                             <label for="floatingInput">이메일 주소</label>
                         </div>
                         <hr class="dropdown-divider">
+                        <div id="invalidEmail" class="invalid-feedback fw-bold"></div>
                         <div class="form-floating">
-                            <input type="password" class="form-control border-0" id="floatingPassword" placeholder="Password">
-                            <label for="floatingPassword">닉네임</label>
+                            <input type="text" class="form-control border-0" id="floatingNickname" placeholder="Nickname">
+                            <label for="floatingNickname">닉네임</label>
                         </div>
                         <hr class="dropdown-divider">
+                        <div id="invalidNickname" class="invalid-feedback fw-bold"></div>
                         <div class="form-floating">
                             <input type="password" class="form-control border-0" id="floatingPassword" placeholder="Password">
                             <label for="floatingPassword">비밀번호</label>
                         </div>
                         <hr class="dropdown-divider">
+                        <div id="invalidPassword" class="invalid-feedback fw-bold"></div>
                         <br>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary fw-bold py-3 disabled">가입하기</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary fw-bold py-3 disabled">가입하기</button>
                         </div>
                         <br>
                         <div class="text-center">
@@ -42,5 +45,6 @@
         </div>
         <!-- scripts -->
         <th:block th:replace="fragment/general.html :: scripts" />
+        <script src="../../js/register-form.js"></script>
     </body>
 </html>
