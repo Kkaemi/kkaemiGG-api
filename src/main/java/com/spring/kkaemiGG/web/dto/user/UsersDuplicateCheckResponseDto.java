@@ -2,18 +2,16 @@ package com.spring.kkaemiGG.web.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class UsersDuplicateCheckResponseDto {
 
-    private final HttpStatus status;
-    private final Boolean success;
+    private final Integer status;
+    private final String message;
 
     @Builder
-    public UsersDuplicateCheckResponseDto(HttpStatus status, Boolean success) {
+    public UsersDuplicateCheckResponseDto(Integer status, String message) {
         this.status = status;
-        this.success = success;
+        this.message = message;
     }
-
 }

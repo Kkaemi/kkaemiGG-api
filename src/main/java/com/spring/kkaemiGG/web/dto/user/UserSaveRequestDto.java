@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.web.dto.user;
 
+import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,8 @@ public class UserSaveRequestDto {
                 .nickname(nickname)
                 .email(email)
                 .password(password)
+                .picture("/img/image_not_found.png")
+                .role(Role.USER)
                 .build();
     }
 }

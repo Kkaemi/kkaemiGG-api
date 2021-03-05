@@ -8,17 +8,17 @@
                 <div class="p-5">
                     <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
                     <br>
-                    <form>
+                    <form onsubmit="return false;">
                         <h2 class="fs-5">기본정보입력</h2>
                         <br>
                         <div class="form-floating">
-                            <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com" autocomplete="off">
-                            <label for="floatingInput">이메일 주소</label>
+                            <input type="email" class="form-control border-0" id="floatingEmail" placeholder="name@example.com" autocomplete="off">
+                            <label for="floatingEmail">이메일 주소</label>
                         </div>
                         <hr class="dropdown-divider">
                         <div id="invalidEmail" class="invalid-feedback fw-bold"></div>
                         <div class="form-floating">
-                            <input type="text" class="form-control border-0" id="floatingNickname" placeholder="Nickname">
+                            <input type="text" class="form-control border-0" id="floatingNickname" placeholder="Nickname" autocomplete="off">
                             <label for="floatingNickname">닉네임</label>
                         </div>
                         <hr class="dropdown-divider">
@@ -31,7 +31,7 @@
                         <div id="invalidPassword" class="invalid-feedback fw-bold"></div>
                         <br>
                         <div class="d-grid">
-                            <button type="submit" id="submitButton" class="btn btn-primary fw-bold py-3 disabled">가입하기</button>
+                            <button type="button" id="submitButton" class="btn btn-primary fw-bold py-3 disabled">가입하기</button>
                         </div>
                         <br>
                         <div class="text-center">

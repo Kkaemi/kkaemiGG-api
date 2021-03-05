@@ -17,41 +17,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UsersDuplicateCheckResponseDto findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(entity -> {
-                    return UsersDuplicateCheckResponseDto.builder()
-                            .status(HttpStatus.CONFLICT)
-                            .success(false)
-                            .build();
-                })
-                .orElseGet(() -> {
-                    return UsersDuplicateCheckResponseDto.builder()
-                            .status(HttpStatus.OK)
-                            .success(true)
-                            .build();
-                });
-    }
-
-    @Transactional
-    public UsersDuplicateCheckResponseDto findByNickname(String nickname) {
-        return userRepository.findByNickname(nickname)
-                .map(entity -> {
-                    return UsersDuplicateCheckResponseDto.builder()
-                            .status(HttpStatus.CONFLICT)
-                            .success(false)
-                            .build();
-                })
-                .orElseGet(() -> {
-                    return UsersDuplicateCheckResponseDto.builder()
-                            .status(HttpStatus.OK)
-                            .success(true)
-                            .build();
-                });
-    }
-
-    @Transactional
     public Long save(UserSaveRequestDto requestDto) {
+
         requestDto.setPassword(
                 passwordEncoder.encode(requestDto.getPassword())
         );
@@ -59,4 +26,30 @@ public class UserService {
         return userRepository.save(requestDto.toEntity()).getId();
     }
 
+    @Transactional
+    public UsersDuplicateCheckResponseDto findByType(String type, String value) {
+
+        if (type.equals("email")) {
+            return userRepository.findByEmail(value)
+                    .map(entity -> UsersDuplicateCheckResponseDto.builder()
+                            .status(HttpStatus.CONFLICT.value())
+                            .message("EXIST")
+                            .build())
+                    .orElseGet(() -> UsersDuplicateCheckResponseDto.builder()
+                            .status(HttpStatus.OK.value())
+                            .message("NOT_EXIST")
+                            .build());
+        }
+
+        return userRepository.findByNickname(value)
+                .map(entity -> UsersDuplicateCheckResponseDto.builder()
+                        .status(HttpStatus.CONFLICT.value())
+                        .message("EXIST")
+                        .build())
+                .orElseGet(() -> UsersDuplicateCheckResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("NOT_EXIST")
+                        .build());
+
+    }
 }
