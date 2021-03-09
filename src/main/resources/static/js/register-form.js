@@ -50,12 +50,20 @@ let registerForm = {
         };
 
         // 모든 검사를 마치면 button 활성화 enter키 입력 활성화
-        $(document).on('keypress', function(event) {
-            $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
-            if (event.keyCode === 13) {
-                if (email.duplicateCheck && nickname.duplicateCheck && password.validateCheck) {
-                    _this.submit(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck);
+        $(document).on({
+            keypress: function(event) {
+                $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
+                if (event.keyCode === 13) {
+                    if (email.duplicateCheck && nickname.duplicateCheck && password.validateCheck) {
+                        _this.submit(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck);
+                    }
                 }
+            },
+            keyup: function() {
+                $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
+            },
+            blur: function() {
+                $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
             }
         });
 
