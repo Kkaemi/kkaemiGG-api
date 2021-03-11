@@ -8,7 +8,7 @@
                 <div class="p-5">
                     <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
                     <br>
-                    <form>
+                    <div class="login-form">
                         <h2 class="fs-6">간편 로그인</h2>
                         <div class="d-grid">
                             <button type="button" class="btn btn-outline-dark py-2 fs-5" onclick="location.href='/oauth2/authorization/google'">
@@ -27,8 +27,8 @@
                         <h2 class="fs-6">이메일 로그인</h2>
                         <br>
                         <div class="form-floating">
-                            <input type="email" class="form-control border-0" id="floatingInput" placeholder="name@example.com">
-                            <label for="floatingInput">이메일 주소</label>
+                            <input type="email" class="form-control border-0" id="floatingEmail" placeholder="name@example.com" autocomplete="off">
+                            <label for="floatingEmail">이메일 주소</label>
                         </div>
                         <hr class="dropdown-divider">
                         <div class="form-floating">
@@ -38,7 +38,7 @@
                         <hr class="dropdown-divider">
                         <br>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary fw-bold py-3 disabled">로그인</button>
+                            <button type="button" id="submitButton" class="btn btn-primary fw-bold py-3 disabled">로그인</button>
                         </div>
                         <br>
                         <div class="text-center">
@@ -46,12 +46,13 @@
                             &emsp;
                             <a href="/user/join">회원가입하기</a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- scripts -->
         <th:block th:replace="fragment/general.html :: scripts" />
+        <script src="../../js/login-form.js"></script>
     </body>
 </html>

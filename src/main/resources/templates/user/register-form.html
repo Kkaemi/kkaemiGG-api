@@ -8,7 +8,7 @@
                 <div class="p-5">
                     <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
                     <br>
-                    <form onsubmit="return false;">
+                    <div class="register-form">
                         <h2 class="fs-5">기본정보입력</h2>
                         <br>
                         <div class="form-floating">
@@ -39,11 +39,12 @@
                             &emsp;
                             <a href="/user/login">로그인하기</a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- scripts -->
         <th:block th:replace="fragment/general.html :: scripts" />
+        <script src="../../js/register-form.js"></script>
     </body>
 </html>

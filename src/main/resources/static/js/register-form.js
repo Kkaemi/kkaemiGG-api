@@ -1,4 +1,5 @@
 let registerForm = {
+
     init : function() {
 
         const _this = this;
@@ -136,6 +137,7 @@ let registerForm = {
 
     duplicateCheck : function(valueToCheck) {
 
+        const icon = "<i class='bi bi-exclamation-circle'></i>";
         const value = $(valueToCheck.inputTagId).val();
 
         // 유효성 검사가 선행되지 않으면 중복체크 실행 취소
@@ -155,7 +157,7 @@ let registerForm = {
                 $(valueToCheck.inputTagId).toggleClass('is-valid', valueToCheck.duplicateCheck);
             }
             if (data.message === 'EXIST') {
-                $(valueToCheck.divTagId).html(valueToCheck.duplicateCheckMessage);
+                $(valueToCheck.divTagId).html(`${icon} ${valueToCheck.duplicateCheckMessage}`);
                 $(valueToCheck.divTagId).show();
             }
         }).fail(function(error) {

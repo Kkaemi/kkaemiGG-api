@@ -1,6 +1,5 @@
 package com.spring.kkaemiGG.config.auth;
 
-import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -20,6 +23,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRepository userRepository;
+
+    @Bean
+    protected CustomUsernamePasswordAuthenticationFilter getAuthenticationFilter() throws Exception {
+
+        CustomUsernamePasswordAuthenticationFilter authenticationFilter = new CustomUsernamePasswordAuthenticationFilter();
+
+        authenticationFilter.setFilterProcessesUrl("/auth/login");
+        authenticationFilter.setAuthenticationManager(this.authenticationManagerBean());
+        authenticationFilter.setUsernameParameter("email");
+        authenticationFilter.setPasswordParameter("password");
+        authenticationFilter.setAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler());
+        authenticationFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler());
+
+        return authenticationFilter;
+    }
 
     @Bean
     public PasswordEncoder encoder() {
@@ -31,15 +49,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                .headers().frameOptions().disable()
+                    .exceptionHandling().authenticationEntryPoint(new BasicAuthenticationEntryPoint())
+                .and()
+                    .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/community/write").hasRole(Role.USER.name())
+//                    .antMatchers("/community/write").hasRole(Role.USER.name())
+                    .antMatchers("/auth/login").permitAll()
                 .and()
-                    .formLogin()
-                        .loginPage("/user/login")
-                            .defaultSuccessUrl("/")
-                .and()
+                    .formLogin().disable()
+                        .addFilterAt(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .logout()
                         .logoutSuccessUrl("/")
                 .and()
@@ -54,9 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(
                         email -> userRepository.findByEmail(email)
-                        .orElseThrow(
-                                () ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
-                        )
+                        .orElseThrow(() ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다."))
                 )
                 .passwordEncoder(encoder());
     }
