@@ -62,38 +62,34 @@ let registerForm = {
             },
             keyup: function() {
                 $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
+            }
+        });
+
+        // email 유효성 검사, 중복 검사
+        $('#floatingEmail').on({
+            keyup: function() {
+                _this.validate(email);
             },
             blur: function() {
+                _this.duplicateCheck(email);
                 $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
             }
         });
 
-        // email 유효성 검사
-        $('#floatingEmail').on('keyup', function() {
-            _this.validate(email);
-        });
-
-        // nickname 유효성 검사
-        $('#floatingNickname').on('keyup', function() {
-        isDuplicatedNickname = false;
-            _this.validate(nickname);
+        // nickname 유효성 검사, 중복 검사
+        $('#floatingNickname').on({
+            keyup: function() {
+                _this.validate(nickname);
+            },
+            blur: function() {
+                _this.duplicateCheck(nickname);
+                $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
+            }
         });
 
         // password 유효성 검사
         $('#floatingPassword').on('keyup', function() {
             _this.validate(password);
-        });
-
-        // email 중복 검사
-        $('#floatingEmail').on('blur', function() {
-            _this.duplicateCheck(email);
-            $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
-        });
-
-        // nickname 중복 검사
-        $('#floatingNickname').on('blur', function() {
-            _this.duplicateCheck(nickname);
-            $('#submitButton').toggleClass('disabled', !(email.duplicateCheck && nickname.duplicateCheck && password.validateCheck));
         });
 
         $('#submitButton').on('click', function() {
@@ -188,7 +184,7 @@ let registerForm = {
             data: JSON.stringify(data)
         }).done(function() {
             alert('회원가입이 완료되었습니다.');
-            window.location.href = '/';
+            window.location.replace('/user/login/');
         }).fail(function() {
             alert('서버와 통신 에러가 났습니다!!!\n다시 시도해 주세요...');
             console.log(error);

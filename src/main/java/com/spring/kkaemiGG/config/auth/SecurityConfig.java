@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
@@ -29,12 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CustomUsernamePasswordAuthenticationFilter authenticationFilter = new CustomUsernamePasswordAuthenticationFilter();
 
-        authenticationFilter.setFilterProcessesUrl("/auth/login");
+        authenticationFilter.setFilterProcessesUrl("/api/v1/authentication/login");
         authenticationFilter.setAuthenticationManager(this.authenticationManagerBean());
         authenticationFilter.setUsernameParameter("email");
         authenticationFilter.setPasswordParameter("password");
-        authenticationFilter.setAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler());
-        authenticationFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler());
+        authenticationFilter.setAuthenticationSuccessHandler(new CustomLoginSuccessHandler());
+        authenticationFilter.setAuthenticationFailureHandler(new CustomLoginFailureHandler());
 
         return authenticationFilter;
     }
