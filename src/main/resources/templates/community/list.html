@@ -1,57 +1,122 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>커뮤니티</title>
-    <th:block th:replace="fragment/config :: configFragment" ></th:block>
-    <style>
-        .list {
-            width: 1000px;
-            margin: 50px auto;
-        }
-
-        .list-item {
-            background-color: azure;
-            border: 1px solid #dcdfe3;
-        }
-    </style>
+<head th:insert="fragment/general.html :: headerfiles (pageTitle='커뮤니티')">
 </head>
-<body>
+<body style="padding-top: 3.5rem;">
 
-    <!-- 헤더 -->
-    <th:block th:replace="fragment/header :: headerFragment"></th:block>
-
-    <div class="list">
-        <div class="list-item" th:each="post : ${posts}">
-            <div class="list-item__content">
-                <a href="" class="list-item__info">
-                    <div class="list-item__title">
-                        <span class="post-title" th:text="${post.getTitle()}"></span>
-                        <em>[댓글수]</em>
-                    </div>
-                </a>
-                <div class="list-item-meta">
-                    <div class="list-item-meta__item"></div>
-                    <div class="list-item-meta__item">
-                        <span th:text="${post.getModifiedDate()}"></span>
-                    </div>
-                    <div class="list-item-meta__item list-item-meta__item--author">
-                        <span th:text="${post.getAuthor()}">작성자</span>
-                    </div>
-                </div>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top px-0 px-md-5" style="background-color: #1fc996;">
+        <div class="container-fluid">
+            <a class="navbar-brand py-0" href="/community/list">
+                <i class="bi bi-vector-pen fs-5 align-middle"></i>
+                <span class="fw-bold fs-4">KKAEMI.GG</span>
+            </a>
+            <div class="d-none d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+                <ol class="breadcrumb m-auto fw-lighter fs-4">
+                    <li class="breadcrumb-item"></li>
+                    <li class="breadcrumb-item"></li>
+                </ol>
             </div>
-            <div class="list-item-thumbnail">
-                <a href="">
-                    <img src="" alt="" class="list-item__thumbnail">
+            <button class="navbar-toggler btn-outline"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+                    <li class="nav-item d-grid text-center">
+                        <a href="/" class="nav-link active d-none d-md-block">
+                            <span class="fs-6">전적 검색</span>
+                        </a>
+                        <button class="btn btn-outline-light btn-md rounded-3 px-4 d-md-none" onclick="location.href='/'">전적 검색</button>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+                    <li class="nav-item d-grid">
+                        <button class="btn btn-outline-light btn-md rounded-3 px-4" onclick="location.href='/user/login'">로그인</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="position-fixed position-md-static d-flex justify-content-between py-3 mx-md-auto col-12 col-md-8 border-top border-start border-end bg-white">
+        <div class="ps-3">
+            <a href="" class="fs-5 fw-bold text-dark text-decoration-none">
+                전체
+            </a>
+        </div>
+        <div class="d-flex pe-3">
+            <div class="d-md-none">
+                <a href="javascript:void(0);" class="fs-4" data-bs-toggle="modal" data-bs-target="#searchModal">
+                    <i class="bi bi-search"></i>
+                </a>
+            </div>
+            <div class="ms-4">
+                <a href="" class="fs-4">
+                    <i class="bi bi-pencil"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <a href="/community/write/">게시글 등록</a>
+    <div class="sticky-md-top col-md-8 mx-md-auto mt-md-0 border-start border-end border-bottom d-flex flex-column" style="top: 56px; margin-top: 65px;">
+        <div class="d-flex justify-content-between px-3">
+            <div class="d-flex">
+                <div class="pt-2 pb-3">
+                    <a href="" class="d-flex text-decoration-none text-muted">
+                        <i class="bi bi-clock-fill fs-5"></i>
+                        <div class="align-self-center ms-1">최신</div>
+                    </a>
+                </div>
+                <div class="ms-4 pt-2 pb-3">
+                    <a href="" class="d-flex text-decoration-none text-muted">
+                        <i class="bi bi-hand-thumbs-up-fill fs-5"></i>
+                        <div class="align-self-center ms-1">TOP</div>
+                    </a>
+                </div>
+            </div>
+            <form class="d-none d-md-block align-self-center">
+                <div class="input-group">
+                    <select class="form-select" style="width: 120px;" name="" id="">
+                        <option value="title">제목</option>
+                        <option value="author">작성자</option>
+                    </select>
+                    <input type="text" class="form-control pe-5 rounded-end" style="width: 200px;">
+                    <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- 푸터 -->
-    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+    <!-- Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog m-0" style="max-width: none;">
+            <div class="modal-content rounded-0">
+                <div class="modal-body d-flex p-2">
+                    <button type="button" class="btn-close align-self-center me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <input type="text" class="form-control pe-5">
+                    <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 1000px;"></div>
+
+    <!-- footer -->
+    <footer th:insert="fragment/general.html :: footer"></footer>
+
+    <!-- scripts -->
+    <th:block th:replace="fragment/general.html :: scripts" />
 
 </body>
 </html>

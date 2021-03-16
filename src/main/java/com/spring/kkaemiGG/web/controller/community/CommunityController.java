@@ -7,16 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequiredArgsConstructor
 @RequestMapping("/community")
 @Controller
 public class CommunityController {
 
-    private final PostsService postsService;
-
     @GetMapping("/list")
-    public ModelAndView community() {
-        return new ModelAndView("/community/list", "posts", postsService.findAllDesc());
+    public String community() {
+        return "/community/list";
     }
 
     @GetMapping("/write")

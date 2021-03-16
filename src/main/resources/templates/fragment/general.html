@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
         <link rel="stylesheet" th:href="@{/css/index.css}">
         <link rel="stylesheet" th:href="@{/css/record.css}">
+        <link rel="stylesheet" th:href="@{/css/list.css}">
         <title th:text="${pageTitle}"></title>
     </head>
     <body style="background-color: #dee2e6;">
@@ -25,7 +26,8 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <div class="d-flex m-2">
-                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white me-2">커뮤니티</button>
+                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white me-2"
+                            onclick="location.href='/community/list'">커뮤니티</button>
                     <button th:if="${session.user == null && session.SPRING_SECURITY_CONTEXT == null}"
                             th:onclick="location.href='/user/login/'"
                             class="btn btn-primary btn-sm rounded-3 px-3 text-white">로그인</button>
