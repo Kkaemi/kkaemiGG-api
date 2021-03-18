@@ -1,122 +1,162 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="fragment/general.html :: headerfiles (pageTitle='커뮤니티')">
-</head>
-<body style="padding-top: 3.5rem;">
+    <head th:insert="fragment/general.html :: headerfiles (pageTitle='커뮤니티')"></head>
+    <body class="body" style="padding-top: 3.5rem;">
 
-    <!-- navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top px-0 px-md-5" style="background-color: #1fc996;">
-        <div class="container-fluid">
-            <a class="navbar-brand py-0" href="/community/list">
-                <i class="bi bi-vector-pen fs-5 align-middle"></i>
-                <span class="fw-bold fs-4">KKAEMI.GG</span>
-            </a>
-            <div class="d-none d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
-                <ol class="breadcrumb m-auto fw-lighter fs-4">
-                    <li class="breadcrumb-item"></li>
-                    <li class="breadcrumb-item"></li>
-                </ol>
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top px-0 px-md-5" style="background-color: #1fc996;">
+            <div class="container-fluid">
+                <a class="navbar-brand py-0" href="/community/list">
+                    <i class="bi bi-vector-pen fs-5 align-middle"></i>
+                    <span class="fw-bold fs-4">KKAEMI.GG</span>
+                </a>
+                <div class="d-none d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+                    <ol class="breadcrumb m-auto fw-lighter fs-4">
+                        <li class="breadcrumb-item"></li>
+                        <li class="breadcrumb-item"></li>
+                    </ol>
+                </div>
+                <button class="navbar-toggler btn-outline"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarCollapse"
+                        aria-controls="navbarCollapse"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+                        <li class="nav-item d-grid text-center">
+                            <a href="/" class="nav-link active d-none d-md-block">
+                                <span class="fs-6">전적 검색</span>
+                            </a>
+                            <button class="btn btn-outline-light btn-md rounded-3 px-4 d-md-none" onclick="location.href='/'">전적 검색</button>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+                        <li class="nav-item d-grid">
+                            <button class="btn btn-outline-light btn-md rounded-3 px-4" onclick="location.href='/user/login'">로그인</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <button class="navbar-toggler btn-outline"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
-                    <li class="nav-item d-grid text-center">
-                        <a href="/" class="nav-link active d-none d-md-block">
-                            <span class="fs-6">전적 검색</span>
+        </nav>
+
+        <!-- mobile sub header -->
+        <div id="mobileSubHeader" class="position-fixed position-md-static d-flex justify-content-between py-3 mx-md-auto col-12 col-md-8 border-top border-start border-end bg-white">
+            <div class="ps-3">
+                <a href="" class="fs-5 fw-bold text-dark text-decoration-none">
+                    전체
+                </a>
+            </div>
+            <div class="d-flex pe-3">
+                <div class="d-md-none">
+                    <a href="javascript:void(0);" class="fs-4" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </div>
+                <div class="ms-4">
+                    <a href="/community/write" class="fs-4">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- desktop sub header -->
+        <div class="sticky-md-top col-md-8 mx-md-auto mt-md-0 border-start border-end border-bottom d-flex flex-column bg-white" style="top: 56px; margin-top: 65px;">
+            <div class="d-flex justify-content-between px-3">
+                <div class="d-flex">
+                    <div class="pt-2 pb-3">
+                        <a href="" class="d-flex text-decoration-none text-muted">
+                            <i class="bi bi-clock-fill fs-5"></i>
+                            <div class="align-self-center ms-1">최신</div>
                         </a>
-                        <button class="btn btn-outline-light btn-md rounded-3 px-4 d-md-none" onclick="location.href='/'">전적 검색</button>
-                    </li>
-                </ul>
-                <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
-                    <li class="nav-item d-grid">
-                        <button class="btn btn-outline-light btn-md rounded-3 px-4" onclick="location.href='/user/login'">로그인</button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="position-fixed position-md-static d-flex justify-content-between py-3 mx-md-auto col-12 col-md-8 border-top border-start border-end bg-white">
-        <div class="ps-3">
-            <a href="" class="fs-5 fw-bold text-dark text-decoration-none">
-                전체
-            </a>
-        </div>
-        <div class="d-flex pe-3">
-            <div class="d-md-none">
-                <a href="javascript:void(0);" class="fs-4" data-bs-toggle="modal" data-bs-target="#searchModal">
-                    <i class="bi bi-search"></i>
-                </a>
-            </div>
-            <div class="ms-4">
-                <a href="" class="fs-4">
-                    <i class="bi bi-pencil"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="sticky-md-top col-md-8 mx-md-auto mt-md-0 border-start border-end border-bottom d-flex flex-column" style="top: 56px; margin-top: 65px;">
-        <div class="d-flex justify-content-between px-3">
-            <div class="d-flex">
-                <div class="pt-2 pb-3">
-                    <a href="" class="d-flex text-decoration-none text-muted">
-                        <i class="bi bi-clock-fill fs-5"></i>
-                        <div class="align-self-center ms-1">최신</div>
-                    </a>
+                    </div>
+                    <div class="ms-4 pt-2 pb-3">
+                        <a href="" class="d-flex text-decoration-none text-muted">
+                            <i class="bi bi-hand-thumbs-up-fill fs-5"></i>
+                            <div class="align-self-center ms-1">TOP</div>
+                        </a>
+                    </div>
                 </div>
-                <div class="ms-4 pt-2 pb-3">
-                    <a href="" class="d-flex text-decoration-none text-muted">
-                        <i class="bi bi-hand-thumbs-up-fill fs-5"></i>
-                        <div class="align-self-center ms-1">TOP</div>
-                    </a>
-                </div>
+                <form class="d-none d-md-block align-self-center">
+                    <div class="input-group">
+                        <select class="form-select" style="width: 120px;" name="" id="">
+                            <option value="title">제목</option>
+                            <option value="author">작성자</option>
+                        </select>
+                        <input type="text" class="form-control pe-5 rounded-end" style="width: 200px;">
+                        <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
+                            <i class="bi bi-search"></i>
+                        </a>
+                    </div>
+                </form>
             </div>
-            <form class="d-none d-md-block align-self-center">
-                <div class="input-group">
-                    <select class="form-select" style="width: 120px;" name="" id="">
-                        <option value="title">제목</option>
-                        <option value="author">작성자</option>
-                    </select>
-                    <input type="text" class="form-control pe-5 rounded-end" style="width: 200px;">
-                    <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog m-0" style="max-width: none;">
-            <div class="modal-content rounded-0">
-                <div class="modal-body d-flex p-2">
-                    <button type="button" class="btn-close align-self-center me-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <input type="text" class="form-control pe-5">
-                    <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
-                        <i class="bi bi-search"></i>
+        <!-- content -->
+        <div id="content" class="col-md-8 mx-md-auto border mt-3 mb-5" style="height: 1000px;">
+
+            <div class="d-flex w-100 p-2 border-bottom">
+                <div class="d-flex flex-column align-items-center align-self-center col-1">
+                    <i class="bi bi-caret-up-fill text-muted"></i>
+                    <span class="text-muted">1234</span>
+                </div>
+                <div class="d-flex flex-column align-self-center col-9 ps-2">
+                    <div class="d-flex" role="button">
+                        <span>회사에서 빡칠 때 꿀팁</span>
+                        &nbsp;
+                        <span class="text-success">[78]</span>
+                    </div>
+                    <div class="d-flex align-items-center text-muted">
+                        <span style="font-size: 14px;">17 시간 전</span>
+
+                        <div class="mx-2" style="--bs-breadcrumb-divider: '|';">
+                            <ol class="breadcrumb m-auto fw-lighter fs-4">
+                                <li class="breadcrumb-item"></li>
+                                <li class="breadcrumb-item"></li>
+                            </ol>
+                        </div>
+
+                        <a href="" class="text-decoration-none text-muted">
+                            <span style="font-size: 14px;">태어날때도란링</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-2 text-end">
+                    <a href="">
+                        <img th:src="@{/img/image_not_found.png}" alt="thumbnail" class="thumbnail" style="width: 62px; height: 62px;">
                     </a>
                 </div>
             </div>
+
         </div>
-    </div>
 
-    <div style="height: 1000px;"></div>
+        <!-- Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog m-0" style="max-width: none;">
+                <div class="modal-content rounded-0">
+                    <div class="modal-body d-flex p-2">
+                        <button type="button" class="btn-close align-self-center me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <form class="w-100">
+                            <input type="text" id="modalSearchKeyword" class="form-control pe-5">
+                            <a href="" class="position-absolute top-50 translate-middle-y" style="left: 93%; z-index: 3;">
+                                <i class="bi bi-search"></i>
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- footer -->
-    <footer th:insert="fragment/general.html :: footer"></footer>
+        <!-- footer -->
+        <footer th:insert="fragment/general.html :: footer"></footer>
 
-    <!-- scripts -->
-    <th:block th:replace="fragment/general.html :: scripts" />
+        <!-- scripts -->
+        <th:block th:replace="fragment/general.html :: scripts" />
+        <script src="/js/list.js"></script>
 
-</body>
+    </body>
 </html>

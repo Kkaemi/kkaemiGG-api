@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>게시글 등록</title>
-</head>
+<head th:insert="fragment/general.html :: headerfiles (pageTitle='글 쓰기')"></head>
 <body>
-
-    <!-- 헤더 -->
-    <th:block th:replace="fragment/header :: headerFragment"></th:block>
 
     <div>
         <form>
@@ -38,8 +32,6 @@
         </form>
     </div>
 
-    <!-- 푸터 -->
-    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
     <script src="/js/write.js"></script>
 
 </body>

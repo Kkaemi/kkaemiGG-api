@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.config.auth;
 
+import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -48,15 +47,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                    .exceptionHandling().authenticationEntryPoint(new BasicAuthenticationEntryPoint())
-                .and()
-                    .headers().frameOptions().disable()
+                .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-//                    .antMatchers("/community/write").hasRole(Role.USER.name())
-                    .antMatchers("/auth/login").permitAll()
+                    .antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())
                 .and()
-                    .formLogin().disable()
+                    .formLogin().loginPage("/user/login")
+                .and()
                         .addFilterAt(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .logout()
                         .logoutSuccessUrl("/")

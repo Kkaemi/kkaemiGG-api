@@ -27,6 +27,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
 
         String redirectUrl = "/";
+
+        // 뷰 컨트롤러에서 만든 prevPage 세션 정보를 가져온다
         String prevPage = (String) request.getSession().getAttribute("prevPage");
 
         /*
@@ -39,14 +41,15 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         RequestCache requestCache = new HttpSessionRequestCache();
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
-        // 유저가 권한이 필요한 요청을 했을 경우
+        // Spring Security가 요청을 가로 챈 경우
         if (savedRequest != null) {
             redirectUrl = savedRequest.getRedirectUrl();
 
             // 세션에 저장된 객체를 다 사용한 뒤에는 지워줘서 메모리 누수 방지
             requestCache.removeRequest(request, response);
 
-            System.out.println("intercepted!!! redirect url is " + redirectUrl);
+            respondWithJson(response, redirectUrl);
+            return;
         }
 
         // 유저가 로그인 버튼을 눌러서 로그인 할 경우
@@ -56,8 +59,15 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             // 세션에 저장된 객체를 다 사용한 뒤에는 지워줘서 메모리 누수 방지
             request.getSession().removeAttribute("prevPage");
 
-            System.out.println("normal request, redirect url is " + redirectUrl);
+            respondWithJson(response, redirectUrl);
+            return;
         }
+
+        respondWithJson(response, redirectUrl);
+
+    }
+
+    private void respondWithJson(HttpServletResponse response, String redirectUrl) throws IOException {
 
         UsersLoginResponseDto responseDto = UsersLoginResponseDto.builder()
                 .status(HttpStatus.OK.value())
