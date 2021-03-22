@@ -1,6 +1,8 @@
 package com.spring.kkaemiGG.config.auth;
 
 import com.google.gson.Gson;
+import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.web.dto.user.UsersLoginResponseDto;
 import org.apache.commons.codec.CharEncoding;
 import org.apache.http.entity.ContentType;
@@ -30,6 +32,9 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 뷰 컨트롤러에서 만든 prevPage 세션 정보를 가져온다
         String prevPage = (String) request.getSession().getAttribute("prevPage");
+
+        User user = (User) authentication.getPrincipal();
+        request.getSession().setAttribute("user", new SessionUser(user));
 
         /*
         * 유저가 권한이 필요한 요청을 하면 시큐리티가 요청을 가로채게 되는데,
