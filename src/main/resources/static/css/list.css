@@ -16,10 +16,17 @@
 }
 
 @media all and (min-width: 768px) {
-    body {
+    .body {
         padding-top: 8rem !important;
+    }
+    .border-bottom-md-0 {
+        border-bottom: 0 !important;
     }
     .position-md-static {
         position: static !important;
+    }
+    .thumbnail {
+        width: 93px !important;
+        height: 60px !important;
     }
 }

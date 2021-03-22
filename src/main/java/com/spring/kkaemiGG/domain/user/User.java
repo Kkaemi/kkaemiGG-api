@@ -21,45 +21,36 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String nickname;
+    private String email;
 
     @Column(nullable = false)
-    private String email;
+    private String nickname;
 
     @Column
     private String password;
-
-    @Column(nullable = false)
-    private String picture;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @Builder
-    public User(Long id, String nickname, String email, String password, String picture, Role role) {
+    public User(Long id, String nickname, String email, String password, Role role) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.picture = picture;
         this.role = role;
     }
 
-    public User update(String name, String picture) {
+    public User update(String name) {
         this.nickname = name;
-        this.picture = picture;
 
         return this;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role.getKey()));
     }
 
     @Override
