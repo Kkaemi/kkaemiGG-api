@@ -1,15 +1,42 @@
-var main = {
+let main = {
+
     init : function() {
-        var _this = this;
-        $('#btn-save').on('click', function() {
-            _this.save();
+
+        const _this = this;
+        let editor;
+
+        ClassicEditor
+                .create(document.querySelector( '#editor' ), {
+                    language: 'ko'
+                })
+                .then( newEditor => {
+                    editor = newEditor;
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+
+        $('#mobileSaveButton, #saveButton').on('click', function() {
+            _this.save(editor);
         });
+
     },
-    save : function() {
+
+    save : function(editor) {
+
+        if ($('#title').val() === '') {
+            alert('제목을 입력해 주세요');
+            return;
+        }
+
+        if (editor.getData() === '') {
+            alert('내용을 입력해 주세요');
+            return;
+        }
+
         var data = {
             title: $('#title').val(),
-            author: $('#author').val(),
-            content: $('#content').val()
+            content: editor.getData()
         };
 
         $.ajax({
@@ -24,7 +51,9 @@ var main = {
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
+
     }
+
 };
 
 main.init();

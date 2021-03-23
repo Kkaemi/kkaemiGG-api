@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -20,6 +21,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRepository userRepository;
+
+    @Bean
+    protected CustomUsernamePasswordAuthenticationFilter getAuthenticationFilter() throws Exception {
+
+        CustomUsernamePasswordAuthenticationFilter authenticationFilter = new CustomUsernamePasswordAuthenticationFilter();
+
+        authenticationFilter.setFilterProcessesUrl("/api/v1/authentication/login");
+        authenticationFilter.setAuthenticationManager(this.authenticationManagerBean());
+        authenticationFilter.setUsernameParameter("email");
+        authenticationFilter.setPasswordParameter("password");
+        authenticationFilter.setAuthenticationSuccessHandler(new CustomLoginSuccessHandler());
+        authenticationFilter.setAuthenticationFailureHandler(new CustomLoginFailureHandler());
+
+        return authenticationFilter;
+    }
 
     @Bean
     public PasswordEncoder encoder() {
@@ -34,12 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/api/v1/**", "/community/write").hasRole(Role.USER.name())
+                    .antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())
                 .and()
-                    .formLogin()
-                        .loginPage("/user/login")
-                            .defaultSuccessUrl("/")
+                    .formLogin().loginPage("/user/login")
                 .and()
+                        .addFilterAt(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .logout()
                         .logoutSuccessUrl("/")
                 .and()
@@ -54,9 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(
                         email -> userRepository.findByEmail(email)
-                        .orElseThrow(
-                                () ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
-                        )
+                        .orElseThrow(() ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다."))
                 )
                 .passwordEncoder(encoder());
     }

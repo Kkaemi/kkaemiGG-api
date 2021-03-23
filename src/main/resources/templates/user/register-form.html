@@ -1,62 +1,51 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>회원가입</title>
+    <head th:insert="fragment/general.html :: headerfiles (pageTitle='회원가입')"></head>
+    <body style="background-color: #dee2e6;">
 
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="/register-form/fonts/material-icon/css/material-design-iconic-font.min.css">
-
-    <!-- Main css -->
-    <link rel="stylesheet" href="/register-form/css/style.css">
-
-    <style>
-        .validationError {
-            font-weight: bold;
-            color: red;
-        }
-    </style>
-</head>
-<body>
-
-<div class="main">
-
-    <section class="signup">
-        <!-- <img src="images/signup-bg.jpg" alt=""> -->
-        <div class="container">
-            <div class="signup-content">
-                <form id="signup-form" class="signup-form" autocomplete="off">
-                    <h2 class="form-title">회원가입</h2>
-                    <div class="form-group">
-                        <input type="email" class="form-input" name="email" id="email" placeholder="이메일 주소"/>
+        <div style="padding-top: 170px; padding-bottom: 200px;">
+            <div class="bg-white border border-1 mx-auto my-0 py-6 col-4">
+                <div class="p-5">
+                    <div class="fs-1 fw-bolder text-center pb-4" style="color: #4c8cff;">KKAEMI.GG</div>
+                    <br>
+                    <div class="register-form">
+                        <h2 class="fs-5">기본정보입력</h2>
+                        <br>
+                        <div class="form-floating">
+                            <input type="email" class="form-control border-0" id="floatingEmail" placeholder="name@example.com" autocomplete="off">
+                            <label for="floatingEmail">이메일 주소</label>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div id="invalidEmail" class="invalid-feedback fw-bold"></div>
+                        <div class="form-floating">
+                            <input type="text" class="form-control border-0" id="floatingNickname" placeholder="Nickname" autocomplete="off">
+                            <label for="floatingNickname">닉네임</label>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div id="invalidNickname" class="invalid-feedback fw-bold"></div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control border-0" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">비밀번호</label>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div id="invalidPassword" class="invalid-feedback fw-bold"></div>
+                        <br>
+                        <div class="d-grid">
+                            <button type="button" id="submitButton" class="btn btn-primary fw-bold py-3 disabled">가입하기</button>
+                        </div>
+                        <br>
+                        <div class="text-center">
+                            이미 회원이신가요?
+                            &emsp;
+                            <a href="javascript:void(0);" onclick="window.location.replace('/user/login');">로그인하기</a>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-input" name="name" id="name" placeholder="이름"/>
-                        <span id="validateName"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-input" name="password" id="password" placeholder="비밀번호"/>
-                        <span toggle="#password" class="zmdi zmdi-eye-off field-icon toggle-password"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up"/>
-                    </div>
-                </form>
-                <p class="loginhere">
-                    이미 회원이신가요? <a href="/user/login-form/" class="loginhere-link">로그인하기</a>
-                </p>
+                </div>
             </div>
         </div>
-    </section>
 
-</div>
-
-<!-- JS -->
-<script src="/register-form/vendor/jquery/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
-<script src="/register-form/js/main.js"></script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+        <!-- scripts -->
+        <th:block th:replace="fragment/general.html :: scripts" />
+        <script src="../../js/register-form.js"></script>
+    </body>
 </html>

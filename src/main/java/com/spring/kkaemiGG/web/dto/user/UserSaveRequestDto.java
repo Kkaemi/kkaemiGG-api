@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.web.dto.user;
 
+import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class UserSaveRequestDto {
                 .nickname(nickname)
                 .email(email)
                 .password(password)
+                .role(Role.USER)
                 .build();
     }
 }

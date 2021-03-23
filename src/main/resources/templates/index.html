@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="fragment/general.html :: headerfiles (pageTitle='KKAEMI.GG')">
-</head>
-<body style="background-color: #dee2e6;">
-    <!-- navbar -->
-    <nav th:insert="fragment/general.html :: navbar"></nav>
+    <head th:insert="fragment/general.html :: headerfiles (pageTitle='KKAEMI.GG')"></head>
+    <body style="background-color: #dee2e6;">
+        <!-- navbar -->
+        <nav th:insert="fragment/general.html :: navbar"></nav>
 
-    <!-- logo -->
-    <div class="title">
-        KKAEMI.GG
-    </div>
+        <!-- logo -->
+        <div class="title">
+            KKAEMI.GG
+        </div>
 
-    <!-- search_bar -->
-    <div class="search_bar_container">
-        <form th:action="@{/summoner}" method="get">
-            <div class="search_bar">
-                <input type="text" name="userName" placeholder="소환사명을 입력해 주세요"/>
-                <button type="submit">.GG</button>
-            </div>
-        </form>
-    </div>
+        <!-- search_bar -->
+        <div class="search_bar_container">
+            <form th:action="@{/summoner}" method="get">
+                <div class="search_bar">
+                    <input type="text" name="userName" placeholder="소환사명을 입력해 주세요"/>
+                    <button type="submit">.GG</button>
+                </div>
+            </form>
+        </div>
 
-    <!-- 유튜브 동영상 리스트 -->
-    <div class="youtube_video_list">
-        <th:block th:each="youtubeSearchResult : ${youtubeSearchResultList}">
-            <iframe th:src="@{https://www.youtube.com/embed/{videoId}(videoId = ${youtubeSearchResult.getId().getVideoId()})}"
-                    style="height: 169px; margin: 0 5px;"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-        </th:block>
-    </div>
+        <!-- 유튜브 동영상 리스트 -->
+        <div class="youtube_video_list">
+            <th:block th:each="youtubeSearchResult : ${youtubeSearchResultList}">
+                <iframe th:src="@{https://www.youtube.com/embed/{videoId}(videoId = ${youtubeSearchResult.getId().getVideoId()})}"
+                        style="height: 169px; margin: 0 5px;"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </th:block>
+        </div>
 
-    <!-- footer -->
-    <footer th:insert="fragment/general.html :: footer"></footer>
+        <!-- footer -->
+        <footer th:insert="fragment/general.html :: footer"></footer>
 
-    <!-- scripts -->
-    <th:block th:replace="fragment/general.html :: scripts" />
-</body>
+        <!-- scripts -->
+        <th:block th:replace="fragment/general.html :: scripts" />
+    </body>
 </html>
