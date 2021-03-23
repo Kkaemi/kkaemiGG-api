@@ -6,7 +6,7 @@ import com.merakianalytics.orianna.types.common.Queue;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.match.MatchHistory;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
-import com.spring.kkaemiGG.development.Development;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 public class SummonerService {
 
-    public SummonerService() {
-        Orianna.setRiotAPIKey(Development.RIOT.getApiKey());
+    public SummonerService(@Value("${RIOT_API_KEY}") String apiKey) {
+        Orianna.setRiotAPIKey(apiKey);
         Orianna.setDefaultPlatform(Platform.KOREA);
         Orianna.setDefaultLocale(Platform.KOREA.getDefaultLocale());
     }
