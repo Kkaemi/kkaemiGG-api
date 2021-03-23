@@ -10,12 +10,12 @@ public class CommunityController {
 
     @GetMapping("/list")
     public String community() {
-        return "/community/list";
+        return "community/list";
     }
 
     @GetMapping("/write")
     public String postsSave() {
-        return "/community/write";
+        return "community/write";
     }
 
 }
