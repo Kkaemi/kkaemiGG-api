@@ -30,7 +30,6 @@ public class UserSaveRequestDto {
                 .nickname(nickname)
                 .email(email)
                 .password(password)
-                .picture("/img/image_not_found.png")
                 .role(Role.USER)
                 .build();
     }

@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Krona+One">
         <link rel="stylesheet" th:href="@{/css/index.css}">
         <link rel="stylesheet" th:href="@{/css/record.css}">
+        <link rel="stylesheet" th:href="@{/css/list.css}">
+        <link rel="stylesheet" th:href="@{/css/write.css}">
         <title th:text="${pageTitle}"></title>
     </head>
     <body style="background-color: #dee2e6;">
@@ -25,12 +27,13 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <div class="d-flex m-2">
-                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white me-2">커뮤니티</button>
-                    <button th:if="${session.user == null && session.SPRING_SECURITY_CONTEXT == null}"
+                    <button class="btn btn-primary btn-sm rounded-3 px-3 text-white me-2"
+                            onclick="location.href='/community/list'">커뮤니티</button>
+                    <button th:if="${session.user == null}"
                             th:onclick="location.href='/user/login/'"
                             class="btn btn-primary btn-sm rounded-3 px-3 text-white">로그인</button>
                     <form method="POST"
-                          th:if="${session.user != null || session.SPRING_SECURITY_CONTEXT != null}"
+                          th:if="${session.user != null}"
                           th:action="@{/logout}">
                         <button class="btn btn-primary btn-sm rounded-3 px-3 text-white"
                                 onclick="this.parentNode.submit()">로그아웃</button>
@@ -43,12 +46,23 @@
     <!-- footer -->
     <footer class="footer mt-auto py-3 bg-secondary" th:fragment="footer">
         <div class="container">
-            <span class="text-white">
-                KKAEMI.GG ©2021 Created by kkaemi
+            <div class="text-white">
                 <br>
+                <div class="fs-2" style="font-family: 'Krona One'; cursor: default;">
+                    KKAEMI.GG
+                </div>
                 <br>
-                Email : kitys2k3@naver.com
-            </span>
+                <div class="">
+                    created by kkaemi
+                </div>
+                <br>
+                <span class="">
+                    GitHub :
+                </span>
+                <a target="_blank" href="https://github.com/Kkaemi/kkaemiGG" class="text-decoration-underline text-white">
+                    https://github.com/Kkaemi/kkaemiGG
+                </a>
+            </div>
         </div>
     </footer>
 

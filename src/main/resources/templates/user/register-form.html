@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-    <head th:insert="fragment/general.html :: headerfiles (pageTitle='회원가입')">
-    </head>
+    <head th:insert="fragment/general.html :: headerfiles (pageTitle='회원가입')"></head>
     <body style="background-color: #dee2e6;">
+
         <div style="padding-top: 170px; padding-bottom: 200px;">
             <div class="bg-white border border-1 mx-auto my-0 py-6 col-4">
                 <div class="p-5">
@@ -43,6 +43,7 @@
                 </div>
             </div>
         </div>
+
         <!-- scripts -->
         <th:block th:replace="fragment/general.html :: scripts" />
         <script src="../../js/register-form.js"></script>
