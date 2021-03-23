@@ -17,17 +17,13 @@ public class PostsApiController {
 
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto,
-                     @LoginUser SessionUser user) {
+                     @LoginUser SessionUser sessionUser) {
 
-        if (user == null) {
+        if (sessionUser == null) {
             return 0L;
         }
 
-        String author = user.getNickname();
-
-        requestDto.setAuthor(author);
-
-        return postsService.save(requestDto);
+        return postsService.save(requestDto, sessionUser);
     }
 
     @GetMapping("/api/v1/posts/{id}")

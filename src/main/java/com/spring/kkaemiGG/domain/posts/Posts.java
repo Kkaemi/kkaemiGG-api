@@ -1,6 +1,7 @@
 package com.spring.kkaemiGG.domain.posts;
 
 import com.spring.kkaemiGG.domain.BaseTimeEntity;
+import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,13 @@ import javax.persistence.*;
 @Entity
 public class Posts extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "POST_ID")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Column(length = 500, nullable = false)
     private String title;
@@ -25,7 +30,8 @@ public class Posts extends BaseTimeEntity {
     private String author;
 
     @Builder
-    public Posts(String title, String content, String author) {
+    public Posts(User user, String title, String content, String author) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.author = author;
