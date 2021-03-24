@@ -45,9 +45,13 @@ let main = {
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function() {
+        }).done(function(data) {
+            if (data === 0) {
+                alert('에러가 발생했습니다!!!');
+                window.location.replace('/community/list');
+            }
             alert('글이 등록되었습니다.');
-            window.location.href = '/';
+            window.location.replace('/community/list');
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });

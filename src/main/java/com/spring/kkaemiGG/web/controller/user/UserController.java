@@ -19,12 +19,12 @@ public class UserController {
                 .filter(url -> !url.contains("/join"))
                 .ifPresent(url -> request.getSession().setAttribute("prevPage", url));
 
-        return "/user/login-form";
+        return "user/login-form";
     }
 
     @GetMapping("/join")
     public String registerForm() {
-        return "/user/register-form";
+        return "user/register-form";
     }
 
 }
