@@ -3,10 +3,9 @@ package com.spring.kkaemiGG.web.controller.posts;
 import com.spring.kkaemiGG.config.auth.LoginUser;
 import com.spring.kkaemiGG.config.auth.dto.SessionUser;
 import com.spring.kkaemiGG.service.posts.PostsService;
-import com.spring.kkaemiGG.web.dto.posts.PostsResponseDto;
-import com.spring.kkaemiGG.web.dto.posts.PostsSaveRequestDto;
-import com.spring.kkaemiGG.web.dto.posts.PostsUpdateRequestDto;
+import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -14,6 +13,23 @@ import org.springframework.web.bind.annotation.*;
 public class PostsApiController {
 
     private final PostsService postsService;
+
+    @GetMapping("/api/v1/posts")
+    public Page<PostsListResponseDto> findByRequest(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchKeyword) {
+
+        PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
+                .page(page)
+                .sort(sort)
+                .searchType(searchType)
+                .searchKeyword(searchKeyword)
+                .build();
+
+        return postsService.findByRequest(requestDto);
+    }
 
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto,
