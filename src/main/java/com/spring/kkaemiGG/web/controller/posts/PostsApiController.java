@@ -18,14 +18,14 @@ public class PostsApiController {
     public Page<PostsListResponseDto> findByRequest(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String searchType,
-            @RequestParam(required = false) String searchKeyword) {
+            @RequestParam(required = false) String target,
+            @RequestParam(required = false) String keyword) {
 
         PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
                 .page(page)
                 .sort(sort)
-                .searchType(searchType)
-                .searchKeyword(searchKeyword)
+                .target(target)
+                .keyword(keyword)
                 .build();
 
         return postsService.findByRequest(requestDto);

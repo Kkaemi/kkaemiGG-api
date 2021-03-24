@@ -54,7 +54,7 @@
         <!-- mobile sub header -->
         <div id="mobileSubHeader" class="position-fixed position-md-static d-flex justify-content-between py-3 mx-md-auto col-12 col-md-8 border-top border-start border-end border-bottom-md-0 bg-white">
             <div class="ps-3">
-                <a href="" class="fs-5 fw-bold text-dark text-decoration-none">
+                <a href="/community/list" class="fs-5 fw-bold text-dark text-decoration-none">
                     자유 게시판
                 </a>
             </div>
@@ -89,14 +89,14 @@
                         </a>
                     </div>
                 </div>
-                <form class="d-none d-md-block align-self-center">
+                <form class="d-none d-md-block align-self-center" action="/community/list" name="search">
                     <div class="input-group">
-                        <select class="form-select" style="width: 120px;" name="" id="">
+                        <select class="form-select" style="width: 120px;" name="target" id="">
                             <option value="title">제목</option>
                             <option value="author">작성자</option>
                         </select>
-                        <input type="text" class="form-control pe-5 rounded-end" style="width: 200px;">
-                        <a href="" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
+                        <input type="text" class="form-control pe-5 rounded-end" style="width: 200px;" name="keyword">
+                        <a href="javascript:void(0);" onclick="document.search.submit();" class="position-absolute top-50 translate-middle-y" style="left: 90%; z-index: 3;">
                             <i class="bi bi-search"></i>
                         </a>
                     </div>
@@ -116,9 +116,13 @@
                 <div class="modal-content rounded-0">
                     <div class="modal-body d-flex p-2">
                         <button type="button" class="btn-close align-self-center me-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <form class="w-100">
-                            <input type="text" id="modalSearchKeyword" class="form-control pe-5" style="box-shadow: none;">
-                            <a href="" class="position-absolute top-50 translate-middle-y" style="left: 93%; z-index: 3;">
+                        <form class="w-100 d-flex" action="/community/list" name="mobileSearch">
+                            <select class="form-select me-2" style="width: 120px;" name="target">
+                                <option value="title">제목</option>
+                                <option value="author">작성자</option>
+                            </select>
+                            <input type="text" class="form-control pe-5" name="keyword" style="box-shadow: none;">
+                            <a href="javascript:void(0);" onclick="document.mobileSearch.submit();" class="position-absolute top-50 translate-middle-y" style="left: 93%; z-index: 3;">
                                 <i class="bi bi-search"></i>
                             </a>
                         </form>

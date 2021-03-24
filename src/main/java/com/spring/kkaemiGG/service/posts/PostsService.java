@@ -70,13 +70,13 @@ public class PostsService {
 
         if (requestDto.isSearched()) {
 
-            if (requestDto.getSearchType().equals("title")) {
-                return postsRepository.findByTitleContaining(requestDto.getSearchKeyword(), pageRequest)
+            if (requestDto.getTarget().equals("title")) {
+                return postsRepository.findByTitleContaining(requestDto.getKeyword(), pageRequest)
                         .map(PostsListResponseDto::new);
             }
 
-            if (requestDto.getSearchType().equals("author")) {
-                return postsRepository.findByAuthorContaining(requestDto.getSearchKeyword(), pageRequest)
+            if (requestDto.getTarget().equals("author")) {
+                return postsRepository.findByAuthorContaining(requestDto.getKeyword(), pageRequest)
                         .map(PostsListResponseDto::new);
             }
         }

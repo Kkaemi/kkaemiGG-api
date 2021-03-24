@@ -11,18 +11,18 @@ public class PostsPageRequestDto {
 
     private int page;
     private String sort;
-    private String searchType;
-    private String searchKeyword;
+    private String target;
+    private String keyword;
 
     @Builder
-    public PostsPageRequestDto(int page, String sort, String searchType, String searchKeyword) {
+    public PostsPageRequestDto(int page, String sort, String target, String keyword) {
         this.page = page;
         this.sort = sort;
-        this.searchType = searchType;
-        this.searchKeyword = searchKeyword;
+        this.target = target;
+        this.keyword = keyword;
     }
 
     public boolean isSearched() {
-        return StringUtils.hasText(searchType) || StringUtils.hasText(searchKeyword);
+        return StringUtils.hasText(target) && StringUtils.hasText(keyword);
     }
 }

@@ -5,16 +5,7 @@ let list = {
         const _this = this;
 
         $(document).ready(function() {
-
-            const sort = _this.getSortFromQueryParam();
-
-            if (sort === 'top') {
-                $('#recent').removeClass('text-success');
-                $('#recent').addClass('text-muted');
-
-                $('#top').removeClass('text-muted');
-                $('#top').addClass('text-success');
-            }
+            _this.loadList(_this);
         });
 
         $('#searchModal').on('shown.bs.modal', function() {
@@ -33,16 +24,22 @@ let list = {
 
         });
 
-        $('#content-list').ready(function() {
-            _this.loadList(_this);
-        });
-
     },
 
     loadList : function(_this) {
 
         const page = _this.getPageFromQueryParam();
         const sort = _this.getSortFromQueryParam();
+        const target = _this.getTargetFromQueryParam();
+        const keyword = _this.getKeywordFromQueryParam();
+
+        if (sort === 'top') {
+            $('#recent').removeClass('text-success');
+            $('#recent').addClass('text-muted');
+
+            $('#top').removeClass('text-muted');
+            $('#top').addClass('text-success');
+        }
 
         $.ajax({
             type: 'GET',
@@ -50,7 +47,9 @@ let list = {
             dataType: 'json',
             data: {
                 page: page,
-                sort: sort
+                sort: sort,
+                target: target,
+                keyword: keyword
             }
         })
         .done(function(data) {
@@ -63,7 +62,7 @@ let list = {
                     </ul>
                 </div>`
             );
-            _this.makePagination(data);
+            _this.makePagination(data, target, keyword);
         })
         .fail(function(error) {
             alert(error);
@@ -108,39 +107,89 @@ let list = {
 
     },
 
-    makePagination : function(data) {
+    makePagination : function(data, target, keyword) {
 
         const currentPage = data.number + 1;
         const pageBlock = 10;
         const startNum = parseInt((currentPage - 1) / pageBlock) * pageBlock + 1;
         const endNum = (startNum + pageBlock - 1) > data.totalPages ? data.totalPages : startNum + pageBlock - 1;
 
-        if (currentPage > pageBlock) {
-            $('#pagination').append(`
-                <li class="page-item">
-                    <a class="page-link" href="/community/list?page=${startNum - 1}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            `);
-        }
+        if (target != null && keyword != null) {
 
-        for (var i = startNum; i <= endNum; i++) {
-            if (i === currentPage) {
-                $('#pagination').append(`<li class="page-item active"><a class="page-link" href="/community/list?page=${i}">${i}</a></li>`);
-                continue
+            if (currentPage > pageBlock) {
+                $('#pagination').append(
+                    `<li class="page-item">
+                        <a class="page-link" href="/community/list?target=${target}&keyword=${keyword}&page=${startNum - 1}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>`
+                );
             }
-            $('#pagination').append(`<li class="page-item"><a class="page-link" href="/community/list?page=${i}">${i}</a></li>`);
-        }
 
-        if (endNum < data.totalPages) {
-            $('#pagination').append(`
-                <li class="page-item">
-                    <a class="page-link" href="/community/list?page=${endNum + 1}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            `);
+            for (var i = startNum; i <= endNum; i++) {
+                if (i === currentPage) {
+                    $('#pagination').append(
+                        `<li class="page-item active">
+                        <a class="page-link" href="/community/list?target=${target}&keyword=${keyword}&page=${i}">${i}</a>
+                        </li>`
+                    );
+                    continue
+                }
+                $('#pagination').append(
+                    `<li class="page-item">
+                    <a class="page-link" href="/community/list?target=${target}&keyword=${keyword}&page=${i}">${i}</a>
+                    </li>`
+                );
+            }
+
+            if (endNum < data.totalPages) {
+                $('#pagination').append(
+                    `<li class="page-item">
+                        <a class="page-link" href="/community/list?page=${endNum + 1}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>`
+                );
+            }
+
+        } else {
+
+            if (currentPage > pageBlock) {
+                $('#pagination').append(
+                    `<li class="page-item">
+                        <a class="page-link" href="/community/list?page=${startNum - 1}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>`
+                );
+            }
+
+            for (var i = startNum; i <= endNum; i++) {
+                if (i === currentPage) {
+                    $('#pagination').append(
+                        `<li class="page-item active">
+                        <a class="page-link" href="/community/list?page=${i}">${i}</a>
+                        </li>`
+                    );
+                    continue
+                }
+                $('#pagination').append(
+                    `<li class="page-item">
+                    <a class="page-link" href="/community/list?page=${i}">${i}</a>
+                    </li>`
+                );
+            }
+
+            if (endNum < data.totalPages) {
+                $('#pagination').append(
+                    `<li class="page-item">
+                        <a class="page-link" href="/community/list?page=${endNum + 1}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>`
+                );
+            }
+
         }
 
     },
@@ -161,6 +210,41 @@ let list = {
     getSortFromQueryParam : function() {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('sort');
+    },
+
+    getTargetFromQueryParam : function() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        let target = urlParams.get('target');
+
+        switch (target) {
+            case 'title':
+                target = 'title';
+                break;
+            case 'author':
+                target = 'author';
+                break;
+            default:
+                target = null;
+        }
+
+        return target;
+
+    },
+
+    getKeywordFromQueryParam : function() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        let keyword = urlParams.get('keyword');
+
+        if (!keyword) {
+            return keyword;
+        }
+
+        return keyword.trimLeft().trimRight();
+
     }
 
 };
