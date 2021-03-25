@@ -24,7 +24,7 @@ let main = {
 
     save : function(editor) {
 
-        if ($('#title').val() === '') {
+        if (!$('#title').val().trimLeft().trimRight()) {
             alert('제목을 입력해 주세요');
             return;
         }

@@ -80,7 +80,7 @@ let list = {
                     </div>
                     <div class="d-flex flex-column align-self-center col-9 ps-2">
                         <div class="d-flex">
-                            <a href="/community/view?id=${content.id}" class="text-decoration-none text-dark w-100">
+                            <a href="/community/view?id=${content.id}&title=${content.title}" class="text-decoration-none text-dark w-100">
                                 <span>${content.title}</span>
                                 &nbsp;
                                 <span class="text-success">[0]</span>
@@ -96,7 +96,7 @@ let list = {
                                 </ol>
                             </div>
 
-                            <a href="" class="text-decoration-none text-muted">
+                            <a href="javascript:void(0);" class="text-decoration-none text-muted">
                                 <span style="font-size: 14px;">${content.author}</span>
                             </a>
                         </div>
