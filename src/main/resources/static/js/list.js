@@ -80,14 +80,14 @@ let list = {
                     </div>
                     <div class="d-flex flex-column align-self-center col-9 ps-2">
                         <div class="d-flex">
-                            <a href="/community/view?id=${content.id}&title=${content.title}" class="text-decoration-none text-dark w-100">
+                            <a href="/community/view?id=${content.id}" class="text-decoration-none text-dark w-100">
                                 <span>${content.title}</span>
                                 &nbsp;
                                 <span class="text-success">[0]</span>
                             </a>
                         </div>
                         <div class="d-flex align-items-center text-muted">
-                            <span style="font-size: 14px;">${content.createdDate}</span>
+                            <span style="font-size: 14px;">${content.timeDifference}</span>
 
                             <div class="mx-2" style="--bs-breadcrumb-divider: '|';">
                                 <ol class="breadcrumb m-auto fw-lighter fs-4">

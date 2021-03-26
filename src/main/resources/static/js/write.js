@@ -48,10 +48,10 @@ let main = {
         }).done(function(data) {
             if (data === 0) {
                 alert('에러가 발생했습니다!!!');
-                window.location.replace('/community/list');
+                return;
             }
             alert('글이 등록되었습니다.');
-            window.location.replace('/community/list');
+            window.location.replace(`/community/view?id=${data}`);
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });

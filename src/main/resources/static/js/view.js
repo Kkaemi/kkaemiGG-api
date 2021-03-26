@@ -6,6 +6,10 @@ let view = {
 
         let oldVal;
 
+        $(document).ready(function() {
+            _this.loadPost();
+        });
+
         $('#writeComment').on('propertychange change keyup paste input', function() {
 
             let currentVal = $(this).val();
@@ -34,6 +38,50 @@ let view = {
             _this.refreshComment();
         });
 
+    },
+
+    loadPost : function() {
+
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        if (parseInt(id) > 0x7fffffffffffffff || parseInt(id) < 0 || isNaN(id)) {
+            alert('올바른 값을 입력해 주세요');
+            window.location.replace('/community/list');
+            return;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: `/api/v1/posts/${id}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function(data) {
+
+            if (data.postsId === -1) {
+                alert('존재하지 않는 게시물입니다');
+                window.location.replace('/community/list');
+                return;
+            }
+
+            document.title = data.title;
+            $('#title').text(data.title);
+            $('#timeDifference').text(data.timeDifference);
+            $('#author').text(data.author);
+            $('#hit').text(`조회 ${new Intl.NumberFormat().format(data.hit)}`);
+            $('#content').html(data.content);
+
+            if (data.owner) {
+                $('#contentHead').append(
+                `<div class="mt-3 mb-1">
+                  <button class="btn btn-outline-danger btn-sm px-3">삭제</button>
+                  <button class="btn btn-outline-info btn-sm px-3 ms-2">수정</button>
+                </div>`
+                );
+            }
+
+        }).fail(function(error) {
+            alert(error);
+        });
     },
 
     submitComment : function() {
