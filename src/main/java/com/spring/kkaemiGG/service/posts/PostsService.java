@@ -52,13 +52,21 @@ public class PostsService {
         return id;
     }
 
-    public PostsResponseDto findById(Long id) {
+    @Transactional
+    public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
 
-        Posts entity = postsRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id)
-        );
+        PostsResponseDto responseDto = postsRepository.findById(id)
+                .map(entity -> {
+                    entity.hit(); // 조회수 증가
+                    return new PostsResponseDto(entity);
+                })
+                .orElseGet(() -> new PostsResponseDto(-1L));
 
-        return new PostsResponseDto(entity);
+        if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {
+            responseDto.setOwner(true);
+        }
+
+        return responseDto;
 
     }
 

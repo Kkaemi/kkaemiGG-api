@@ -15,11 +15,10 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @GetMapping("/api/v1/posts")
-    public Page<PostsListResponseDto> findByRequest(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String target,
-            @RequestParam(required = false) String keyword) {
+    public Page<PostsListResponseDto> findByRequest(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(required = false) String sort,
+                                                    @RequestParam(required = false) String target,
+                                                    @RequestParam(required = false) String keyword) {
 
         PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
                 .page(page)
@@ -43,8 +42,9 @@ public class PostsApiController {
     }
 
     @GetMapping("/api/v1/posts/{id}")
-    public PostsResponseDto findById(@PathVariable Long id) {
-        return postsService.findById(id);
+    public PostsResponseDto findByIdWithSession(@PathVariable Long id,
+                                     @LoginUser SessionUser sessionUser) {
+        return postsService.findByIdWithSession(id, sessionUser);
     }
 
     @PutMapping("/api/v1/posts/{id}")

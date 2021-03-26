@@ -87,7 +87,7 @@ let list = {
                             </a>
                         </div>
                         <div class="d-flex align-items-center text-muted">
-                            <span style="font-size: 14px;">${content.createdDate}</span>
+                            <span style="font-size: 14px;">${content.timeDifference}</span>
 
                             <div class="mx-2" style="--bs-breadcrumb-divider: '|';">
                                 <ol class="breadcrumb m-auto fw-lighter fs-4">
@@ -96,7 +96,7 @@ let list = {
                                 </ol>
                             </div>
 
-                            <a href="" class="text-decoration-none text-muted">
+                            <a href="javascript:void(0);" class="text-decoration-none text-muted">
                                 <span style="font-size: 14px;">${content.author}</span>
                             </a>
                         </div>

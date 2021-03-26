@@ -5,6 +5,7 @@ import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -17,6 +18,9 @@ public class Posts extends BaseTimeEntity {
     @Column(name = "POST_ID")
     private Long id;
 
+    @ColumnDefault("0")
+    private Long hit;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
@@ -27,6 +31,7 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private String author;
 
     @Builder
@@ -40,6 +45,10 @@ public class Posts extends BaseTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void hit() {
+        this.hit += 1;
     }
 
 }
