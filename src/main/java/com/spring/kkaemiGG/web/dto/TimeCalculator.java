@@ -14,7 +14,8 @@ public class TimeCalculator {
                 : temporal.until(now, ChronoUnit.DAYS) != 0 ? temporal.until(now, ChronoUnit.DAYS) + "일 전"
                 : temporal.until(now, ChronoUnit.HOURS) != 0 ? temporal.until(now, ChronoUnit.HOURS) + "시간 전"
                 : temporal.until(now, ChronoUnit.MINUTES) != 0 ? temporal.until(now, ChronoUnit.MINUTES) + "분 전"
-                : temporal.until(now, ChronoUnit.SECONDS) + "초 전";
+                : temporal.until(now, ChronoUnit.SECONDS) != 0 ? temporal.until(now, ChronoUnit.SECONDS) + "초 전"
+                : "1초 전";
     }
 
 }
