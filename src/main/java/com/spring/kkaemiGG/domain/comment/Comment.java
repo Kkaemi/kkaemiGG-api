@@ -37,23 +37,38 @@ public class Comment extends BaseTimeEntity {
     private String author;
 
     @Column(nullable = false)
-    private Boolean step;
+    private Integer groupOrder;
 
     @Column(nullable = false)
     private Boolean deletion;
 
     @Builder
-    public Comment(Posts posts, Comment parentComment, String content, String author, Boolean step, Boolean deletion) {
-        this.posts = posts;
-        this.parentComment = parentComment;
+    public Comment(String content, String author, Integer groupOrder, Boolean deletion) {
         this.content = content;
         this.author = author;
-        this.step = step;
+        this.groupOrder = groupOrder;
         this.deletion = deletion;
     }
 
     public void update(String content, String author) {
         this.content = content;
         this.author = author;
+    }
+
+    public void setGroupOrder(Integer groupOrder) {
+        this.groupOrder = groupOrder;
+    }
+
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
+        if (this.equals(parentComment)) {
+            return;
+        }
+        parentComment.getChildComments().add(this);
+    }
+
+    public void setPosts(Posts posts) {
+        this.posts = posts;
+        posts.getComments().add(this);
     }
 }

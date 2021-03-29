@@ -7,7 +7,7 @@ let view = {
         let oldVal;
 
         $(document).ready(function() {
-            _this.loadPost();
+            _this.loadContent();
         });
 
         $('#writeComment').on('propertychange change keyup paste input', function() {
@@ -35,12 +35,12 @@ let view = {
         });
 
         $('#commentRefreshButton').on('click', function() {
-            _this.refreshComment();
+
         });
 
     },
 
-    loadPost : function() {
+    loadContent : function() {
 
         const id = new URLSearchParams(window.location.search).get('id');
 
@@ -85,13 +85,60 @@ let view = {
     },
 
     submitComment : function() {
+
         if (!$('#writeComment').val().trimLeft().trimRight()) {
             alert('내용을 입력해 주세요!!!');
             $('#writeComment').focus();
+            return;
         }
+
+        const postsId = new URLSearchParams(window.location.search).get('id');
+        const parentCommentId = null;
+        const content = $('#writeComment').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/comments',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                postsId: postsId,
+                parentCommentId: parentCommentId,
+                content: content
+            })
+        }).done(function(data) {
+
+        if (data === 0) {
+            alert('로그인이 필요합니다!!!');
+            return;
+        }
+
+        alert('댓글이 저장되었습니다.');
+
+        }).fail(function(error) {
+            alert(error);
+            console.log(error);
+        });
+
     },
 
-    refreshComment : function() {}
+    loadComment : function() {
+
+        const postsId = new URLSearchParams(window.location.search).get('id');
+
+        $.ajax({
+            type: 'GET',
+            url: `/api/v1/comments/${postsId}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function(data) {
+            
+        }).fail(function(error) {
+            alert(error);
+            console.log(error);
+        });
+
+    }
 
 };
 
