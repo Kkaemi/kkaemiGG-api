@@ -1,6 +1,5 @@
 package com.spring.kkaemiGG.web.controller.comment;
 
-import com.merakianalytics.datapipelines.sources.Get;
 import com.spring.kkaemiGG.config.auth.LoginUser;
 import com.spring.kkaemiGG.config.auth.dto.SessionUser;
 import com.spring.kkaemiGG.service.comment.CommentService;
@@ -9,8 +8,6 @@ import com.spring.kkaemiGG.web.dto.comment.CommentSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,16 +19,21 @@ public class CommentApiController {
     @PostMapping("/api/v1/comments")
     public Long save(@RequestBody CommentSaveRequestDto requestDto,
                      @LoginUser SessionUser sessionUser) {
+
         if (sessionUser == null) {
             return 0L;
         }
+
         requestDto.setAuthor(sessionUser.getNickname());
+        requestDto.setUserId(sessionUser.getId());
+
         return commentService.save(requestDto);
     }
 
     @GetMapping("/api/v1/comments/{postsId}")
-    public List<CommentResponseDto> find(@PathVariable Long postsId) {
-        return commentService.find(postsId);
+    public List<CommentResponseDto> find(@PathVariable Long postsId,
+                                         @LoginUser SessionUser sessionUser) {
+        return commentService.find(postsId, sessionUser);
     }
 
     @GetMapping("/api/v1/reply")

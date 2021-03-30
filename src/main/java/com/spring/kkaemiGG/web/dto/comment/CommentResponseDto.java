@@ -7,14 +7,17 @@ import lombok.Getter;
 @Getter
 public class CommentResponseDto {
 
-    private final Long id;
+    private final Long commentId;
+    private final Long userId;
     private final String author;
     private final String content;
     private final String timeDifference;
+    private Boolean owner = false;
     private final Boolean step;
 
     public CommentResponseDto(Comment entity) {
-        this.id = entity.getId();
+        this.commentId = entity.getId();
+        this.userId = entity.getUser().getId();
         this.author = entity.getAuthor();
         this.content = confirmDeletion(entity);
         this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());
@@ -29,5 +32,11 @@ public class CommentResponseDto {
 
     private Boolean isReply(Integer groupOrder) {
         return groupOrder > 1;
+    }
+
+    public void setOwner(Long userId) {
+        if (this.userId.equals(userId)) {
+            this.owner = true;
+        }
     }
 }

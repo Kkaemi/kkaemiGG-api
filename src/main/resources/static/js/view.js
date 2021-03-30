@@ -11,60 +11,64 @@ let view = {
             _this.loadComments();
         });
 
-        $('#writeComment, #writeReply').on('propertychange change keyup paste input', function(event) {
+        $(document).on('propertychange change keyup paste input', '#writeComment, #writeReply', function(event) {
 
-            if (event.target.id === "writeComment") {
-                let currentVal = $(this).val();
-                if (currentVal === oldVal) { return; }
-                oldVal = currentVal;
-
-                if (currentVal.length > 1000) {
-                    $(this).val(currentVal.substring(0, 1000));
-                    $(this).css('height', 'auto');
-                    $(this).height(this.scrollHeight);
-                    $('#count').html($(this).val().length);
-                    return;
-                }
-
-                $(this).css('height', 'auto');
-                $(this).height(this.scrollHeight);
-                $('#count').html(currentVal.length);
-                return;
-            }
-
+            let count = `#count`;
             if (event.target.id === 'writeReply') {
-                let currentVal = $(this).val();
-                if (currentVal === oldVal) { return; }
-                oldVal = currentVal;
+                count = `#replyCount`;
+            }
 
-                if (currentVal.length > 1000) {
-                    $(this).val(currentVal.substring(0, 1000));
-                    $(this).css('height', 'auto');
-                    $(this).height(this.scrollHeight);
-                    $('#replyCount').html($(this).val().length);
-                    return;
-                }
+            let currentVal = $(this).val();
+            if (currentVal === oldVal) { return; }
+            oldVal = currentVal;
 
+            if (currentVal.length > 1000) {
+                $(this).val(currentVal.substring(0, 1000));
                 $(this).css('height', 'auto');
                 $(this).height(this.scrollHeight);
-                $('#replyCount').html(currentVal.length);
+                $(count).html($(this).val().length);
                 return;
             }
+
+            $(this).css('height', 'auto');
+            $(this).height(this.scrollHeight);
+            $(count).html(currentVal.length);
 
         });
 
-        $('#commentSubmitButton').on('click', function() {
-            _this.submitComment();
+        $(document).on('click', '#commentSubmitButton, #replySubmitButton', function(event) {
+
+            $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+
+            const textarea = event.target.id === 'commentSubmitButton' ? '#writeComment' : '#writeReply';
+
+            if (!$(textarea).val().trimLeft().trimRight()) {
+                alert('내용을 입력해 주세요!!!');
+                $(this).html(`작성`);
+                $(textarea).focus();
+                return;
+            }
+
+            let commentId = $(`#${event.target.id}`).parent().parent().parent().parent().parent().prev().attr('id');
+            let targetNickname = $(`#${event.target.id}`).parent().parent().parent().parent().parent().prev().find('span.fw-bold').text();
+            let content = $(textarea).val();
+
+            if (isNaN(commentId)) {
+                commentId = null;
+            }
+
+            _this.submitComment(commentId, targetNickname, content, _this);
+
         });
 
         $('#commentRefreshButton').on('click', function() {
-
+            $('#comment').children().remove();
+            _this.loadComments();
         });
 
         $(document).on('click', '.reply-btn', function() {
             const id = $(this).parent().parent().parent().attr('id');
-            const nickname = $(this).parent().prev().prev().children('span.fw-bold').text();
-            _this.clickWriteReplyButton(id, nickname);
+            _this.clickWriteReplyButton(id);
         });
 
     },
@@ -110,21 +114,14 @@ let view = {
             }
 
         }).fail(function(error) {
-            alert(error);
+            alert(error.statusText);
+            console.log(error);
         });
     },
 
-    submitComment : function() {
-
-        if (!$('#writeComment').val().trimLeft().trimRight()) {
-            alert('내용을 입력해 주세요!!!');
-            $('#writeComment').focus();
-            return;
-        }
+    submitComment : function(commentId, targetNickname, content, init) {
 
         const postsId = new URLSearchParams(window.location.search).get('id');
-        const parentCommentId = null;
-        const content = $('#writeComment').val();
 
         $.ajax({
             type: 'POST',
@@ -133,21 +130,25 @@ let view = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 postsId: postsId,
-                parentCommentId: parentCommentId,
+                parentCommentId: commentId,
+                targetNickname: targetNickname,
                 content: content
             })
         }).done(function(data) {
 
         if (data === 0) {
             alert('로그인이 필요합니다!!!');
+            window.location.href = '/user/login';
             return;
         }
 
-        // alert 대신 refresh
-        alert('댓글이 저장되었습니다.');
+        $('#comment').children().remove();
+        init.loadComments();
+        $('#commentSubmitButton, #replySubmitButton').html('작성');
+        $('#writeComment').text('');
 
         }).fail(function(error) {
-            alert(error);
+            alert(error.statusText);
             console.log(error);
         });
 
@@ -164,6 +165,7 @@ let view = {
             contentType: 'application/json; charset=utf-8',
         }).done(function(data) {
             if (data.length === 0) {
+                $('#commentCount').text('0');
                 $('#comment').append(`<div class="text-muted text-center py-5">
                                     <div class="fs-1">
                                       <i class="bi bi-chat-left-dots-fill"></i>
@@ -175,35 +177,22 @@ let view = {
             $('#commentCount').text(data.length);
             data.forEach((comment) => {
                 $('#comment').append(function() {
+
+                    let style = '';
+                    let arrowIcon = '';
+                    let owner = '';
+
                     if (comment.step) {
-                        return `<div id="${comment.id}" class="child d-flex border-bottom p-3" style="background-color: #f8f9fa;">
-                                        <div class="ms-5 me-2 py-1">
-                                          <i class="bi bi-arrow-return-right"></i>
-                                        </div>
-                                        <div class="d-flex flex-column w-100">
-                                          <div class="d-flex align-items-center">
-                                            <span class="fw-bold">${comment.author}</span>
-                                            <div class="d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
-                                              <ol class="breadcrumb m-auto fw-lighter fs-4">
-                                                <li class="breadcrumb-item"></li>
-                                                <li class="breadcrumb-item"></li>
-                                              </ol>
-                                            </div>
-                                            <span class="text-muted">${comment.timeDifference}</span>
-                                          </div>
-                                          <div id="commentContent" class="mt-3">
-                                            ${comment.content}
-                                          </div>
-                                          <div class="text-muted mt-3">
-                                            <button class="reply-btn btn text-decoration-none text-muted p-0 border-0">
-                                              <i class="bi bi-chat-right-text-fill"></i>
-                                              <span>답글 쓰기</span>
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>`;
+                        style = `style="background-color: #f8f9fa;"`;
+                        arrowIcon = `<div class="ms-5 me-2 py-1"><i class="bi bi-arrow-return-right"></i></div>`;
                     }
-                    return `<div id="${comment.id}" class="parent d-flex border-bottom p-3">
+
+                    if (comment.owner) {
+                        owner = `<button class="btn text-decoration-none text-danger p-0 me-3">삭제</button>`;
+                    }
+
+                    return `<div id="${comment.commentId}" class="parent d-flex border-bottom p-3" ${style}>
+                                    ${arrowIcon}
                                     <div class="d-flex flex-column w-100">
                                       <div class="d-flex align-items-center">
                                         <span class="fw-bold">${comment.author}</span>
@@ -215,10 +204,11 @@ let view = {
                                         </div>
                                         <span class="text-muted">${comment.timeDifference}</span>
                                       </div>
-                                      <div id="commentContent" class="mt-3">
+                                      <div class="mt-3">
                                         ${comment.content}
                                       </div>
-                                      <div th:if="\$\{session.user != null\}" class="text-muted mt-3">
+                                      <div class="text-muted mt-3">
+                                        ${owner}
                                         <button class="reply-btn btn text-decoration-none text-muted p-0 border-0">
                                           <i class="bi bi-chat-right-text-fill"></i>
                                           <span>답글 쓰기</span>
@@ -235,17 +225,42 @@ let view = {
 
     },
 
-    clickWriteReplyButton : function(id, nickname) {
+    clickWriteReplyButton : function(id) {
+
+        const reply = `<div id="reply" class="p-4 border-bottom" style="background-color: #f8f9fa;">
+                           <div class="d-flex">
+                             <div class="ms-5 me-2 py-1">
+                               <i class="bi bi-arrow-return-right"></i>
+                             </div>
+                             <div class="border bg-white w-100">
+                               <div class="px-3 py-4">
+                                 <textarea name="content" id="writeReply" class="w-100 border border-0" style="height: 56px; outline: none; resize: none; overflow: hidden;" placeholder="댓글을 입력해 주세요."></textarea>
+                               </div>
+                               <div class="d-flex border-top">
+                                 <div class="me-auto"></div>
+                                 <div class="text-muted p-2">
+                                   <span style="font-size: 14px;">(<span id="replyCount">0</span>/1000)</span>
+                                 </div>
+                                 <div>
+                                   <button id="replySubmitButton" class="btn btn-success w-100 rounded-0 px-4 py-1 h-100">작성</button>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>`;
+
         $.ajax({
             type: 'GET',
             url: `/api/v1/reply`,
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
         }).done(function(data) {
+
             if (data) {
                 window.location.href = '/user/login';
                 return;
             }
+
             if ($(`#${id}`).next().attr('id') === 'reply') {
                 $('#reply').remove();
                 return;
@@ -253,54 +268,9 @@ let view = {
 
             if ($('#comment').find('div#reply').length) {
                 $('#reply').remove();
-                $(`#${id}`).after(
-                            `<div id="reply" class="p-4 border-bottom" style="background-color: #f8f9fa;">
-                                 <div class="d-flex">
-                                   <div class="ms-5 me-2 py-1">
-                                     <i class="bi bi-arrow-return-right"></i>
-                                   </div>
-                                   <div class="border bg-white w-100">
-                                     <div class="px-3 py-4">
-                                       <textarea name="content" id="writeReply" class="w-100 border border-0" style="height: 56px; outline: none; resize: none; overflow: hidden;" placeholder="댓글을 입력해 주세요."></textarea>
-                                     </div>
-                                     <div class="d-flex border-top">
-                                       <div class="me-auto"></div>
-                                       <div class="text-muted p-2">
-                                         <span style="font-size: 14px;">(<span id="replyCount">0</span>/1000)</span>
-                                       </div>
-                                       <div>
-                                         <button id="replySubmitButton" class="btn btn-success w-100 rounded-0 px-4 py-1 h-100">작성</button>
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </div>
-                               </div>`
-                            );
-
+                $(`#${id}`).after(reply);
             } else {
-                $(`#${id}`).after(
-                `<div id="reply" class="p-4 border-bottom" style="background-color: #f8f9fa;">
-                     <div class="d-flex">
-                       <div class="ms-5 me-2 py-1">
-                         <i class="bi bi-arrow-return-right"></i>
-                       </div>
-                       <div class="border bg-white w-100">
-                         <div class="px-3 py-4">
-                           <textarea name="content" id="writeReply" class="w-100 border border-0" style="height: 56px; outline: none; resize: none; overflow: hidden;" placeholder="댓글을 입력해 주세요."></textarea>
-                         </div>
-                         <div class="d-flex border-top">
-                           <div class="me-auto"></div>
-                           <div class="text-muted p-2">
-                             <span style="font-size: 14px;">(<span id="replyCount">0</span>/1000)</span>
-                           </div>
-                           <div>
-                             <button id="replySubmitButton" class="btn btn-success w-100 rounded-0 px-4 py-1 h-100">작성</button>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </div>`
-                );
+                $(`#${id}`).after(reply);
             }
 
         }).fail(function(error) {
