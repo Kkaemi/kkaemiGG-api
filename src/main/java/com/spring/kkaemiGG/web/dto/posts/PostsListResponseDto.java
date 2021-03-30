@@ -8,12 +8,14 @@ import lombok.Getter;
 public class PostsListResponseDto {
 
     private final Long id;
+    private final Integer comments;
     private final String title;
     private final String author;
     private final String timeDifference;
 
     public PostsListResponseDto(Posts entity) {
         this.id = entity.getId();
+        this.comments = entity.getComments().size();
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());

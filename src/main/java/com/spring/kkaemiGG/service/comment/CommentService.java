@@ -1,12 +1,16 @@
 package com.spring.kkaemiGG.service.comment;
 
 import com.spring.kkaemiGG.domain.comment.Comment;
+import com.spring.kkaemiGG.domain.comment.CommentQueryRepository;
 import com.spring.kkaemiGG.domain.comment.CommentRepository;
 import com.spring.kkaemiGG.domain.posts.Posts;
 import com.spring.kkaemiGG.domain.posts.PostsRepository;
+import com.spring.kkaemiGG.web.dto.comment.CommentResponseDto;
 import com.spring.kkaemiGG.web.dto.comment.CommentSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -14,6 +18,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
+    private final CommentQueryRepository queryRepository;
 
     public Long save(CommentSaveRequestDto requestDto) {
 
@@ -45,4 +50,7 @@ public class CommentService {
         return commentRepository.save(comment).getId();
     }
 
+    public List<CommentResponseDto> find(Long postsId) {
+        return queryRepository.getCommentList(postsId);
+    }
 }

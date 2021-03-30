@@ -83,7 +83,7 @@ let list = {
                             <a href="/community/view?id=${content.id}" class="text-decoration-none text-dark w-100">
                                 <span>${content.title}</span>
                                 &nbsp;
-                                <span class="text-success">[0]</span>
+                                <span class="text-success">[${content.comments}]</span>
                             </a>
                         </div>
                         <div class="d-flex align-items-center text-muted">
