@@ -1,6 +1,7 @@
 package com.spring.kkaemiGG.web.dto.posts;
 
 import com.spring.kkaemiGG.domain.posts.Posts;
+import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,24 +12,20 @@ public class PostsSaveRequestDto {
 
     private String title;
     private String content;
-    private String author;
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
     @Builder
-    public PostsSaveRequestDto(String title, String content, String author) {
+    public PostsSaveRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
-        this.author = author;
     }
 
-    public Posts toEntity() {
+    public Posts toEntityWithUser(User user) {
         return Posts.builder()
+                .hit(0L)
+                .user(user)
                 .title(title)
                 .content(content)
-                .author(author)
+                .author(user.getNickname())
                 .build();
     }
 }

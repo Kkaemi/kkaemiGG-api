@@ -1,10 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head th:insert="fragment/general.html :: headerfiles (pageTitle='KKAEMI.GG')"></head>
+  <body style="padding-top: 4rem;">
 
-</body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top px-0 px-md-5" style="background-color: #1fc996;">
+      <div class="container-fluid">
+        <a class="navbar-brand py-0" href="/community/list">
+          <i class="bi bi-vector-pen fs-5 align-middle"></i>
+          <span class="fw-bold fs-4">KKAEMI.GG</span>
+        </a>
+        <div class="d-none d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+          <ol class="breadcrumb m-auto fw-lighter fs-4">
+            <li class="breadcrumb-item"></li>
+            <li class="breadcrumb-item"></li>
+          </ol>
+        </div>
+        <button class="navbar-toggler btn-outline"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+          <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+            <li class="nav-item d-grid text-center">
+              <a href="/" class="nav-link active d-none d-md-block">
+                <span class="fs-6">전적 검색</span>
+              </a>
+              <button class="btn btn-outline-light btn-md rounded-3 px-4 d-md-none" onclick="location.href='/'">전적 검색</button>
+            </li>
+          </ul>
+          <ul class="navbar-nav mt-2 mb-2 mb-md-0 mt-md-0">
+            <li class="nav-item d-grid">
+              <button class="btn btn-outline-light btn-md rounded-3 px-4"
+                      th:if="${session.user == null}"
+                      th:onclick="location.href='/user/login'">로그인</button>
+              <form method="POST"
+                    th:if="${session.user != null}"
+                    th:action="@{/logout}">
+                <button class="btn btn-outline-light btn-md rounded-3 px-4 w-100"
+                        onclick="this.parentNode.submit()">로그아웃</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- content -->
+    <div class="col-md-10 px-3 px-md-5 mt-md-5 mx-md-auto border shadow-sm">
+      <div id="contentHead" class="d-flex flex-column pt-5 pb-3">
+        <div id="title" class="fs-2 mb-2"></div>
+        <div class="text-muted d-flex align-items-center" style="font-size: 15px;">
+          <span id="timeDifference"></span>
+          <div class="d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+            <ol class="breadcrumb m-auto fw-lighter fs-4">
+              <li class="breadcrumb-item"></li>
+              <li class="breadcrumb-item"></li>
+            </ol>
+          </div>
+          <span id="author"></span>
+        </div>
+        <div class="text-muted d-flex align-items-center" style="font-size: 15px;">
+          <span id="hit"></span>
+          <div class="d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+            <ol class="breadcrumb m-auto fw-lighter fs-4">
+              <li class="breadcrumb-item"></li>
+              <li class="breadcrumb-item"></li>
+            </ol>
+          </div>
+          <span id="contentHeadCommentCount"></span>
+          <div class="d-md-block me-md-2" style="--bs-breadcrumb-divider: '|';">
+            <ol class="breadcrumb m-auto fw-lighter fs-4">
+              <li class="breadcrumb-item"></li>
+              <li class="breadcrumb-item"></li>
+            </ol>
+          </div>
+          <span>추천 0</span>
+        </div>
+      </div>
+      <div id="content" class="border-top border-bottom px-3 py-5">
+      </div>
+      <div class="d-flex text-muted justify-content-center">
+        <button class="btn border text-muted m-3 px-4 py-2">
+          <i class="bi bi-caret-up-fill"></i>
+          <span>0</span>
+        </button>
+        <button class="btn border text-muted m-3 px-4 py-2">
+          <i class="bi bi-caret-down-fill"></i>
+          <span>0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- comment -->
+    <div class="col-md-10 border shadow mx-md-auto my-3">
+      <div id="commentNav" class="position-sticky d-flex justify-content-between align-items-center p-3 border-bottom bg-white" style="top: 55px;">
+        <div class="d-flex align-items-center">
+          <span class="fs-5 fw-bold">댓글</span>
+          &nbsp;
+          <span class="text-muted" style="font-size: 15px;">총 <span id="commentCount" class="text-success"></span> 개</span>
+        </div>
+        <div id="commentRefreshButton" class="text-muted" style="cursor: pointer;">
+          <i class="bi bi-arrow-repeat"></i>
+          <span>새로고침</span>
+        </div>
+      </div>
+
+      <div th:if="${session.user != null}"
+           class="p-4" style="background-color: #f8f9fa;">
+        <div>
+          <div class="border bg-white">
+            <div class="px-3 py-4">
+              <textarea name="content" id="writeComment" class="w-100 border border-0" style="height: 56px; outline: none; resize: none; overflow: hidden;" placeholder="댓글을 입력해 주세요."></textarea>
+            </div>
+            <div class="d-flex border-top">
+              <div class="me-auto"></div>
+              <div class="text-muted p-2">
+                <span style="font-size: 14px;">(<span id="count">0</span>/1000)</span>
+              </div>
+              <div>
+                <button id="commentSubmitButton" class="btn btn-success w-100 rounded-0 px-4 py-1 h-100">작성</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="comment"></div>
+
+    </div>
+
+    <!-- footer -->
+    <footer th:insert="fragment/general.html :: footer"></footer>
+
+    <!-- scripts -->
+    <th:block th:replace="fragment/general.html :: scripts" />
+    <script src="/js/view.js"></script>
+
+  </body>
 </html>

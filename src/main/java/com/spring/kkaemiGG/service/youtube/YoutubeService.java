@@ -21,7 +21,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.spring.kkaemiGG.development.Development;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -46,6 +46,12 @@ public class YoutubeService {
     /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
     private static final long NUMBER_OF_VIDEOS_RETURNED = 12;
 
+    private final String apiKey;
+
+    public YoutubeService(@Value("${YOUTUBE_API_KEY}") String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     public List<SearchResult> getSearchList() {
 
         List<SearchResult> searchResultList = new ArrayList<>();
@@ -59,7 +65,7 @@ public class YoutubeService {
 
             YouTube.Search.List search = youtube.search().list(Collections.singletonList("id"));
 
-            SearchListResponse searchResponse = search.setKey(Development.YOUTUBE.getApiKey())
+            SearchListResponse searchResponse = search.setKey(apiKey)
                     .setQ(queryTerm)
                     .setType(Collections.singletonList("video"))
                     .setOrder("relevance")
