@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.domain.user;
 
+import com.spring.kkaemiGG.domain.posts.Posts;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,17 +9,22 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_ID")
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private List<Posts> posts = new ArrayList<>();
 
     @Column(nullable = false)
     private String email;
@@ -26,7 +32,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String nickname;
 
-    @Column
+    @Column(columnDefinition = "char(60)")
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -40,12 +46,6 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-
-    public User update(String name) {
-        this.nickname = name;
-
-        return this;
     }
 
     @Override
