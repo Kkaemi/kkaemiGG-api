@@ -47,9 +47,19 @@ public class PostsApiController {
         return postsService.findByIdWithSession(id, sessionUser);
     }
 
+    @GetMapping("/community/edit/{id}")
+    public PostsUpdateResponseDto edit(@PathVariable Long id) {
+        return postsService.findById(id);
+    }
+
     @PutMapping("/api/v1/posts/{id}")
     public Long update(@PathVariable Long id,
+                       @LoginUser SessionUser sessionUser,
                        @RequestBody PostsUpdateRequestDto requestDto) {
+        if (sessionUser == null) {
+            return 0L;
+        }
+        requestDto.setAuthor(sessionUser.getNickname());
         return postsService.update(id, requestDto);
     }
 
