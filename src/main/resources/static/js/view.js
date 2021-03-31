@@ -3,12 +3,13 @@ let view = {
     init : function() {
 
         const _this = this;
+        const postsId = new URLSearchParams(window.location.search).get('id');
 
         let oldVal;
 
         $(document).ready(function() {
-            _this.loadContent();
-            _this.loadComments();
+            _this.loadContent(postsId);
+            _this.loadComments(postsId);
         });
 
         $(document).on('propertychange change keyup paste input', '#writeComment, #writeReply', function(event) {
@@ -57,13 +58,13 @@ let view = {
                 commentId = null;
             }
 
-            _this.submitComment(commentId, targetNickname, content, _this);
+            _this.submitComment(postsId, commentId, targetNickname, content, _this);
 
         });
 
         $('#commentRefreshButton').on('click', function() {
             $('#comment').children().remove();
-            _this.loadComments();
+            _this.loadComments(postsId);
         });
 
         $(document).on('click', '.reply-btn', function() {
@@ -78,13 +79,21 @@ let view = {
             }
         });
 
+        $(document).on('click', '#postsModifyButton', function() {
+            window.location.href = `/community/edit?id=${postsId}`;
+        });
+
+        $(document).on('click', '#postsRemoveButton', function() {
+            if (window.confirm('글을 삭제하시겠습니까?')) {
+                _this.removePosts(postsId);
+            }
+        });
+
     },
 
-    loadContent : function() {
+    loadContent : function(postsId) {
 
-        const id = new URLSearchParams(window.location.search).get('id');
-
-        if (parseInt(id) > 0x7fffffffffffffff || parseInt(id) < 0 || isNaN(id)) {
+        if (parseInt(postsId) > 0x7fffffffffffffff || parseInt(postsId) < 0 || isNaN(postsId)) {
             alert('올바른 값을 입력해 주세요');
             window.location.replace('/community/list');
             return;
@@ -92,7 +101,7 @@ let view = {
 
         $.ajax({
             type: 'GET',
-            url: `/api/v1/posts/${id}`,
+            url: `/api/v1/posts/${postsId}`,
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
         }).done(function(data) {
@@ -113,8 +122,8 @@ let view = {
             if (data.owner) {
                 $('#contentHead').append(
                 `<div class="mt-3 mb-1">
-                  <button class="btn btn-outline-danger btn-sm px-3">삭제</button>
-                  <button class="btn btn-outline-info btn-sm px-3 ms-2">수정</button>
+                  <button id="postsRemoveButton" class="btn btn-outline-danger btn-sm px-3">삭제</button>
+                  <button id="postsModifyButton" class="btn btn-outline-info btn-sm px-3 ms-2">수정</button>
                 </div>`
                 );
             }
@@ -125,9 +134,7 @@ let view = {
         });
     },
 
-    submitComment : function(commentId, targetNickname, content, init) {
-
-        const postsId = new URLSearchParams(window.location.search).get('id');
+    submitComment : function(postsId, commentId, targetNickname, content, init) {
 
         $.ajax({
             type: 'POST',
@@ -149,9 +156,10 @@ let view = {
         }
 
         $('#comment').children().remove();
-        init.loadComments();
+        init.loadComments(postsId);
         $('#commentSubmitButton, #replySubmitButton').html('작성');
         $('#writeComment').val('');
+        $('#count').text('0');
 
         }).fail(function(error) {
             alert(error.statusText);
@@ -160,9 +168,7 @@ let view = {
 
     },
 
-    loadComments : function() {
-
-        const postsId = new URLSearchParams(window.location.search).get('id');
+    loadComments : function(postsId) {
 
         $.ajax({
             type: 'GET',
@@ -301,6 +307,21 @@ let view = {
             console.log(error);
         });
 
+    },
+
+    removePosts : function(postsId) {
+
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/v1/posts/${postsId}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function(data) {
+            window.location.replace('/community/list');
+        }).fail(function(error) {
+            alert(error.statusText);
+            console.log(error);
+        });
     }
 
 };

@@ -15,10 +15,10 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @GetMapping("/api/v1/posts")
-    public Page<PostsListResponseDto> findByRequest(@RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "recent", required = false) String sort,
-                                                    @RequestParam(required = false) String target,
-                                                    @RequestParam(required = false) String keyword) {
+    public Page<PostsListResponseDto> paging(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "recent", required = false) String sort,
+                                             @RequestParam(required = false) String target,
+                                             @RequestParam(required = false) String keyword) {
 
         PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
                 .page(page)
@@ -42,8 +42,8 @@ public class PostsApiController {
     }
 
     @GetMapping("/api/v1/posts/{id}")
-    public PostsResponseDto findByIdWithSession(@PathVariable Long id,
-                                     @LoginUser SessionUser sessionUser) {
+    public PostsResponseDto view(@PathVariable Long id,
+                                 @LoginUser SessionUser sessionUser) {
         return postsService.findByIdWithSession(id, sessionUser);
     }
 
@@ -51,6 +51,12 @@ public class PostsApiController {
     public Long update(@PathVariable Long id,
                        @RequestBody PostsUpdateRequestDto requestDto) {
         return postsService.update(id, requestDto);
+    }
+
+    @DeleteMapping("/api/v1/posts/{id}")
+    public Long delete(@PathVariable Long id) {
+        postsService.delete(id);
+        return id;
     }
 
 }

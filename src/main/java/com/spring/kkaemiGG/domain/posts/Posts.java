@@ -26,7 +26,7 @@ public class Posts extends BaseTimeEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Column(length = 500, nullable = false)

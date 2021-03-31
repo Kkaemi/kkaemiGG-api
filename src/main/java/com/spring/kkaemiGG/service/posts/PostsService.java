@@ -48,6 +48,10 @@ public class PostsService {
         return id;
     }
 
+    public void delete(Long id) {
+        postsRepository.deleteById(id);
+    }
+
     @Transactional
     public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
 
