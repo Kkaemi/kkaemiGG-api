@@ -39,17 +39,22 @@ public class PostsService {
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
 
-        Posts posts = postsRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id)
-        );
+        Posts posts = postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
-        posts.update(requestDto.getTitle(), requestDto.getContent());
+        posts.update(requestDto);
 
         return id;
     }
 
     public void delete(Long id) {
         postsRepository.deleteById(id);
+    }
+
+    public PostsUpdateResponseDto findById(Long id) {
+        return postsRepository.findById(id)
+                .map(PostsUpdateResponseDto::new)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시물이 없습니다."));
     }
 
     @Transactional

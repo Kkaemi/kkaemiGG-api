@@ -3,6 +3,7 @@ package com.spring.kkaemiGG.domain.posts;
 import com.spring.kkaemiGG.domain.BaseTimeEntity;
 import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.user.User;
+import com.spring.kkaemiGG.web.dto.posts.PostsUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,9 +48,10 @@ public class Posts extends BaseTimeEntity {
         this.author = author;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void update(PostsUpdateRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.author = requestDto.getAuthor();
     }
 
     public void hit() {
