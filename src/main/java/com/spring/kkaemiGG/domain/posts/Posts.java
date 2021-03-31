@@ -1,13 +1,15 @@
 package com.spring.kkaemiGG.domain.posts;
 
 import com.spring.kkaemiGG.domain.BaseTimeEntity;
+import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -18,12 +20,14 @@ public class Posts extends BaseTimeEntity {
     @Column(name = "POST_ID")
     private Long id;
 
-    @ColumnDefault("0")
     private Long hit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    @OneToMany(mappedBy = "posts", orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(length = 500, nullable = false)
     private String title;
@@ -35,7 +39,8 @@ public class Posts extends BaseTimeEntity {
     private String author;
 
     @Builder
-    public Posts(User user, String title, String content, String author) {
+    public Posts(Long hit, User user, String title, String content, String author) {
+        this.hit = hit;
         this.user = user;
         this.title = title;
         this.content = content;
