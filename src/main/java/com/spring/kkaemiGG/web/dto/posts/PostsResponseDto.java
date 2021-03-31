@@ -12,7 +12,6 @@ public class PostsResponseDto {
     private final Long postsId;
     private Long userId;
     private Long hit;
-    private Integer comments;
     private String title;
     private String content;
     private String author;
@@ -23,7 +22,6 @@ public class PostsResponseDto {
         this.postsId = entity.getId();
         this.userId = entity.getUser().getId();
         this.hit = entity.getHit();
-        this.comments = entity.getComments().size();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.author = entity.getAuthor();

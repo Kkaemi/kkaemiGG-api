@@ -16,7 +16,7 @@ public class PostsApiController {
 
     @GetMapping("/api/v1/posts")
     public Page<PostsListResponseDto> findByRequest(@RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(required = false) String sort,
+                                                    @RequestParam(defaultValue = "recent", required = false) String sort,
                                                     @RequestParam(required = false) String target,
                                                     @RequestParam(required = false) String keyword) {
 

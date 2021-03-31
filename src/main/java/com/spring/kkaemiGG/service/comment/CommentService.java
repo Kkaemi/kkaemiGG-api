@@ -36,8 +36,8 @@ public class CommentService {
         if (requestDto.getParentCommentId() != null) {
             Comment parentComment = commentRepository.findById(requestDto.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다."));
-            Comment childComment = requestDto.toEntity();
             Comment grandParentComment = parentComment.getParentComment();
+            Comment childComment = requestDto.toEntity();
 
             childComment.setPosts(posts);
             childComment.setUser(user);
@@ -69,5 +69,32 @@ public class CommentService {
             responseDtoList.forEach(dto -> dto.setOwner(sessionUser.getId()));
         }
         return responseDtoList;
+    }
+
+    public void delete(Long commentId) {
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다."));
+        Comment parentComment = comment.getParentComment();
+
+        // 부모 댓글일 경우 상태만 변경
+        if (comment.getChildComments().size() > 1) {
+            comment.setDeletion(true);
+            return;
+        }
+
+        if (parentComment.getDeletion()) {
+            commentRepository.delete(comment);
+            commentRepository.delete(parentComment);
+            return;
+        }
+
+        // 삭제 되는 댓글들의 groupOrder를 하나씩 빼줌
+        comment.getParentComment().getChildComments().stream()
+                .filter((childComment) -> childComment.getGroupOrder() > comment.getGroupOrder())
+                .forEach((childComment) -> childComment.setGroupOrder(childComment.getGroupOrder() - 1));
+
+        commentRepository.delete(comment);
+
     }
 }

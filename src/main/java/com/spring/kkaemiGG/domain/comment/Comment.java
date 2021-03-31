@@ -55,9 +55,8 @@ public class Comment extends BaseTimeEntity {
         this.deletion = deletion;
     }
 
-    public void update(String content, String author) {
-        this.content = content;
-        this.author = author;
+    public void setDeletion(Boolean deletion) {
+        this.deletion = deletion;
     }
 
     public void setGroupOrder(Integer groupOrder) {

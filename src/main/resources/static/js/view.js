@@ -71,6 +71,13 @@ let view = {
             _this.clickWriteReplyButton(id);
         });
 
+        $(document).on('click', '.comment-remove-btn', function() {
+            if (window.confirm('댓글을 삭제하시겠습니까?')) {
+                const id = $(this).parent().parent().parent().attr('id');
+                _this.removeComment(_this, id);
+            }
+        });
+
     },
 
     loadContent : function() {
@@ -102,7 +109,6 @@ let view = {
             $('#author').text(data.author);
             $('#hit').text(`조회 ${new Intl.NumberFormat().format(data.hit)}`);
             $('#content').html(data.content);
-            $('#contentHeadCommentCount').text(`댓글 ${data.comments}`);
 
             if (data.owner) {
                 $('#contentHead').append(
@@ -145,7 +151,7 @@ let view = {
         $('#comment').children().remove();
         init.loadComments();
         $('#commentSubmitButton, #replySubmitButton').html('작성');
-        $('#writeComment').text('');
+        $('#writeComment').val('');
 
         }).fail(function(error) {
             alert(error.statusText);
@@ -166,6 +172,7 @@ let view = {
         }).done(function(data) {
             if (data.length === 0) {
                 $('#commentCount').text('0');
+                $('#contentHeadCommentCount').text('댓글 0');
                 $('#comment').append(`<div class="text-muted text-center py-5">
                                     <div class="fs-1">
                                       <i class="bi bi-chat-left-dots-fill"></i>
@@ -175,6 +182,7 @@ let view = {
                 return;
             }
             $('#commentCount').text(data.length);
+            $('#contentHeadCommentCount').text(`댓글 ${data.length}`);
             data.forEach((comment) => {
                 $('#comment').append(function() {
 
@@ -188,7 +196,7 @@ let view = {
                     }
 
                     if (comment.owner) {
-                        owner = `<button class="btn text-decoration-none text-danger p-0 me-3">삭제</button>`;
+                        owner = `<button class="comment-remove-btn btn text-decoration-none text-danger p-0 me-3">삭제</button>`;
                     }
 
                     return `<div id="${comment.commentId}" class="parent d-flex border-bottom p-3" ${style}>
@@ -276,6 +284,23 @@ let view = {
         }).fail(function(error) {
             console.log(error);
         });
+    },
+
+    removeComment : function(init, id) {
+
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/v1/comments/${id}`,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function(data) {
+            $('#comment').children().remove();
+            init.loadComments();
+        }).fail(function(error) {
+            alert(error.statusText);
+            console.log(error);
+        });
+
     }
 
 };

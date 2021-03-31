@@ -36,6 +36,12 @@ public class CommentApiController {
         return commentService.find(postsId, sessionUser);
     }
 
+    @DeleteMapping("/api/v1/comments/{commentId}")
+    public Long deleteComment(@PathVariable Long commentId) {
+        commentService.delete(commentId);
+        return commentId;
+    }
+
     @GetMapping("/api/v1/reply")
     public Boolean reply(@LoginUser SessionUser sessionUser) {
         return sessionUser == null;
