@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
+                    .antMatchers("/", "/css/**", "/img/**", "/js/**", "/h2-console/**", "/profile").permitAll()
                     .antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())
                 .and()
                     .formLogin().loginPage("/user/login")
