@@ -30,6 +30,17 @@ deploy:
     local_dir: deploy
     wait-until-deployed: true
 
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: kkaemi.gg
+    key: kkaemiGG.zip
+    bundle_type: zip
+    application: kkaemiGG
+    deployment_group: kkaemiGG
+    region: ap-northeast-2
+    wait-until-deployed: true
+
 # CI 실행 완료 시 메일로 알람
 notifications:
   email:
