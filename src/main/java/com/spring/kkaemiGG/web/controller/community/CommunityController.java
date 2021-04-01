@@ -18,4 +18,14 @@ public class CommunityController {
         return "community/write";
     }
 
+    @GetMapping("/view")
+    public String postsView() {
+        return "community/view";
+    }
+
+    @GetMapping("/edit")
+    public String postsEdit() {
+        return "community/edit";
+    }
+
 }
