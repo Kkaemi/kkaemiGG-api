@@ -83,13 +83,14 @@ public class CommentService {
             return;
         }
 
-        if (parentComment.getDeletion()) {
+        // 부모 댓글의 상태가 삭제된 상태고 자식 댓글이 하나밖에 없으면 자식댓글과 부모댓글 같이 삭제
+        if (parentComment.getDeletion() && parentComment.getChildComments().size() == 2) {
             commentRepository.delete(comment);
             commentRepository.delete(parentComment);
             return;
         }
 
-        // 삭제 되는 댓글들의 groupOrder를 하나씩 빼줌
+        // 삭제 되는 댓글 보다 뒤에 있는 댓글들의 groupOrder를 하나씩 빼줌
         comment.getParentComment().getChildComments().stream()
                 .filter((childComment) -> childComment.getGroupOrder() > comment.getGroupOrder())
                 .forEach((childComment) -> childComment.setGroupOrder(childComment.getGroupOrder() - 1));

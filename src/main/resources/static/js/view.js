@@ -75,7 +75,7 @@ let view = {
         $(document).on('click', '.comment-remove-btn', function() {
             if (window.confirm('댓글을 삭제하시겠습니까?')) {
                 const id = $(this).parent().parent().parent().attr('id');
-                _this.removeComment(_this, id);
+                _this.removeComment(_this, id, postsId);
             }
         });
 
@@ -292,7 +292,7 @@ let view = {
         });
     },
 
-    removeComment : function(init, id) {
+    removeComment : function(init, id, postsId) {
 
         $.ajax({
             type: 'DELETE',
@@ -301,7 +301,7 @@ let view = {
             contentType: 'application/json; charset=utf-8'
         }).done(function(data) {
             $('#comment').children().remove();
-            init.loadComments();
+            init.loadComments(postsId);
         }).fail(function(error) {
             alert(error.statusText);
             console.log(error);

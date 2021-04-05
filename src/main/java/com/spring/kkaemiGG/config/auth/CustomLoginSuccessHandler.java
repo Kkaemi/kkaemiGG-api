@@ -26,7 +26,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication)
-            throws IOException, ServletException {
+            throws IOException {
 
         String redirectUrl = "/";
 
@@ -80,10 +80,11 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
                 .redirectUrl(redirectUrl)
                 .build();
 
-        PrintWriter out = response.getWriter();
         response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
         response.setCharacterEncoding(CharEncoding.UTF_8);
         response.setStatus(HttpStatus.OK.value());
+
+        PrintWriter out = response.getWriter();
         out.print(new Gson().toJson(responseDto));
         out.flush();
 
