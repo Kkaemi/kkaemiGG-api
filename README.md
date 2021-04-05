@@ -318,59 +318,121 @@ public class UserController {
 #### PostsService
 
 ```java
-@RequiredArgsConstructor  
-@Service  
-public class PostsService {  
-  
-	private final PostsRepository postsRepository;  
-	private final UserRepository userRepository;  
-  
-    ...
-    
-	@Transactional  
-	public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {  
+@RequiredArgsConstructor
+@Service
+public class PostsService {
 
-		PostsResponseDto responseDto = postsRepository.findById(id)  
-				.map(entity -> {  
-					entity.hit(); // 조회수 증가  
-					return new PostsResponseDto(entity);  
-				})  
-				.orElseGet(() -> new PostsResponseDto(-1L));  
+    private final PostsRepository postsRepository;
+    private final PostsQueryRepository queryRepository;
+    private final UserRepository userRepository;
 
-		if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {  
-			responseDto.setOwner(true);  
-		}  
+    @Transactional
+    public Long save(PostsSaveRequestDto requestDto, SessionUser sessionUser) {
 
-		return responseDto;  
+        User user = userRepository.findByEmail(sessionUser.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
-	}
-  
-	@Transactional(readOnly = true)  
-	public Page<PostsListResponseDto> findByRequest(PostsPageRequestDto requestDto) {  
-		PageRequest pageRequest = PageRequest.of(requestDto.getPage(), 20, Sort.Direction.DESC, "createdDate");  
-		
-		// 검색 조건 추가된 경우
-		if (requestDto.isSearched()) {  
-			if (requestDto.getTarget().equals("title")) {  
-				return postsRepository.findByTitleContaining(requestDto.getKeyword(), pageRequest)  .map(PostsListResponseDto::new);  
-			}  
+        Posts posts = requestDto.toEntityWithUser(user);
 
-			if (requestDto.getTarget().equals("author")) {  
-				return postsRepository.findByAuthorContaining(requestDto.getKeyword(), pageRequest)  .map(PostsListResponseDto::new);  
-			}  
-		}
-		
-		// 인기순 정렬 구현 예정
+        user.getPosts().add(posts);
 
-		return postsRepository.findAll(pageRequest).map(PostsListResponseDto::new);  
-	}  
+        userRepository.save(user);
+        postsRepository.save(posts);
+
+        return posts.getId();
+    }
+
+    @Transactional
+    public Long update(Long id, PostsUpdateRequestDto requestDto) {
+
+        Posts posts = postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
+
+        posts.update(requestDto);
+
+        return id;
+    }
+
+    public void delete(Long id) {
+        postsRepository.deleteById(id);
+    }
+
+    public PostsUpdateResponseDto findById(Long id) {
+        return postsRepository.findById(id)
+                .map(PostsUpdateResponseDto::new)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시물이 없습니다."));
+    }
+
+    @Transactional
+    public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
+
+        PostsResponseDto responseDto = postsRepository.findById(id)
+                .map(entity -> {
+                    entity.hit(); // 조회수 증가
+                    return new PostsResponseDto(entity);
+                })
+                .orElseGet(() -> new PostsResponseDto(-1L));
+
+        if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {
+            responseDto.setOwner(true);
+        }
+
+        return responseDto;
+
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostsPageResponseDto> findPage(PostsPageRequestDto requestDto) {
+
+        PageRequest pageRequest = PageRequest
+                .of(requestDto.getPage(), 20);
+
+        // 인기순 정렬도 구현 예정
+
+        return queryRepository.findDynamic(requestDto, pageRequest);
+    }
 }
 ```
+
+#### PostsQueryRepository
+
+```java
+@RequiredArgsConstructor
+@Repository
+public class PostsQueryRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public Page<PostsPageResponseDto> findDynamic(PostsPageRequestDto requestDto, Pageable pageable) {
+        QueryResults<PostsPageResponseDto> results = queryFactory
+                .select(Projections.constructor(PostsPageResponseDto.class,
+                        posts,
+                        comment.id.count()))
+                .from(posts)
+                .leftJoin(posts.comments, comment)
+                .where(eqKeyword(requestDto.getTarget(), requestDto.getKeyword()))
+                .groupBy(posts.id)
+                .orderBy(posts.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    private BooleanExpression eqKeyword(SearchType searchType, String keyword) {
+        if (!StringUtils.hasText(keyword)) {
+            return null;
+        }
+        return searchType.getEq(keyword);
+    }
+
+}
+```
+
 1. 포스트 뷰 페이지로 이동하면 조회수를 하나 증가시켜 주고 세션의 id 값과 posts 엔티티에 저장되어있는 user의 id 값이 동일할 경우 글의 주인이므로 응답 Dto의 owner 값을 true로 바꿔줍니다.
 
-2. 페이징 요청 시 검색 조건이 추가 됐는지 확인 하고 조건에 맞는 쿼리가 실행 되도록 구현했습니다.
-   이 부분에서 게시글 마다 댓글의 개수도 같이 보이게 구현하다 보니 N + 1 문제가 발생했습니다.
-   Querydsl의 동적쿼리와 페치 조인을 이용해서 코드를 수정하기 위해 공부중입니다.
+2. Querydsl을 사용해서 검색 페이징 동적 쿼리를 만들었습니다. 댓글의 개수를 불러오기 위해서 페치 조인을 사용하려 했으나 페치 조인과 페이징 API를 같이 사용할 수 없기 때문에 페치 조인 없이 left join으로 comment_id 튜플 개수를 가져오도록 구현했습니다.
 
 ```java
 @Getter  
@@ -440,89 +502,134 @@ public class CommentApiController {
 #### CommentService
 
 ```java
-@RequiredArgsConstructor  
-@Service  
-public class CommentService {  
+@RequiredArgsConstructor
+@Service
+public class CommentService {
 
-	private final CommentRepository commentRepository;  
-	private final PostsRepository postsRepository;  
-	private final UserRepository userRepository;  
-	private final CommentQueryRepository queryRepository;  
+    private final CommentRepository commentRepository;
+    private final PostsRepository postsRepository;
+    private final UserRepository userRepository;
+    private final CommentQueryRepository queryRepository;
 
-	public Long save(CommentSaveRequestDto requestDto) {  
-	
-		Posts posts = postsRepository.findById(requestDto.getPostsId())  
-						.orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));  
+    public Long save(CommentSaveRequestDto requestDto) {
 
-		User user = userRepository.findById(requestDto.getUserId())  
-						.orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저가 없습니다."));  
+        Posts posts = postsRepository.findById(requestDto.getPostsId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));
 
-		// 만약 부모 댓글 ID가 있는 경우  
-		if (requestDto.getParentCommentId() != null) {  
-			Comment parentComment = commentRepository.findById(requestDto.getParentCommentId())  
-					.orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다."));  
-			Comment grandParentComment = parentComment.getParentComment();  
-			Comment childComment = requestDto.toEntity();  
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저가 없습니다."));
 
-			childComment.setPosts(posts);  
-			childComment.setUser(user);  
-			childComment.setGroupOrder(grandParentComment.getChildComments().size() + 1);  
-			childComment.setParentComment(grandParentComment);  
+        // 만약 부모 댓글 ID가 있는 경우
+        if (requestDto.getParentCommentId() != null) {
+            Comment parentComment = queryRepository.findParentById(requestDto.getParentCommentId());
+            Comment childComment = requestDto.toEntity();
 
-			if (!requestDto.getParentCommentId().equals(grandParentComment.getId())) {  
-				childComment.addTargetNickname(requestDto.getTargetNickname());  
-			}  
+            childComment.setPosts(posts);
+            childComment.setUser(user);
+            childComment.setGroupOrder(parentComment.getChildComments().size() + 1);
+            childComment.setParentComment(parentComment);
 
-			commentRepository.save(grandParentComment);  
-			postsRepository.save(posts);  
+            // 최상위 댓글에게 단 답글이 아니라 자식 댓글에게 답글을 한 경우 내용 앞에 닉네임을 붙여준다.
+            if (!requestDto.getParentCommentId().equals(parentComment.getId())) {
+                childComment.addTargetNickname(requestDto.getTargetNickname());
+            }
 
-			return commentRepository.save(childComment).getId();  
-		}  
+            commentRepository.save(parentComment);
+            postsRepository.save(posts);
 
-		Comment comment = requestDto.toEntity();  
-		comment.setPosts(posts);  
-		comment.setUser(user);  
-		comment.setParentComment(comment);  
-		postsRepository.save(posts);  
+            return commentRepository.save(childComment).getId();
+        }
 
-		return commentRepository.save(comment).getId();  
-	}  
+        Comment comment = requestDto.toEntity();
+        comment.setPosts(posts);
+        comment.setUser(user);
+        comment.setParentComment(comment);
+        postsRepository.save(posts);
 
-	public List<CommentResponseDto> find(Long postsId, SessionUser sessionUser) {  
-		List<CommentResponseDto> responseDtoList = queryRepository.getCommentList(postsId);  
-		if (sessionUser != null) {  
-			responseDtoList.forEach(dto -> dto.setOwner(sessionUser.getId()));  
-		}  
-		return responseDtoList;  
-	}  
+        return commentRepository.save(comment).getId();
+    }
 
-	public void delete(Long commentId) {  
+    public List<CommentResponseDto> find(Long postsId, SessionUser sessionUser) {
+        List<CommentResponseDto> responseDtoList = queryRepository.getCommentList(postsId);
+        if (sessionUser != null) {
+            responseDtoList.forEach(dto -> dto.setOwner(sessionUser.getId()));
+        }
+        return responseDtoList;
+    }
 
-		Comment comment = commentRepository.findById(commentId)  
-				.orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다."));  
-		Comment parentComment = comment.getParentComment();  
+    public void delete(Long commentId) {
 
-		// 부모 댓글일 경우 상태만 변경  
-		if (comment.getChildComments().size() > 1) {  
-			comment.setDeletion(true);  
-			return;  
-		}  
+        Comment parentComment = queryRepository.findParentById(commentId);
+        Comment comment = parentComment.getChildComments().stream()
+                .filter(childComment -> childComment.getId().equals(commentId))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("잘못된 ID 입니다."));
 
-		// 부모 댓글의 상태가 삭제된 상태고 자식 댓글이 하나밖에 없으면 자식댓글과 부모댓글 같이 삭제  
-		if (parentComment.getDeletion() && parentComment.getChildComments().size() == 2) {  
-			commentRepository.delete(comment);  
-		    commentRepository.delete(parentComment);  
-		    return;  
-		}
+        // 부모 댓글일 경우 상태만 변경
+        if (comment.equals(parentComment) && parentComment.getChildComments().size() > 1) {
+            parentComment.setDeletion(true);
+            return;
+        }
 
-		// 삭제 되는 댓글 보다 뒤에 있는 댓글들의 groupOrder를 하나씩 빼줌
-		comment.getParentComment().getChildComments().stream()  
-		.filter((childComment) -> childComment.getGroupOrder() > comment.getGroupOrder())  
-		.forEach((childComment) -> childComment.setGroupOrder(childComment.getGroupOrder() - 1));  
 
-		commentRepository.delete(comment);  
-	}
-	
+        // 부모 댓글의 상태가 삭제된 상태고 자식 댓글이 하나밖에 없으면 자식댓글과 부모댓글 같이 삭제
+        if (parentComment.getDeletion() && parentComment.getChildComments().size() == 2) {
+            commentRepository.deleteById(commentId);
+            commentRepository.delete(parentComment);
+            return;
+        }
+
+        // 삭제 되는 댓글 보다 뒤에 있는 댓글들의 groupOrder를 하나씩 빼줌
+        queryRepository.updateGroupOrder(parentComment.getId(), comment.getGroupOrder());
+
+        commentRepository.delete(comment);
+
+    }
+}
+```
+
+#### CommentQueryRepository
+
+```java
+@RequiredArgsConstructor
+@Repository
+public class CommentQueryRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public List<CommentResponseDto> getCommentList(Long postId) {
+        List<Comment> commentList = queryFactory.selectFrom(comment)
+                .where(comment.posts.id.eq(postId))
+                .orderBy(comment.parentComment.id.asc(), comment.groupOrder.asc())
+                .fetch();
+
+        return commentList.stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public Comment findParentById(Long id) {
+
+        QComment comment1 = new QComment("c1");
+        QComment comment2 = new QComment("c2");
+
+        return queryFactory.selectFrom(comment1)
+                .leftJoin(comment1.childComments, comment2)
+                .fetchJoin()
+                .where(comment1.id.eq(
+                        JPAExpressions.select(comment.parentComment.id)
+                        .from(comment)
+                        .where(comment.id.eq(id))
+                ))
+                .fetchOne();
+    }
+
+    @Transactional
+    public void updateGroupOrder(Long parentId, Integer groupOrder) {
+        queryFactory.update(comment)
+                .set(comment.groupOrder, comment.groupOrder.subtract(1))
+                .where(comment.parentComment.id.eq(parentId), comment.groupOrder.gt(groupOrder))
+                .execute();
+    }
 }
 ```
 
@@ -534,4 +641,7 @@ public class CommentService {
    부모 댓글의 상태가 삭제된 상태이고 자식 댓글이 하나밖에 없다면 자식 댓글과 부모 댓글을 같이 삭제하도록 구현했습니다.
    자식 댓글만 삭제 하는 경우라면 삭제되는 자식 댓글보다 최신 댓글들의 순서를 하나씩 앞당겨 주도록 구현했습니다.
 
+4. Querydsl을 활용해서 항상 최상위 부모 댓글을 반환하는 findParentById 메소드를 만들었습니다.
+
+5. stream API로 자식 댓글들 엔티티의 값을 바꾸면 값이 바뀌는 엔티티의 수만큼 update문이 실행되던 문제를 updateGroupOrder 메소드를 만들어서 해결했습니다. 
 ---
