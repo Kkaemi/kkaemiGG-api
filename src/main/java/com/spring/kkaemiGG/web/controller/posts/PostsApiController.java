@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 public class PostsApiController {
@@ -15,19 +17,16 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @GetMapping("/api/v1/posts")
-    public Page<PostsListResponseDto> paging(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "recent", required = false) String sort,
-                                             @RequestParam(required = false) String target,
-                                             @RequestParam(required = false) String keyword) {
+    public Page<PostsPageResponseDto> paging(@RequestParam Map<String, String> requestParam) {
 
         PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
-                .page(page)
-                .sort(sort)
-                .target(target)
-                .keyword(keyword)
+                .page(Integer.parseInt(requestParam.get("page")))
+                .sort(requestParam.get("sort"))
+                .target(requestParam.get("target").isEmpty() ? null : SearchType.valueOf(requestParam.get("target")))
+                .keyword(requestParam.get("keyword"))
                 .build();
 
-        return postsService.findByRequest(requestDto);
+        return postsService.findPage(requestDto);
     }
 
     @PostMapping("/api/v1/posts")

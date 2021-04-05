@@ -5,17 +5,17 @@ import com.spring.kkaemiGG.web.dto.TimeCalculator;
 import lombok.Getter;
 
 @Getter
-public class PostsListResponseDto {
+public class PostsPageResponseDto {
 
     private final Long id;
-    private final Integer comments;
+    private final Long comments;
     private final String title;
     private final String author;
     private final String timeDifference;
 
-    public PostsListResponseDto(Posts entity) {
+    public PostsPageResponseDto(Posts entity, Long comments) {
         this.id = entity.getId();
-        this.comments = entity.getComments().size();
+        this.comments = comments;
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());

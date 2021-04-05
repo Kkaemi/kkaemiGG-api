@@ -2,6 +2,7 @@ package com.spring.kkaemiGG.service.posts;
 
 import com.spring.kkaemiGG.config.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.posts.Posts;
+import com.spring.kkaemiGG.domain.posts.PostsQueryRepository;
 import com.spring.kkaemiGG.domain.posts.PostsRepository;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
@@ -9,7 +10,6 @@ import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostsService {
 
     private final PostsRepository postsRepository;
+    private final PostsQueryRepository queryRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -76,26 +77,13 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostsListResponseDto> findByRequest(PostsPageRequestDto requestDto) {
+    public Page<PostsPageResponseDto> findPage(PostsPageRequestDto requestDto) {
 
         PageRequest pageRequest = PageRequest
-                .of(requestDto.getPage(), 20, Sort.Direction.DESC, "createdDate");
-
-        if (requestDto.isSearched()) {
-
-            if (requestDto.getTarget().equals("title")) {
-                return postsRepository.findByTitleContaining(requestDto.getKeyword(), pageRequest)
-                        .map(PostsListResponseDto::new);
-            }
-
-            if (requestDto.getTarget().equals("author")) {
-                return postsRepository.findByAuthorContaining(requestDto.getKeyword(), pageRequest)
-                        .map(PostsListResponseDto::new);
-            }
-        }
+                .of(requestDto.getPage(), 20);
 
         // 인기순 정렬도 구현 예정
 
-        return postsRepository.findAll(pageRequest).map(PostsListResponseDto::new);
+        return queryRepository.findDynamic(requestDto, pageRequest);
     }
 }

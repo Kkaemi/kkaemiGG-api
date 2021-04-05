@@ -220,10 +220,10 @@ let list = {
 
         switch (target) {
             case 'title':
-                target = 'title';
+                target = 'TITLE';
                 break;
             case 'author':
-                target = 'author';
+                target = 'AUTHOR';
                 break;
             default:
                 target = null;
