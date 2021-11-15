@@ -23,21 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepository;
 
     @Bean
-    protected CustomUsernamePasswordAuthenticationFilter getAuthenticationFilter() throws Exception {
-
-        CustomUsernamePasswordAuthenticationFilter authenticationFilter = new CustomUsernamePasswordAuthenticationFilter();
-
-        authenticationFilter.setFilterProcessesUrl("/api/v1/authentication/login");
-        authenticationFilter.setAuthenticationManager(this.authenticationManagerBean());
-        authenticationFilter.setUsernameParameter("email");
-        authenticationFilter.setPasswordParameter("password");
-        authenticationFilter.setAuthenticationSuccessHandler(new CustomLoginSuccessHandler());
-        authenticationFilter.setAuthenticationFailureHandler(new CustomLoginFailureHandler());
-
-        return authenticationFilter;
-    }
-
-    @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
@@ -53,9 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/", "/css/**", "/img/**", "/js/**", "/h2-console/**", "/profile").permitAll()
                     .antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())
                 .and()
-                    .formLogin().loginPage("/user/login")
-                .and()
-                        .addFilterAt(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .formLogin()
+                .disable()
                     .logout()
                         .logoutSuccessUrl("/")
                 .and()

@@ -1,12 +1,7 @@
 package com.spring.kkaemiGG.config.auth;
 
-import com.google.gson.Gson;
 import com.spring.kkaemiGG.config.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.user.User;
-import com.spring.kkaemiGG.web.dto.user.UsersLoginResponseDto;
-import org.apache.commons.codec.CharEncoding;
-import org.apache.http.entity.ContentType;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -17,7 +12,6 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -71,22 +65,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     }
 
-    private void respondWithJson(HttpServletResponse response, String redirectUrl) throws IOException {
-
-        UsersLoginResponseDto responseDto = UsersLoginResponseDto.builder()
-                .status(HttpStatus.OK.value())
-                .message("LOGIN_SUCCEEDED")
-                .redirectUrl(redirectUrl)
-                .build();
-
-        response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
-        response.setCharacterEncoding(CharEncoding.UTF_8);
-        response.setStatus(HttpStatus.OK.value());
-
-        PrintWriter out = response.getWriter();
-        out.print(new Gson().toJson(responseDto));
-        out.flush();
-
+    private void respondWithJson(HttpServletResponse response, String redirectUrl) {
     }
-
 }
