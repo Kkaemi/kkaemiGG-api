@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.service.comment;
+package com.spring.kkaemiGG.service;
 
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.comment.CommentQueryRepository;
 import com.spring.kkaemiGG.domain.comment.CommentRepository;

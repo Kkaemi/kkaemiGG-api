@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.service.posts;
+package com.spring.kkaemiGG.service;
 
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.posts.Posts;
 import com.spring.kkaemiGG.domain.posts.PostsQueryRepository;
 import com.spring.kkaemiGG.domain.posts.PostsRepository;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class PostsService {
+public class PostService {
 
     private final PostsRepository postsRepository;
     private final PostsQueryRepository queryRepository;

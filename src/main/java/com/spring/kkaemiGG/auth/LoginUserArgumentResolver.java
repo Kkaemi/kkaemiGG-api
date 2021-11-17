@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.config.auth;
+package com.spring.kkaemiGG.auth;
 
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-
         // 파라미터에 @LoginUser 어노테이션이 붙어 있고, 클래스 타입이 SessionUser인 경우 true
         boolean isLoginUserAnnotation = parameter.getParameterAnnotation(LoginUser.class) != null;
         boolean isUserClass = SessionUser.class.equals(parameter.getParameterType());
@@ -30,7 +29,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+                                  WebDataBinderFactory binderFactory) {
         return httpSession.getAttribute("user");
     }
 }

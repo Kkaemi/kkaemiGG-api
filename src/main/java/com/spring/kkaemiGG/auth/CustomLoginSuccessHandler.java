@@ -1,6 +1,6 @@
-package com.spring.kkaemiGG.config.auth;
+package com.spring.kkaemiGG.auth;
 
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

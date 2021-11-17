@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.config.auth.dto;
+package com.spring.kkaemiGG.auth.dto;
 
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Getter;

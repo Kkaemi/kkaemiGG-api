@@ -1,8 +1,8 @@
-package com.spring.kkaemiGG.web.controller.posts;
+package com.spring.kkaemiGG.web.controller;
 
-import com.spring.kkaemiGG.config.auth.LoginUser;
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
-import com.spring.kkaemiGG.service.posts.PostsService;
+import com.spring.kkaemiGG.auth.LoginUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
+import com.spring.kkaemiGG.service.PostService;
 import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,11 +12,12 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-public class PostsApiController {
+@RequestMapping("/v1")
+public class PostController {
 
-    private final PostsService postsService;
+    private final PostService postService;
 
-    @GetMapping("/api/v1/posts")
+    @GetMapping("/posts")
     public Page<PostsPageResponseDto> paging(@RequestParam Map<String, String> requestParam) {
 
         PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
@@ -26,10 +27,10 @@ public class PostsApiController {
                 .keyword(requestParam.get("keyword"))
                 .build();
 
-        return postsService.findPage(requestDto);
+        return postService.findPage(requestDto);
     }
 
-    @PostMapping("/api/v1/posts")
+    @PostMapping("/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto,
                      @LoginUser SessionUser sessionUser) {
 
@@ -37,18 +38,19 @@ public class PostsApiController {
             return 0L;
         }
 
-        return postsService.save(requestDto, sessionUser);
+        return postService.save(requestDto, sessionUser);
     }
 
-    @GetMapping("/api/v1/posts/{id}")
+
+    @GetMapping("/posts/{id}")
     public PostsResponseDto view(@PathVariable Long id,
                                  @LoginUser SessionUser sessionUser) {
-        return postsService.findByIdWithSession(id, sessionUser);
+        return postService.findByIdWithSession(id, sessionUser);
     }
 
     @GetMapping("/community/edit/{id}")
     public PostsUpdateResponseDto edit(@PathVariable Long id) {
-        return postsService.findById(id);
+        return postService.findById(id);
     }
 
     @PutMapping("/api/v1/posts/{id}")
@@ -59,13 +61,12 @@ public class PostsApiController {
             return 0L;
         }
         requestDto.setAuthor(sessionUser.getNickname());
-        return postsService.update(id, requestDto);
+        return postService.update(id, requestDto);
     }
 
-    @DeleteMapping("/api/v1/posts/{id}")
+    @DeleteMapping("/posts/{id}")
     public Long delete(@PathVariable Long id) {
-        postsService.delete(id);
+        postService.delete(id);
         return id;
     }
-
 }

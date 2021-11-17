@@ -1,8 +1,8 @@
-package com.spring.kkaemiGG.web.controller.comment;
+package com.spring.kkaemiGG.web.controller;
 
-import com.spring.kkaemiGG.config.auth.LoginUser;
-import com.spring.kkaemiGG.config.auth.dto.SessionUser;
-import com.spring.kkaemiGG.service.comment.CommentService;
+import com.spring.kkaemiGG.auth.LoginUser;
+import com.spring.kkaemiGG.auth.dto.SessionUser;
+import com.spring.kkaemiGG.service.CommentService;
 import com.spring.kkaemiGG.web.dto.comment.CommentResponseDto;
 import com.spring.kkaemiGG.web.dto.comment.CommentSaveRequestDto;
 import lombok.RequiredArgsConstructor;

@@ -24,9 +24,15 @@ repositories {
 dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation('org.springframework.boot:spring-boot-starter-data-rest')
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.session:spring-session-jdbc'
+	implementation('org.springdoc:springdoc-openapi-ui:1.5.2')
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2', 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
 	// queryDSL
 	compile("com.querydsl:querydsl-core")
@@ -36,7 +42,6 @@ dependencies {
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api") // java.lang.NoClassDefFoundError (javax.annotation.Generated) 발생 대응
 
 	// DB
-	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('mysql:mysql-connector-java')
 
 	// lombok

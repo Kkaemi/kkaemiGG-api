@@ -1,5 +1,6 @@
-package com.spring.kkaemiGG.config.auth;
+package com.spring.kkaemiGG.config;
 
+import com.spring.kkaemiGG.auth.LoginUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

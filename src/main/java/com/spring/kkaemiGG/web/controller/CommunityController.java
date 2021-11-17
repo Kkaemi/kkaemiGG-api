@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.web.controller.community;
+package com.spring.kkaemiGG.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

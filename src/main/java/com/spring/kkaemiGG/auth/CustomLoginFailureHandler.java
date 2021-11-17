@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.config.auth;
+package com.spring.kkaemiGG.auth;
 
 import com.spring.kkaemiGG.web.dto.user.UsersLoginResponseDto;
 import org.springframework.http.HttpStatus;

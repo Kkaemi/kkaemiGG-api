@@ -1,4 +1,4 @@
-package com.spring.kkaemiGG.config.auth;
+package com.spring.kkaemiGG.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
