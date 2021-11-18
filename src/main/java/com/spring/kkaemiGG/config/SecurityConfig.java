@@ -1,8 +1,8 @@
 package com.spring.kkaemiGG.config;
 
 import com.spring.kkaemiGG.auth.CustomOAuth2UserService;
+import com.spring.kkaemiGG.auth.Oauth2SuccessHandler;
 import com.spring.kkaemiGG.domain.user.Role;
-import com.spring.kkaemiGG.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final UserRepository userRepository;
+    private final Oauth2SuccessHandler oauth2SuccessHandler;
 
     @Bean
     public PasswordEncoder encoder() {
@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .oauth2Login()
+                .successHandler(oauth2SuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
     }

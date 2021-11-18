@@ -1,7 +1,5 @@
 package com.spring.kkaemiGG.web.controller;
 
-import com.spring.kkaemiGG.auth.LoginUser;
-import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.service.PostService;
 import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +29,14 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Long save(@RequestBody PostsSaveRequestDto requestDto,
-                     @LoginUser SessionUser sessionUser) {
-
-        if (sessionUser == null) {
-            return 0L;
-        }
-
-        return postService.save(requestDto, sessionUser);
+    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+        return null;
     }
 
 
     @GetMapping("/posts/{id}")
-    public PostsResponseDto view(@PathVariable Long id,
-                                 @LoginUser SessionUser sessionUser) {
-        return postService.findByIdWithSession(id, sessionUser);
+    public PostsResponseDto view(@PathVariable Long id) {
+        return postService.findByIdWithSession(id, null);
     }
 
     @GetMapping("/community/edit/{id}")
@@ -55,12 +46,8 @@ public class PostController {
 
     @PutMapping("/api/v1/posts/{id}")
     public Long update(@PathVariable Long id,
-                       @LoginUser SessionUser sessionUser,
                        @RequestBody PostsUpdateRequestDto requestDto) {
-        if (sessionUser == null) {
-            return 0L;
-        }
-        requestDto.setAuthor(sessionUser.getNickname());
+        requestDto.setAuthor(null);
         return postService.update(id, requestDto);
     }
 
