@@ -1,6 +1,8 @@
 package com.spring.kkaemiGG.config;
 
 import com.spring.kkaemiGG.auth.CustomOAuth2UserService;
+import com.spring.kkaemiGG.auth.JwtAuthenticationFilter;
+import com.spring.kkaemiGG.auth.JwtEntryPoint;
 import com.spring.kkaemiGG.auth.Oauth2SuccessHandler;
 import com.spring.kkaemiGG.domain.user.Role;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -20,6 +23,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final Oauth2SuccessHandler oauth2SuccessHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtEntryPoint jwtEntryPoint;
 
     @Bean
     public PasswordEncoder encoder() {
@@ -28,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
                 .httpBasic().disable()
                 .csrf().disable()
@@ -42,13 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/img/**", "/js/**", "/h2-console/**", "/profile").permitAll()
-                .antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())
+                .anyRequest().authenticated()
 
                 .and()
 
                 .formLogin().disable()
-                .logout()
-                .logoutSuccessUrl("/")
+                .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
 
                 .and()
 
@@ -56,5 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oauth2SuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
