@@ -1,7 +1,7 @@
 package com.spring.kkaemiGG.domain.comment;
 
-import com.spring.kkaemiGG.domain.BaseTimeEntity;
-import com.spring.kkaemiGG.domain.posts.Posts;
+import com.spring.kkaemiGG.domain.BaseLogEntity;
+import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Comment extends BaseTimeEntity {
+public class Comment extends BaseLogEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
@@ -26,7 +26,7 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID", nullable = false)
-    private Posts posts;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID")
@@ -75,9 +75,9 @@ public class Comment extends BaseTimeEntity {
         this.user = user;
     }
 
-    public void setPosts(Posts posts) {
-        this.posts = posts;
-        posts.getComments().add(this);
+    public void setPost(Post post) {
+        this.post = post;
+        post.getComments().add(this);
     }
 
     public void addTargetNickname(String nickname) {

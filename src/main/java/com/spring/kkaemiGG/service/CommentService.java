@@ -4,8 +4,8 @@ import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.comment.CommentQueryRepository;
 import com.spring.kkaemiGG.domain.comment.CommentRepository;
-import com.spring.kkaemiGG.domain.posts.Posts;
-import com.spring.kkaemiGG.domain.posts.PostsRepository;
+import com.spring.kkaemiGG.domain.post.Post;
+import com.spring.kkaemiGG.domain.post.PostsRepository;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import com.spring.kkaemiGG.web.dto.comment.CommentResponseDto;
@@ -26,7 +26,7 @@ public class CommentService {
 
     public Long save(CommentSaveRequestDto requestDto) {
 
-        Posts posts = postsRepository.findById(requestDto.getPostsId())
+        Post post = postsRepository.findById(requestDto.getPostsId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));
 
         User user = userRepository.findById(requestDto.getUserId())
@@ -37,7 +37,7 @@ public class CommentService {
             Comment parentComment = queryRepository.findParentById(requestDto.getParentCommentId());
             Comment childComment = requestDto.toEntity();
 
-            childComment.setPosts(posts);
+            childComment.setPost(post);
             childComment.setUser(user);
             childComment.setGroupOrder(parentComment.getChildComments().size() + 1);
             childComment.setParentComment(parentComment);
@@ -47,16 +47,16 @@ public class CommentService {
             }
 
             commentRepository.save(parentComment);
-            postsRepository.save(posts);
+            postsRepository.save(post);
 
             return commentRepository.save(childComment).getId();
         }
 
         Comment comment = requestDto.toEntity();
-        comment.setPosts(posts);
+        comment.setPost(post);
         comment.setUser(user);
         comment.setParentComment(comment);
-        postsRepository.save(posts);
+        postsRepository.save(post);
 
         return commentRepository.save(comment).getId();
     }

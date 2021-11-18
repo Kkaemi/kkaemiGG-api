@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.spring.kkaemiGG.domain.comment.QComment.comment;
 
@@ -19,14 +18,15 @@ public class CommentQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<CommentResponseDto> getCommentList(Long postId) {
-        List<Comment> commentList = queryFactory.selectFrom(comment)
-                .where(comment.posts.id.eq(postId))
-                .orderBy(comment.parentComment.id.asc(), comment.groupOrder.asc())
-                .fetch();
-
-        return commentList.stream()
-                .map(CommentResponseDto::new)
-                .collect(Collectors.toList());
+//        List<Comment> commentList = queryFactory.selectFrom(comment)
+//                .where(comment.posts.id.eq(postId))
+//                .orderBy(comment.parentComment.id.asc(), comment.groupOrder.asc())
+//                .fetch();
+//
+//        return commentList.stream()
+//                .map(CommentResponseDto::new)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     public Comment findParentById(Long id) {
@@ -39,8 +39,8 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(comment1.id.eq(
                         JPAExpressions.select(comment.parentComment.id)
-                        .from(comment)
-                        .where(comment.id.eq(id))
+                                .from(comment)
+                                .where(comment.id.eq(id))
                 ))
                 .fetchOne();
     }

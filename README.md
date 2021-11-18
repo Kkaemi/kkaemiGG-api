@@ -330,23 +330,23 @@ public class PostsService {
         User user = userRepository.findByEmail(sessionUser.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
-        Posts posts = requestDto.toEntityWithUser(user);
+        Posts post = requestDto.toEntityWithUser(user);
 
-        user.getPosts().add(posts);
+        user.getPosts().add(post);
 
         userRepository.save(user);
-        postsRepository.save(posts);
+        postsRepository.save(post);
 
-        return posts.getId();
+        return post.getId();
     }
 
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
 
-        Posts posts = postsRepository.findById(id)
+        Posts post = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
-        posts.update(requestDto);
+        post.update(requestDto);
 
         return id;
     }
@@ -404,13 +404,13 @@ public class PostsQueryRepository {
     public Page<PostsPageResponseDto> findDynamic(PostsPageRequestDto requestDto, Pageable pageable) {
         QueryResults<PostsPageResponseDto> results = queryFactory
                 .select(Projections.constructor(PostsPageResponseDto.class,
-                        posts,
+                        post,
                         comment.id.count()))
-                .from(posts)
-                .leftJoin(posts.comments, comment)
+                .from(post)
+                .leftJoin(post.comments, comment)
                 .where(eqKeyword(requestDto.getTarget(), requestDto.getKeyword()))
-                .groupBy(posts.id)
-                .orderBy(posts.createdDate.desc())
+                .groupBy(post.id)
+                .orderBy(post.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -428,7 +428,7 @@ public class PostsQueryRepository {
 }
 ```
 
-1. 포스트 뷰 페이지로 이동하면 조회수를 하나 증가시켜 주고 세션의 id 값과 posts 엔티티에 저장되어있는 user의 id 값이 동일할 경우 글의 주인이므로 응답 Dto의 owner 값을 true로 바꿔줍니다.
+1. 포스트 뷰 페이지로 이동하면 조회수를 하나 증가시켜 주고 세션의 id 값과 post 엔티티에 저장되어있는 user의 id 값이 동일할 경우 글의 주인이므로 응답 Dto의 owner 값을 true로 바꿔줍니다.
 
 2. Querydsl을 사용해서 검색 페이징 동적 쿼리를 만들었습니다. 댓글의 개수를 불러오기 위해서 페치 조인을 사용하려 했으나 페치 조인과 페이징 API를 같이 사용할 수 없기 때문에 페치 조인 없이 left join으로 comment_id 튜플 개수를 가져오도록 구현했습니다.
 
@@ -440,7 +440,7 @@ public class Posts extends BaseTimeEntity {
 
 	...
 	
-	@OneToMany(mappedBy = "posts", orphanRemoval = true)  
+	@OneToMany(mappedBy = "post", orphanRemoval = true)  
 	private List<Comment> comments = new ArrayList<>();
 	
 	...
@@ -511,7 +511,7 @@ public class CommentService {
 
     public Long save(CommentSaveRequestDto requestDto) {
 
-        Posts posts = postsRepository.findById(requestDto.getPostsId())
+        Posts post = postsRepository.findById(requestDto.getPostsId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));
 
         User user = userRepository.findById(requestDto.getUserId())
@@ -522,7 +522,7 @@ public class CommentService {
             Comment parentComment = queryRepository.findParentById(requestDto.getParentCommentId());
             Comment childComment = requestDto.toEntity();
 
-            childComment.setPosts(posts);
+            childComment.setPosts(post);
             childComment.setUser(user);
             childComment.setGroupOrder(parentComment.getChildComments().size() + 1);
             childComment.setParentComment(parentComment);
@@ -533,16 +533,16 @@ public class CommentService {
             }
 
             commentRepository.save(parentComment);
-            postsRepository.save(posts);
+            postsRepository.save(post);
 
             return commentRepository.save(childComment).getId();
         }
 
         Comment comment = requestDto.toEntity();
-        comment.setPosts(posts);
+        comment.setPosts(post);
         comment.setUser(user);
         comment.setParentComment(comment);
-        postsRepository.save(posts);
+        postsRepository.save(post);
 
         return commentRepository.save(comment).getId();
     }
@@ -596,7 +596,7 @@ public class CommentQueryRepository {
 
     public List<CommentResponseDto> getCommentList(Long postId) {
         List<Comment> commentList = queryFactory.selectFrom(comment)
-                .where(comment.posts.id.eq(postId))
+                .where(comment.post.id.eq(postId))
                 .orderBy(comment.parentComment.id.asc(), comment.groupOrder.asc())
                 .fetch();
 

@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.domain.user;
 
-import com.spring.kkaemiGG.domain.posts.Posts;
+import com.spring.kkaemiGG.domain.post.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +18,7 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
-    private List<Posts> posts;
+    private List<Post> posts;
 
     @Column(nullable = false, unique = true)
     private String email;

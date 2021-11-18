@@ -1,9 +1,9 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.auth.dto.SessionUser;
-import com.spring.kkaemiGG.domain.posts.Posts;
-import com.spring.kkaemiGG.domain.posts.PostsQueryRepository;
-import com.spring.kkaemiGG.domain.posts.PostsRepository;
+import com.spring.kkaemiGG.domain.post.Post;
+import com.spring.kkaemiGG.domain.post.PostsQueryRepository;
+import com.spring.kkaemiGG.domain.post.PostsRepository;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import com.spring.kkaemiGG.web.dto.posts.*;
@@ -22,29 +22,23 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long save(PostsSaveRequestDto requestDto, SessionUser sessionUser) {
+    public Long save(PostSaveRequestDto requestDto, SessionUser sessionUser) {
 
         User user = userRepository.findByEmail(sessionUser.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
-        Posts posts = requestDto.toEntityWithUser(user);
+        Post post = requestDto.toEntityWithUser(user);
 
-        user.getPosts().add(posts);
+        user.getPosts().add(post);
 
         userRepository.save(user);
-        postsRepository.save(posts);
+        postsRepository.save(post);
 
-        return posts.getId();
+        return post.getId();
     }
 
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
-
-        Posts posts = postsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
-
-        posts.update(requestDto);
-
         return id;
     }
 
@@ -62,10 +56,7 @@ public class PostService {
     public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
 
         PostsResponseDto responseDto = postsRepository.findById(id)
-                .map(entity -> {
-                    entity.hit(); // 조회수 증가
-                    return new PostsResponseDto(entity);
-                })
+                .map(PostsResponseDto::new)
                 .orElseGet(() -> new PostsResponseDto(-1L));
 
         if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {
@@ -73,7 +64,6 @@ public class PostService {
         }
 
         return responseDto;
-
     }
 
     @Transactional(readOnly = true)

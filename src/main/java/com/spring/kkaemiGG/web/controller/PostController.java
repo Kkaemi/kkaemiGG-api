@@ -29,7 +29,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+    public Long save(@RequestBody PostSaveRequestDto requestDto) {
         return null;
     }
 

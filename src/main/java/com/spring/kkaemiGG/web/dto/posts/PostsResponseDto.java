@@ -1,7 +1,7 @@
 package com.spring.kkaemiGG.web.dto.posts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.spring.kkaemiGG.domain.posts.Posts;
+import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.web.dto.TimeCalculator;
 import lombok.Getter;
 
@@ -18,13 +18,11 @@ public class PostsResponseDto {
     private String timeDifference;
     private boolean owner = false;
 
-    public PostsResponseDto(Posts entity) {
+    public PostsResponseDto(Post entity) {
         this.postsId = entity.getId();
         this.userId = entity.getUser().getId();
-        this.hit = entity.getHit();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.author = entity.getAuthor();
         this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());
     }
 
