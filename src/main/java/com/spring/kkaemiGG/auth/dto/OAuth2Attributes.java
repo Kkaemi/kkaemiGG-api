@@ -37,10 +37,10 @@ public class OAuth2Attributes {
     }
 
     public User toEntity() {
-        return new User(
+        return User.builder(
                 email,
                 nickname,
                 Role.USER
-        );
+        ).build();
     }
 }

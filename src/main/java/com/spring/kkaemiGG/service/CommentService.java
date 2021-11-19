@@ -5,7 +5,7 @@ import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.comment.CommentQueryRepository;
 import com.spring.kkaemiGG.domain.comment.CommentRepository;
 import com.spring.kkaemiGG.domain.post.Post;
-import com.spring.kkaemiGG.domain.post.PostsRepository;
+import com.spring.kkaemiGG.domain.post.PostRepository;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import com.spring.kkaemiGG.web.dto.comment.CommentResponseDto;
@@ -20,13 +20,13 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostsRepository postsRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentQueryRepository queryRepository;
 
     public Long save(CommentSaveRequestDto requestDto) {
 
-        Post post = postsRepository.findById(requestDto.getPostsId())
+        Post post = postRepository.findById(requestDto.getPostsId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));
 
         User user = userRepository.findById(requestDto.getUserId())
@@ -47,7 +47,7 @@ public class CommentService {
             }
 
             commentRepository.save(parentComment);
-            postsRepository.save(post);
+            postRepository.save(post);
 
             return commentRepository.save(childComment).getId();
         }
@@ -56,7 +56,7 @@ public class CommentService {
         comment.setPost(post);
         comment.setUser(user);
         comment.setParentComment(comment);
-        postsRepository.save(post);
+        postRepository.save(post);
 
         return commentRepository.save(comment).getId();
     }

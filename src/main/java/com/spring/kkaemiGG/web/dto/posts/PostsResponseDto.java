@@ -23,7 +23,7 @@ public class PostsResponseDto {
         this.userId = entity.getUser().getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());
+//        this.timeDifference = TimeCalculator.untilNow(entity.getCreatedDate());
     }
 
     public PostsResponseDto(Long id) {

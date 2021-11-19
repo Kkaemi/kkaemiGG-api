@@ -1,5 +1,7 @@
 package com.spring.kkaemiGG.web.controller;
 
+import com.spring.kkaemiGG.annotation.CustomRestController;
+import com.spring.kkaemiGG.exception.BadRequestException;
 import com.spring.kkaemiGG.service.PostService;
 import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@RestController
+@CustomRestController
 @RequestMapping("/v1")
 public class PostController {
 
@@ -35,8 +37,8 @@ public class PostController {
 
 
     @GetMapping("/posts/{id}")
-    public PostsResponseDto view(@PathVariable Long id) {
-        return postService.findByIdWithSession(id, null);
+    public PostsResponseDto view(@PathVariable Long id) throws BadRequestException {
+        return postService.getPostById(id);
     }
 
     @GetMapping("/community/edit/{id}")

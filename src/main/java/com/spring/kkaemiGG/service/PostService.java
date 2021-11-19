@@ -3,9 +3,10 @@ package com.spring.kkaemiGG.service;
 import com.spring.kkaemiGG.auth.dto.SessionUser;
 import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.post.PostsQueryRepository;
-import com.spring.kkaemiGG.domain.post.PostsRepository;
+import com.spring.kkaemiGG.domain.post.PostRepository;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
+import com.spring.kkaemiGG.exception.BadRequestException;
 import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,14 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class PostService {
 
-    private final PostsRepository postsRepository;
+    private final PostRepository postRepository;
     private final PostsQueryRepository queryRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public Long save(PostSaveRequestDto requestDto, SessionUser sessionUser) {
 
         User user = userRepository.findByEmail(sessionUser.getEmail())
@@ -32,38 +33,33 @@ public class PostService {
         user.getPosts().add(post);
 
         userRepository.save(user);
-        postsRepository.save(post);
+        postRepository.save(post);
 
         return post.getId();
     }
 
-    @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
         return id;
     }
 
     public void delete(Long id) {
-        postsRepository.deleteById(id);
+        postRepository.deleteById(id);
     }
 
     public PostsUpdateResponseDto findById(Long id) {
-        return postsRepository.findById(id)
+        return postRepository.findById(id)
                 .map(PostsUpdateResponseDto::new)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시물이 없습니다."));
     }
 
-    @Transactional
-    public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
+    public PostsResponseDto getPostById(Long id) throws BadRequestException {
+        // TODO
+        // 조회수 올리는 로직
 
-        PostsResponseDto responseDto = postsRepository.findById(id)
-                .map(PostsResponseDto::new)
-                .orElseGet(() -> new PostsResponseDto(-1L));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
 
-        if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {
-            responseDto.setOwner(true);
-        }
-
-        return responseDto;
+        return new PostsResponseDto(post);
     }
 
     @Transactional(readOnly = true)

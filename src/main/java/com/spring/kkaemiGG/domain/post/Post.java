@@ -3,6 +3,8 @@ package com.spring.kkaemiGG.domain.post;
 import com.spring.kkaemiGG.domain.BaseLogEntity;
 import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Post extends BaseLogEntity {
@@ -31,6 +35,15 @@ public class Post extends BaseLogEntity {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    public static PostBuilder builder(
+            String title,
+            String content
+    ) {
+        return new PostBuilder()
+                .title(title)
+                .content(content);
+    }
 
     public Post(String title, String content) {
         this.title = title;
