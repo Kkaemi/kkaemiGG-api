@@ -22,7 +22,7 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Post> posts;
 
     @Column(nullable = false, unique = true)
@@ -53,5 +53,9 @@ public class User {
     public User update(String nickname) {
         this.nickname = nickname;
         return this;
+    }
+
+    public void writePost(Post post) {
+        this.posts.add(post);
     }
 }

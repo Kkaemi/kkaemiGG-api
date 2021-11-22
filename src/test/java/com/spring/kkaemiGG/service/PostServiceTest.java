@@ -1,13 +1,13 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.domain.post.Post;
-import com.spring.kkaemiGG.domain.post.PostsQueryRepository;
+import com.spring.kkaemiGG.domain.post.PostQueryRepositoryImpl;
 import com.spring.kkaemiGG.domain.post.PostRepository;
 import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.domain.user.UserRepository;
 import com.spring.kkaemiGG.exception.BadRequestException;
-import com.spring.kkaemiGG.web.dto.posts.PostsResponseDto;
+import com.spring.kkaemiGG.web.dto.posts.PostResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,10 +30,13 @@ class PostServiceTest {
     private PostRepository postRepository;
 
     @Mock
-    private PostsQueryRepository postsQueryRepository;
+    private PostQueryRepositoryImpl postQueryRepositoryImpl;
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ViewService viewService;
 
     @InjectMocks
     private PostService postService;
@@ -51,14 +54,12 @@ class PostServiceTest {
                 .build();
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
-        PostsResponseDto result = null;
         try {
-            result = postService.getPostById(1L);
-            assertThat(result.getPostsId()).isEqualTo(post.getId());
+            PostResponseDto result = postService.viewPost(1L, "127.0.0.1");
+            assertThat(result.getPostId()).isEqualTo(post.getId());
             verify(postRepository).findById(anyLong());
         } catch (BadRequestException e) {
             e.printStackTrace();
         }
-
     }
 }

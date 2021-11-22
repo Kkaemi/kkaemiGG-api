@@ -1,6 +1,6 @@
 package com.spring.kkaemiGG.domain.comment;
 
-import com.spring.kkaemiGG.domain.BaseLogEntity;
+import com.spring.kkaemiGG.domain.BaseTimeEntity;
 import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.user.User;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Comment extends BaseLogEntity {
+public class Comment extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")

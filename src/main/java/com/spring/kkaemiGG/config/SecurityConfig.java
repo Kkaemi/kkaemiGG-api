@@ -4,10 +4,10 @@ import com.spring.kkaemiGG.auth.CustomOAuth2UserService;
 import com.spring.kkaemiGG.auth.JwtAuthenticationFilter;
 import com.spring.kkaemiGG.auth.JwtEntryPoint;
 import com.spring.kkaemiGG.auth.Oauth2SuccessHandler;
-import com.spring.kkaemiGG.domain.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers("/", "/css/**", "/img/**", "/js/**", "/h2-console/**", "/profile").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

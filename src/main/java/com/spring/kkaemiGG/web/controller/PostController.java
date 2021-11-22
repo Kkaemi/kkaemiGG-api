@@ -1,60 +1,56 @@
 package com.spring.kkaemiGG.web.controller;
 
 import com.spring.kkaemiGG.annotation.CustomRestController;
+import com.spring.kkaemiGG.annotation.RequestIP;
+import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.exception.BadRequestException;
 import com.spring.kkaemiGG.service.PostService;
 import com.spring.kkaemiGG.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @CustomRestController
-@RequestMapping("/v1")
 public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/posts")
-    public Page<PostsPageResponseDto> paging(@RequestParam Map<String, String> requestParam) {
-
-        PostsPageRequestDto requestDto = PostsPageRequestDto.builder()
-                .page(Integer.parseInt(requestParam.get("page")))
-                .sort(requestParam.get("sort"))
-                .target(requestParam.get("target").isEmpty() ? null : SearchType.valueOf(requestParam.get("target")))
-                .keyword(requestParam.get("keyword"))
-                .build();
-
-        return postService.findPage(requestDto);
+    @GetMapping("/v1/posts")
+    public PostPageResponseDto paging(
+            PostPageRequestDto requestDto,
+            Pageable pageable
+    ) {
+        return postService.getPage(requestDto, pageable);
     }
 
-    @PostMapping("/posts")
-    public Long save(@RequestBody PostSaveRequestDto requestDto) {
-        return null;
+    @PostMapping("/v1/posts")
+    public Long save(
+            @RequestBody PostSaveRequestDto requestDto,
+            @AuthenticationPrincipal User user
+    ) {
+        return postService.save(requestDto, user);
     }
 
-
-    @GetMapping("/posts/{id}")
-    public PostsResponseDto view(@PathVariable Long id) throws BadRequestException {
-        return postService.getPostById(id);
+    @GetMapping("/v1/posts/{id}")
+    public PostResponseDto viewPost(
+            @PathVariable Long id,
+            @RequestIP String ipAddress
+    ) throws BadRequestException {
+        return postService.viewPost(id, ipAddress);
     }
 
-    @GetMapping("/community/edit/{id}")
-    public PostsUpdateResponseDto edit(@PathVariable Long id) {
-        return postService.findById(id);
-    }
-
-    @PutMapping("/api/v1/posts/{id}")
-    public Long update(@PathVariable Long id,
-                       @RequestBody PostsUpdateRequestDto requestDto) {
-        requestDto.setAuthor(null);
+    @PatchMapping("/v1/posts/{id}")
+    public Long update(
+            @PathVariable Long id,
+            @RequestBody PostUpdateRequestDto requestDto
+    ) throws BadRequestException {
         return postService.update(id, requestDto);
     }
 
-    @DeleteMapping("/posts/{id}")
-    public Long delete(@PathVariable Long id) {
+    @DeleteMapping("/v1/posts/{id}")
+    public Long delete(@PathVariable Long id) throws BadRequestException {
         postService.delete(id);
         return id;
     }

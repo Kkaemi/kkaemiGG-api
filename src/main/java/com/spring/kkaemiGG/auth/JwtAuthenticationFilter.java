@@ -1,8 +1,9 @@
 package com.spring.kkaemiGG.auth;
 
 import com.spring.kkaemiGG.domain.user.User;
-import com.spring.kkaemiGG.domain.user.UserRepository;
+import com.spring.kkaemiGG.exception.InternalServerErrorException;
 import com.spring.kkaemiGG.service.JwtService;
+import com.spring.kkaemiGG.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public void doFilter(
@@ -39,8 +40,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     // 토큰이 유효하면 SecurityContext 에 User 객체를 넣어준다.
                     if (jwtService.verifyToken(token)) {
                         Long userId = jwtService.getUserId(token);
-
-                        User user = userRepository.getOne(userId);
+                        User user = null;
+                        try {
+                            user = userService.getPostsFetchedUser(userId);
+                        } catch (InternalServerErrorException e) {
+                            e.printStackTrace();
+                            return;
+                        }
 
                         SecurityContextHolder.getContext().setAuthentication(
                                 new UsernamePasswordAuthenticationToken(
