@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CommentSaveRequestDto {
+public class CommentUpdateRequestDto {
 
-    private Long postId;
-    private Long parentCommentId;
     private String content;
 }

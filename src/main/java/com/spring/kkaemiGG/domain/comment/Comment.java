@@ -3,20 +3,21 @@ package com.spring.kkaemiGG.domain.comment;
 import com.spring.kkaemiGG.domain.BaseTimeEntity;
 import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.user.User;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
 
@@ -29,46 +30,28 @@ public class Comment extends BaseTimeEntity {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "GROUP_ID")
+    @JoinColumn(name = "GROUP_ID", nullable = false)
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment")
-    private List<Comment> childComments = new ArrayList<>();
+    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    private List<Comment> childComments;
 
-    @Column(length = 1000, nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(nullable = false)
-    private String author;
+    private Long groupOrder;
 
-    @Column(nullable = false)
-    private Integer groupOrder;
+    public static CommentBuilder builder(
+            String content,
+            Long groupOrder
+    ) {
+        Assert.hasText(content, "Content must not be null, empty, or blank");
+        Assert.notNull(groupOrder, "Group order must not be null");
 
-    @Column(nullable = false)
-    private Boolean deletion;
-
-    @Builder
-    public Comment(String content, String author, Integer groupOrder, Boolean deletion) {
-        this.content = content;
-        this.author = author;
-        this.groupOrder = groupOrder;
-        this.deletion = deletion;
-    }
-
-    public void setDeletion(Boolean deletion) {
-        this.deletion = deletion;
-    }
-
-    public void setGroupOrder(Integer groupOrder) {
-        this.groupOrder = groupOrder;
-    }
-
-    public void setParentComment(Comment parentComment) {
-        this.parentComment = parentComment;
-        if (this.equals(parentComment)) {
-            return;
-        }
-        parentComment.getChildComments().add(this);
+        return new CommentBuilder()
+                .content(content)
+                .groupOrder(groupOrder);
     }
 
     public void setUser(User user) {
@@ -77,10 +60,28 @@ public class Comment extends BaseTimeEntity {
 
     public void setPost(Post post) {
         this.post = post;
-        post.getComments().add(this);
     }
 
-    public void addTargetNickname(String nickname) {
-        this.content = "<p class='text-success'>@" + nickname + "</p>" + this.content;
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
+    }
+
+    public void changeOrder(Long groupOrder) {
+        this.groupOrder = groupOrder;
+    }
+
+    public void addChildComment(Comment childComment) {
+        // 자기 자신이 최상위 부모 댓글이 아닐 경우 자식 댓글을 추가하지 않음
+        // depth 2 유지
+        boolean isParentComment = this.id.equals(parentComment.id);
+        if (!isParentComment) {
+            return;
+        }
+
+        this.getChildComments().add(childComment);
+    }
+
+    public void update(String content) {
+        this.content = content;
     }
 }

@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.domain.user;
 
+import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Comment> comments;
 
     @Column(nullable = false, unique = true)
     private String email;
