@@ -15,6 +15,16 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow();
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow();
+    }
+
     public void save(User user) {
         userRepository.save(user);
     }

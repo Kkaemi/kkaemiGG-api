@@ -1,28 +1,38 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.auth.Token;
+import com.spring.kkaemiGG.domain.token.RefreshToken;
+import com.spring.kkaemiGG.domain.token.RefreshTokenRepository;
 import com.spring.kkaemiGG.domain.user.User;
+import com.spring.kkaemiGG.exception.BadRequestException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Transactional
 @Service
-public class JwtService {
+public class TokenService {
 
     private final SecretKey key;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtService(@Value("${JWT-SECRET-KEY}") String base64String) {
+    public TokenService(
+            @Value("${JWT-SECRET-KEY}") String base64String,
+            RefreshTokenRepository refreshTokenRepository
+    ) {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64String));
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public Token generateToken(User user) {
         long accessTokenPeriod = 1000L * 60L * 30L; //  30분
-        long refreshTokenPeriod = 1000L * 60L * 60L * 24L * 3L; // 3일
+        long refreshTokenPeriod = 1000L * 60L * 60L * 24L * 7L; // 일주일
 
         Date now = new Date();
 
@@ -51,10 +61,8 @@ public class JwtService {
     }
 
     public boolean verifyToken(String token) {
-        Jws<Claims> jws;
-
         try {
-            jws = Jwts.parserBuilder()
+            Jws<Claims> jws = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
@@ -73,5 +81,35 @@ public class JwtService {
                         .build()
                         .parseClaimsJws(token).getBody().getSubject()
         );
+    }
+
+    public Long saveOrUpdate(User user, String refreshToken) {
+        return refreshTokenRepository.findByUser(user)
+                .map(RefreshToken::getId)
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder(user, refreshToken).build()).getId());
+    }
+
+    public RefreshToken findRefreshTokenById(Long refreshTokenId) {
+        return refreshTokenRepository.findById(refreshTokenId)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 리프레시 토큰을 찾을 수 없습니다."));
+    }
+
+    public void deleteRefreshToken(RefreshToken refreshToken) {
+        refreshTokenRepository.delete(refreshToken);
+    }
+
+    public void deleteRefreshToken(Long refreshTokenId) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenId)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 리프레시 토큰을 찾을 수 없습니다."));
+
+        refreshTokenRepository.delete(refreshToken);
+    }
+
+    public Long updateRefreshToken(User user, String refreshToken) {
+        RefreshToken entity = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new BadRequestException("해당 외래키의 리프레시 토큰을 찾을 수 없습니다."));
+
+        entity.updateToken(refreshToken);
+        return refreshTokenRepository.save(entity).getId();
     }
 }

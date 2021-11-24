@@ -1,8 +1,7 @@
 package com.spring.kkaemiGG.auth;
 
 import com.spring.kkaemiGG.domain.user.User;
-import com.spring.kkaemiGG.exception.InternalServerErrorException;
-import com.spring.kkaemiGG.service.JwtService;
+import com.spring.kkaemiGG.service.TokenService;
 import com.spring.kkaemiGG.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +24,7 @@ import java.util.Optional;
 @Component
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final JwtService jwtService;
+    private final TokenService tokenService;
     private final UserService userService;
 
     @Override
@@ -34,29 +33,22 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             ServletResponse response,
             FilterChain chain
     ) throws IOException, ServletException {
-        getToken((HttpServletRequest) request)
-                .ifPresent(token -> {
-                    // 만약 토큰이 있을 경우 토큰 검사
-                    // 토큰이 유효하면 SecurityContext 에 User 객체를 넣어준다.
-                    if (jwtService.verifyToken(token)) {
-                        Long userId = jwtService.getUserId(token);
-                        User user = null;
-                        try {
-                            user = userService.getPostsFetchedUser(userId);
-                        } catch (InternalServerErrorException e) {
-                            e.printStackTrace();
-                            return;
-                        }
+        getToken((HttpServletRequest) request).ifPresent(token -> {
+            // 만약 토큰이 있을 경우 토큰 검사
+            // 토큰이 유효하면 SecurityContext 에 User 객체를 넣어준다.
+            if (tokenService.verifyToken(token)) {
+                Long userId = tokenService.getUserId(token);
+                User user = userService.getPostsFetchedUser(userId);
 
-                        SecurityContextHolder.getContext().setAuthentication(
-                                new UsernamePasswordAuthenticationToken(
-                                        user,
-                                        null,
-                                        Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getKey()))
-                                )
-                        );
-                    }
-                });
+                SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getKey()))
+                        )
+                );
+            }
+        });
 
         chain.doFilter(request, response);
     }
