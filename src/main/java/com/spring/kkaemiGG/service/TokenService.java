@@ -1,6 +1,7 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.auth.Token;
+import com.spring.kkaemiGG.config.AppProperties;
 import com.spring.kkaemiGG.domain.token.RefreshToken;
 import com.spring.kkaemiGG.domain.token.RefreshTokenRepository;
 import com.spring.kkaemiGG.domain.user.User;
@@ -8,32 +9,34 @@ import com.spring.kkaemiGG.exception.BadRequestException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class TokenService {
 
-    private final SecretKey key;
+    private final AppProperties appProperties;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenService(
-            @Value("${JWT-SECRET-KEY}") String base64String,
-            RefreshTokenRepository refreshTokenRepository
-    ) {
-        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64String));
-        this.refreshTokenRepository = refreshTokenRepository;
+    private SecretKey key;
+    private long accessTokenExp;
+    private long refreshTokenExp;
+
+    @PostConstruct
+    void init() {
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(appProperties.getJwt().getJwtSecretKey()));
+        this.accessTokenExp = appProperties.getJwt().getAccessTokenExp();
+        this.refreshTokenExp = appProperties.getJwt().getRefreshTokenExp();
     }
 
     public Token generateToken(User user) {
-        long accessTokenPeriod = 1000L * 60L * 30L; //  30분
-        long refreshTokenPeriod = 1000L * 60L * 60L * 24L * 7L; // 일주일
-
         Date now = new Date();
 
         return new Token(
@@ -41,7 +44,7 @@ public class TokenService {
                         .setHeaderParam("typ", "JWT")
                         .setHeaderParam("alg", "HS512")
                         .setSubject(user.getId().toString())
-                        .setExpiration(new Date(now.getTime() + accessTokenPeriod))
+                        .setExpiration(new Date(now.getTime() + accessTokenExp))
                         .setIssuedAt(now)
                         .claim("nickname", user.getNickname())
                         .claim("email", user.getEmail())
@@ -51,7 +54,7 @@ public class TokenService {
                         .setHeaderParam("typ", "JWT")
                         .setHeaderParam("alg", "HS512")
                         .setSubject(user.getId().toString())
-                        .setExpiration(new Date(now.getTime() + refreshTokenPeriod))
+                        .setExpiration(new Date(now.getTime() + refreshTokenExp))
                         .setIssuedAt(now)
                         .claim("nickname", user.getNickname())
                         .claim("email", user.getEmail())

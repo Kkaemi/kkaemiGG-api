@@ -5,9 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .DS_Store
-application-oauth2.yaml
-application-db.properties
-application-jwt.properties
+application-local.yaml
+application-prod.yaml
 
 ### STS ###
 .apt_generated
