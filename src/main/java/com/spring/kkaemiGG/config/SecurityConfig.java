@@ -95,6 +95,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/api/v1/token/**"
                     )
                         .permitAll()
+                    .antMatchers(
+                            "/api/v1/summoners/**"
+                    )
+                        .permitAll()
                     .anyRequest()
                         .authenticated()
                         .and()
