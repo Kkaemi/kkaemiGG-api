@@ -3,6 +3,7 @@ package com.spring.kkaemiGG.web.controller;
 
 import com.spring.kkaemiGG.annotation.CustomRestController;
 import com.spring.kkaemiGG.service.SummonerService;
+import com.spring.kkaemiGG.web.dto.summoner.LeaguePositionResponseDto;
 import com.spring.kkaemiGG.web.dto.summoner.ProfileResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,5 +23,10 @@ public class SummonerController {
     @GetMapping("/v1/summoners/{userName}/profile")
     public ProfileResponseDto getSummonerByUserName(@PathVariable String userName) {
         return summonerService.getProfileByName(userName);
+    }
+
+    @GetMapping("/v1/summoners/{userName}/league-positions")
+    public LeaguePositionResponseDto getLeaguePositions(@PathVariable String userName) {
+        return summonerService.getLeaguePositions(userName);
     }
 }

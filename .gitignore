@@ -7,6 +7,7 @@ build/
 .DS_Store
 application-local.yaml
 application-prod.yaml
+/l4j8cache
 
 ### STS ###
 .apt_generated

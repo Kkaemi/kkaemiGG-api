@@ -5,6 +5,7 @@ import com.spring.kkaemiGG.config.AppProperties;
 import com.spring.kkaemiGG.domain.token.RefreshTokenRepository;
 import com.spring.kkaemiGG.domain.user.Role;
 import com.spring.kkaemiGG.domain.user.User;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
+@RequiredArgsConstructor
 @ExtendWith(SpringExtension.class)
 class TokenServiceTest {
 

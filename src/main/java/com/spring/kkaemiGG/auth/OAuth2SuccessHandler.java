@@ -1,8 +1,6 @@
 package com.spring.kkaemiGG.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.kkaemiGG.config.AppProperties;
-import com.spring.kkaemiGG.domain.token.RefreshToken;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.exception.BadRequestException;
 import com.spring.kkaemiGG.service.TokenService;
@@ -31,7 +29,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final TokenService tokenService;
     private final UserService userService;
-    private final ObjectMapper objectMapper;
     private final AppProperties appProperties;
     private final CookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository;
 

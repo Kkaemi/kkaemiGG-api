@@ -19,6 +19,7 @@ configurations {
 repositories {
 	google()
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -30,6 +31,7 @@ dependencies {
 
 	// League of Legends
 	implementation("com.merakianalytics.orianna:orianna:4.0.0-rc8")
+	implementation("com.github.stelar7:R4J:2.0.11")
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
