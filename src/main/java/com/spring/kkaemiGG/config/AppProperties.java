@@ -22,6 +22,8 @@ public class AppProperties {
 
     private final String riotApiKey;
 
+    private final String communityDragonBaseUrl;
+
     @Getter
     @RequiredArgsConstructor
     public static class Cors {
