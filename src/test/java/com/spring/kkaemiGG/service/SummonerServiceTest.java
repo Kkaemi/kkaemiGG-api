@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.merakianalytics.orianna.Orianna;
 import com.merakianalytics.orianna.types.common.Platform;
 import com.merakianalytics.orianna.types.common.Queue;
+import com.merakianalytics.orianna.types.common.Region;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
 import com.merakianalytics.orianna.types.core.staticdata.Champion;
 import com.merakianalytics.orianna.types.core.staticdata.Item;
@@ -44,6 +45,14 @@ class SummonerServiceTest {
         Orianna.setDefaultPlatform(Platform.KOREA);
         Orianna.setDefaultLocale("ko_KR");
         Orianna.setRiotAPIKey(null);
+    }
+
+    @DisplayName("챔피언 불러오기")
+    @Test
+    void name() {
+        Champion champion = Orianna.championNamed("Shaco").withRegion(Region.NORTH_AMERICA).withPlatform(Platform.NORTH_AMERICA).withLocale("en_US").get();
+//        Champion champion1 = Orianna.championWithId(champion.getId()).get();
+        System.out.println(champion.exists());
     }
 
     @DisplayName("존재하는 소환사인지 확인")

@@ -126,25 +126,28 @@ public class SummonerService {
                             .orElseThrow();
 
                     // 해당 소환사의 챔피언 정보
-                    MatchInfoResponseDto.ChampionInfo championInfo;
-
+                    MatchInfoResponseDto.ChampionInfo championInfo = new MatchInfoResponseDto.ChampionInfo(
+                            "챔피언 정보 없음",
+                            0,
+                            null
+                    );
                     Champion champion = Orianna.championWithId(searchedSummoner.getChampionId()).get();
-                    if (!champion.exists()) {
+                    if (champion.exists()) {
                         championInfo = new MatchInfoResponseDto.ChampionInfo(
-                                "챔피언 정보 없음",
-                                0,
-                                null
+                                champion.getName(),
+                                searchedSummoner.getChampionLevel(),
+                                champion.getImage().getURL()
                         );
                     } else {
-                        int championLevel = searchedSummoner.getChampionLevel();
-                        String championName = champion.getName();
-                        String championImageUrl = champion.getImage().getURL();
-
-                        championInfo = new MatchInfoResponseDto.ChampionInfo(
-                                championName,
-                                championLevel,
-                                championImageUrl
-                        );
+                        champion = Orianna.championNamed(searchedSummoner.getChampionName()).withLocale("en_US").get();
+                        if (champion.exists()) {
+                            champion = Orianna.championWithId(champion.getId()).get();
+                            championInfo = new MatchInfoResponseDto.ChampionInfo(
+                                    champion.getName(),
+                                    searchedSummoner.getChampionLevel(),
+                                    champion.getImage().getURL()
+                            );
+                        }
                     }
 
                     // 스펠 정보
@@ -259,20 +262,32 @@ public class SummonerService {
                     // 게임 참가자 정보
                     List<MatchInfoResponseDto.ParticipantInfo> participantInfoList = participantList.stream()
                             .map(matchParticipant -> {
-                                Champion participantsChampion = Orianna.championWithId(matchParticipant.getChampionId()).get();
+                                Champion participantChampion = Orianna.championWithId(matchParticipant.getChampionId()).get();
 
-                                if (!participantsChampion.exists()) {
+                                if (participantChampion.exists()) {
                                     return new MatchInfoResponseDto.ParticipantInfo(
-                                            "챔피언 정보 없음",
-                                            null,
-                                            null
+                                            matchParticipant.getSummonerName(),
+                                            participantChampion.getName(),
+                                            participantChampion.getImage().getURL()
+                                    );
+                                }
+
+                                participantChampion = Orianna.championNamed(matchParticipant.getChampionName())
+                                        .withLocale("en_US").get();
+
+                                if (participantChampion.exists()) {
+                                    participantChampion = Orianna.championWithId(participantChampion.getId()).get();
+                                    return new MatchInfoResponseDto.ParticipantInfo(
+                                            matchParticipant.getSummonerName(),
+                                            participantChampion.getName(),
+                                            participantChampion.getImage().getURL()
                                     );
                                 }
 
                                 return new MatchInfoResponseDto.ParticipantInfo(
                                         matchParticipant.getSummonerName(),
-                                        participantsChampion.getName(),
-                                        participantsChampion.getImage().getURL()
+                                        "챔피언 정보 없음",
+                                        null
                                 );
                             })
                             .collect(Collectors.toList());
@@ -294,7 +309,9 @@ public class SummonerService {
                             itemInfoList,
                             participantInfoList
                     );
-                }).collect(Collectors.toList());
+                })
+                .filter(matchInfoResponseDto -> !matchInfoResponseDto.getQueue().equals("튜토리얼"))
+                .collect(Collectors.toList());
 
         return new MatchInfoListResponseDto(data);
     }
