@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @RequiredArgsConstructor
@@ -19,24 +17,27 @@ public class PostPageResponseDto {
     @Getter
     public static class PostDto {
         private final Long postId;
-        private final String userNickname;
         private final String title;
         private final Long comments;
+        private final String userNickname;
         private final String createdDate;
+        private final Long views;
 
         @QueryProjection
         public PostDto(
                 Long postId,
-                String userNickname,
                 String title,
                 Long comments,
-                LocalDateTime createdDate
+                String userNickname,
+                LocalDateTime createdDate,
+                Long views
         ) {
             this.postId = postId;
             this.userNickname = userNickname;
             this.title = title;
             this.comments = comments;
             this.createdDate = createdDate.atOffset(ZoneOffset.UTC).toString();
+            this.views = views;
         }
     }
 }

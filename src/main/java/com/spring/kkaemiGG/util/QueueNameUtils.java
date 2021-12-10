@@ -52,12 +52,8 @@ public class QueueNameUtils {
                 return "2v2 Snowdown Showdown";
             case HEXAKILL_6X6_SR:
                 return "Summoners Rift Hexakill";
-            case URF_5X5:
-                return "URF";
             case ONE_FOR_ALL_MIRROR:
                 return "One for All Mirror Mode";
-            case BOT_URF_5X5:
-                return "URF Bots";
             case NIGHTMARE_BOT_5X5_RANK1:
                 return "Doombots Rank 1";
             case NIGHTMARE_BOT_5X5_RANK2:
@@ -80,10 +76,11 @@ public class QueueNameUtils {
                 return "Nexus Siege";
             case DEFINITELY_NOT_DOMINION_5X5:
                 return "Definitely Not Dominion";
+            case URF_5X5:
+            case BOT_URF_5X5:
             case ALL_RANDOM_URF:
-                return "ARURF";
             case SNOW_BATTLE_ARURF:
-                return "ARURF Snow Skin";
+                return "우르프";
             case OVERCHARGE:
                 return "Overcharge";
             case TEAM_BUILDER_DRAFT_UNRANKED_5X5:
