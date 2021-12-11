@@ -30,15 +30,15 @@ public class TokenController {
     public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
         // refresh token id cookie 찾기
         // id 기반 refresh token entity 찾기
-        Cookie refreshTokenIdCookie = CookieUtils.getCookie(request, REFRESH_TOKEN_NAME)
-                .orElseThrow(() -> new UnAuthorizedException("UnAuthorized"));
+        Cookie refreshTokenIdCookie = CookieUtils.getCookie(request, REFRESH_TOKEN_NAME).orElse(null);
+        if (refreshTokenIdCookie == null) return null;
         RefreshToken refreshTokenEntity = tokenService.findRefreshTokenById(Long.valueOf(refreshTokenIdCookie.getValue()));
 
         // entity 안에 있는 refresh token 검증
         if (!tokenService.verifyToken(refreshTokenEntity.getRefreshToken())) {
             CookieUtils.deleteCookie(request, response, REFRESH_TOKEN_NAME);
             tokenService.deleteRefreshToken(refreshTokenEntity);
-            throw new UnAuthorizedException("UnAuthorized");
+            return null;
         }
 
         User user = userService.findById(tokenService.getUserId(refreshTokenEntity.getRefreshToken()));

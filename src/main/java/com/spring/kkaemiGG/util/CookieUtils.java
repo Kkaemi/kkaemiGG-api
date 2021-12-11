@@ -12,7 +12,7 @@ public class CookieUtils {
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         if (request.getCookies() == null) {
-            throw new BadRequestException("쿠키를 찾을 수 없습니다.");
+            return Optional.empty();
         }
 
         return Arrays.stream(request.getCookies())
