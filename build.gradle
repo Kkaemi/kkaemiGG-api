@@ -29,6 +29,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation('org.springdoc:springdoc-openapi-ui:1.5.2')
 
+	// aws
+	implementation('org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE')
+
 	// League of Legends
 	implementation("com.merakianalytics.orianna:orianna:4.0.0-rc8")
 	implementation("com.github.stelar7:R4J:2.0.11")
