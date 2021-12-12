@@ -37,7 +37,7 @@ public class PostController {
     public PostResponseDto viewPost(
             @PathVariable Long id,
             @RequestIP String ipAddress
-    ) throws BadRequestException {
+    ) {
         return postService.viewPost(id, ipAddress);
     }
 

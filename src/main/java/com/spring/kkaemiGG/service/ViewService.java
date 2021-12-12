@@ -17,18 +17,17 @@ public class ViewService {
     private final ViewRepository viewRepository;
 
     public View saveOrUpdate(String ipAddress, Post post) {
-        View view = viewRepository.findByIpAddress(ipAddress)
+        LocalDateTime now = LocalDateTime.now();
+        View view = viewRepository.findByIpAddressAndPost(ipAddress, post)
                 .orElseGet(() -> View.builder(
                         post,
                         ipAddress,
-                        LocalDateTime.now(),
+                        now,
                         1L
                 ).build());
 
-        LocalDateTime lastViewed = view.getLastViewed();
-
-        if (lastViewed.isAfter(lastViewed.plusMinutes(30L))) {
-            view.hitCount();
+        if (now.isAfter(view.getLastViewed().plusMinutes(30L))) {
+            view.hitCount(now);
         }
 
         return viewRepository.save(view);

@@ -23,10 +23,10 @@ public class View {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "POST_ID", nullable = false)
     private Post post;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String ipAddress;
 
     @Column(nullable = false)
@@ -53,8 +53,8 @@ public class View {
                 .count(count);
     }
 
-    public void hitCount() {
+    public void hitCount(LocalDateTime now) {
         this.count += 1;
-        this.lastViewed = LocalDateTime.now();
+        this.lastViewed = now;
     }
 }

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserService userService;
     private final ViewService viewService;
 
     @Transactional(readOnly = true)
@@ -34,13 +33,10 @@ public class PostService {
     }
 
     public Long save(PostSaveRequestDto requestDto, User user) {
-        Post post = postRepository.save(requestDto.toEntity(user));
-        user.writePost(post);
-        userService.save(user);
-        return post.getId();
+        return postRepository.save(requestDto.toEntity(user)).getId();
     }
 
-    public PostResponseDto viewPost(Long id, String ipAddress) throws BadRequestException {
+    public PostResponseDto viewPost(Long id, String ipAddress) {
         Post post = postRepository.fetchUserAndViews(id)
                 .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
         View view = viewService.saveOrUpdate(ipAddress, post);
