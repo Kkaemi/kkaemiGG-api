@@ -1,6 +1,5 @@
 package com.spring.kkaemiGG.service;
 
-import com.spring.kkaemiGG.domain.comment.Comment;
 import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.post.PostRepository;
 import com.spring.kkaemiGG.domain.user.User;
@@ -20,6 +19,11 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final ViewService viewService;
+
+    public Post findById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
+    }
 
     @Transactional(readOnly = true)
     public PostPageResponseDto getPage(PostPageRequestDto requestDto, Pageable pageable) {
@@ -47,8 +51,7 @@ public class PostService {
     }
 
     public Long update(Long postId, PostUpdateRequestDto requestDto) throws BadRequestException {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
+        Post post = findById(postId);
 
         post.update(requestDto.getTitle(), requestDto.getContent());
 
@@ -56,18 +59,7 @@ public class PostService {
     }
 
     public void delete(Long postId) throws BadRequestException {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
-
+        Post post = findById(postId);
         postRepository.delete(post);
-    }
-
-    public Post addComment(Long postId, Comment comment) throws BadRequestException {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
-
-        post.getComments().add(comment);
-
-        return postRepository.save(post);
     }
 }

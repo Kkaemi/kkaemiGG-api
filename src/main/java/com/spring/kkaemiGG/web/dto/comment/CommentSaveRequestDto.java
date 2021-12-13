@@ -9,5 +9,6 @@ public class CommentSaveRequestDto {
 
     private Long postId;
     private Long parentCommentId;
+    private Long groupId;
     private String content;
 }

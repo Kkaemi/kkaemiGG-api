@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,10 +31,10 @@ public class Comment extends BaseTimeEntity {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "GROUP_ID", nullable = false)
+    @JoinColumn(name = "GROUP_ID")
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentComment")
     private List<Comment> childComments;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -42,46 +43,28 @@ public class Comment extends BaseTimeEntity {
     @Column(nullable = false)
     private Long groupOrder;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedDate;
+
     public static CommentBuilder builder(
+            User user,
+            Post post,
             String content,
             Long groupOrder
     ) {
         Assert.hasText(content, "Content must not be null, empty, or blank");
         Assert.notNull(groupOrder, "Group order must not be null");
+        Assert.notNull(post, "post must not be null");
+        Assert.notNull(user, "user must not be null");
 
         return new CommentBuilder()
                 .content(content)
-                .groupOrder(groupOrder);
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
+                .groupOrder(groupOrder)
+                .post(post)
+                .user(user);
     }
 
     public void setParentComment(Comment parentComment) {
         this.parentComment = parentComment;
-    }
-
-    public void changeOrder(Long groupOrder) {
-        this.groupOrder = groupOrder;
-    }
-
-    public void addChildComment(Comment childComment) {
-        // 자기 자신이 최상위 부모 댓글이 아닐 경우 자식 댓글을 추가하지 않음
-        // depth 2 유지
-        boolean isParentComment = this.id.equals(parentComment.id);
-        if (!isParentComment) {
-            return;
-        }
-
-        this.getChildComments().add(childComment);
-    }
-
-    public void update(String content) {
-        this.content = content;
     }
 }

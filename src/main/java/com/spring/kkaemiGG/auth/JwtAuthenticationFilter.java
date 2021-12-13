@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             // 토큰이 유효하면 SecurityContext 에 User 객체를 넣어준다.
             if (tokenService.verifyToken(token)) {
                 Long userId = tokenService.getUserId(token);
-                User user = userService.getPostsFetchedUser(userId);
+                User user = userService.findById(userId);
 
                 SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(

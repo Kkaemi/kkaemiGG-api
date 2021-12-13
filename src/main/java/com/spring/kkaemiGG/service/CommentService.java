@@ -1,16 +1,17 @@
 package com.spring.kkaemiGG.service;
 
 import com.spring.kkaemiGG.domain.comment.Comment;
-import com.spring.kkaemiGG.domain.comment.CommentQueryRepositoryImpl;
 import com.spring.kkaemiGG.domain.comment.CommentRepository;
-import com.spring.kkaemiGG.domain.post.Post;
 import com.spring.kkaemiGG.domain.user.User;
 import com.spring.kkaemiGG.exception.BadRequestException;
 import com.spring.kkaemiGG.web.dto.comment.CommentListResponseDto;
+import com.spring.kkaemiGG.web.dto.comment.CommentResponseDto;
 import com.spring.kkaemiGG.web.dto.comment.CommentSaveRequestDto;
-import com.spring.kkaemiGG.web.dto.comment.CommentUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,94 +21,93 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserService userService;
     private final PostService postService;
-    private final CommentQueryRepositoryImpl queryRepository;
 
-    public Long save(User requestUser, CommentSaveRequestDto requestDto) throws BadRequestException {
+    public Comment findById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 댓글을 찾을 수 없습니다."));
+    }
+
+    public CommentResponseDto save(User requestUser, CommentSaveRequestDto requestDto) {
         // 만약 부모 댓글 ID가 없는 경우
-        if (requestDto.getParentCommentId() == null) {
+        if (requestDto.getParentCommentId() == null && requestDto.getGroupId() == null) {
             return saveParentComment(requestUser, requestDto);
         }
 
         return saveChildComment(requestUser, requestDto);
     }
 
-    private Long saveParentComment(User requestUser, CommentSaveRequestDto requestDto) throws BadRequestException {
-        Comment comment = Comment.builder(requestDto.getContent(), 1L).build();
-        comment.setParentComment(comment);
+    private CommentResponseDto saveParentComment(User requestUser, CommentSaveRequestDto requestDto) {
+        Comment comment = commentRepository.save(Comment.builder(
+                requestUser,
+                postService.findById(requestDto.getPostId()),
+                requestDto.getContent(),
+                1L
+        ).build());
 
-        Post post = postService.addComment(requestDto.getPostId(), comment);
-        User user = userService.addComment(requestUser, comment);
-
-        comment.setPost(post);
-        comment.setUser(user);
-        return commentRepository.save(comment).getId();
+        return new CommentResponseDto(comment);
     }
 
-    private Long saveChildComment(User requestUser, CommentSaveRequestDto requestDto) throws BadRequestException {
-        Comment parentComment = commentRepository.findParentCommentById(requestDto.getParentCommentId())
+    private CommentResponseDto saveChildComment(User requestUser, CommentSaveRequestDto requestDto) {
+        // 일반 댓글일 경우
+        if (requestDto.getParentCommentId() != null && requestDto.getGroupId() == null) {
+            Comment parentComment = commentRepository.findParentCommentFetchedChildCommentsById(requestDto.getParentCommentId())
+                    .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
+
+            return mapToDto(requestUser, requestDto.getPostId(), requestDto.getContent(), parentComment);
+        }
+
+        // 대댓글일 경우
+        Comment parentComment = commentRepository.findParentCommentFetchedChildCommentsById(requestDto.getGroupId())
                 .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
+
+        String userNickname = commentRepository.findCommentFetchedUserById(requestDto.getParentCommentId())
+                .map(comment -> comment.getUser().getNickname())
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
+
+        String content = "<span class=\"text-no-wrap green lighten-4 green--text \">" +
+                "@" + userNickname + "</span><br>" +
+                requestDto.getContent();
+
+        return mapToDto(requestUser, requestDto.getPostId(), content, parentComment);
+    }
+
+    private CommentResponseDto mapToDto(
+            User requestUser,
+            Long postId,
+            String content,
+            Comment parentComment
+    ) {
         Comment childComment = Comment.builder(
-                requestDto.getContent(),
+                requestUser,
+                postService.findById(postId),
+                content,
                 parentComment.getChildComments().stream()
                         .mapToLong(Comment::getGroupOrder)
-                        .max().orElseThrow() + 1
+                        .max().orElse(1L) + 1
         ).build();
-        Post post = postService.addComment(requestDto.getPostId(), childComment);
-        User user = userService.addComment(requestUser, childComment);
 
-        childComment.setPost(post);
-        childComment.setUser(user);
         childComment.setParentComment(parentComment);
-        parentComment.addChildComment(childComment);
 
-        commentRepository.save(parentComment);
-        return commentRepository.save(childComment).getId();
+        return new CommentResponseDto(commentRepository.save(childComment));
     }
 
-    public void delete(Long commentId) throws BadRequestException {
-//        Comment parentComment = queryRepository.findParentById(commentId);
-//        Comment comment = parentComment.getChildComments().stream()
-//                .filter(childComment -> childComment.getId().equals(commentId))
-//                .findFirst().orElseThrow(() -> new IllegalArgumentException("잘못된 ID 입니다."));
-
-        // 부모 댓글일 경우 상태만 변경
-//        if (comment.equals(parentComment) && parentComment.getChildComments().size() > 1) {
-//            parentComment.setDeletion(true);
-//            return;
-//        }
-
-
-        // 부모 댓글의 상태가 삭제된 상태고 자식 댓글이 하나밖에 없으면 자식댓글과 부모댓글 같이 삭제
-//        if (parentComment.getDeletion() && parentComment.getChildComments().size() == 2) {
-//            commentRepository.deleteById(commentId);
-//            commentRepository.delete(parentComment);
-//            return;
-//        }
-
-        // 삭제 되는 댓글 보다 뒤에 있는 댓글들의 groupOrder를 하나씩 빼줌
-//        queryRepository.updateGroupOrder(parentComment.getId(), comment.getGroupOrder());
-
-        Comment comment = commentRepository.findById(commentId)
-                        .orElseThrow(() -> new BadRequestException("해당 아이디의 댓글을 찾을 수 없습니다."));
-
-        commentRepository.delete(comment);
-    }
-
-    public CommentListResponseDto findByPostId(Long postId, User user) {
-        List<CommentListResponseDto.CommentDto> data = commentRepository.findByPostId(postId).stream()
-                .map(comment -> new CommentListResponseDto.CommentDto(comment, user))
+    public void delete(Long commentId) {
+        Comment comment = commentRepository.findParentCommentFetchedChildCommentsById(commentId)
+                .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
+        List<Long> commentIdList = comment.getChildComments().stream()
+                .map(Comment::getId)
                 .collect(Collectors.toList());
 
-        return new CommentListResponseDto(data);
+        commentIdList.add(comment.getId());
+        commentRepository.deleteWithChildComments(commentIdList);
     }
 
-    public Long update(Long commentId, CommentUpdateRequestDto requestDto) throws BadRequestException {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 댓글을 찾을 수 없습니다."));
+    @Transactional(readOnly = true)
+    public CommentListResponseDto findByPostId(Long postId, Pageable pageable) {
+        Page<CommentResponseDto> data = commentRepository.getCommentPage(postId, pageable)
+                .map(CommentResponseDto::new);
 
-        comment.update(requestDto.getContent());
-        return commentRepository.save(comment).getId();
+        return new CommentListResponseDto(data);
     }
 }

@@ -4,7 +4,6 @@ import com.spring.kkaemiGG.annotation.CustomRestController;
 import com.spring.kkaemiGG.auth.Token;
 import com.spring.kkaemiGG.domain.token.RefreshToken;
 import com.spring.kkaemiGG.domain.user.User;
-import com.spring.kkaemiGG.exception.UnAuthorizedException;
 import com.spring.kkaemiGG.service.TokenService;
 import com.spring.kkaemiGG.service.UserService;
 import com.spring.kkaemiGG.util.CookieUtils;
