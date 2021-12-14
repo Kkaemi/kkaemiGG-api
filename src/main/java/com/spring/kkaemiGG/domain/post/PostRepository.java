@@ -16,4 +16,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostQueryRepo
             "LEFT JOIN FETCH p.views " +
             "WHERE p.id = :postId")
     Optional<Post> fetchUserAndViews(@Param("postId") Long postId);
+
+    Optional<Post> findByIdAndDeletedDateIsNull(Long postId);
 }

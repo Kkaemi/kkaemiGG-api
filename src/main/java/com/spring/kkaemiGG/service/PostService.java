@@ -21,7 +21,7 @@ public class PostService {
     private final ViewService viewService;
 
     public Post findById(Long postId) {
-        return postRepository.findById(postId)
+        return postRepository.findByIdAndDeletedDateIsNull(postId)
                 .orElseThrow(() -> new BadRequestException("해당 아이디의 게시물을 찾울 수 없습니다."));
     }
 
@@ -58,8 +58,9 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    public void delete(Long postId) throws BadRequestException {
+    public void delete(Long postId) {
         Post post = findById(postId);
-        postRepository.delete(post);
+        post.delete();
+        postRepository.save(post);
     }
 }

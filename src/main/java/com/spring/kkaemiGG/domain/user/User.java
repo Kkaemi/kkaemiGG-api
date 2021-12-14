@@ -1,20 +1,14 @@
 package com.spring.kkaemiGG.domain.user;
 
-import com.spring.kkaemiGG.domain.comment.Comment;
-import com.spring.kkaemiGG.domain.post.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User {
 
@@ -22,12 +16,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Post> posts;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Comment> comments;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -57,9 +45,5 @@ public class User {
     public User update(String nickname) {
         this.nickname = nickname;
         return this;
-    }
-
-    public void writePost(Post post) {
-        this.posts.add(post);
     }
 }

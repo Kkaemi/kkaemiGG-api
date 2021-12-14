@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -25,7 +24,6 @@ import static com.spring.kkaemiGG.domain.user.QUser.user;
 import static com.spring.kkaemiGG.domain.view.QView.view;
 
 @RequiredArgsConstructor
-@Repository
 public class PostQueryRepositoryImpl implements PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -45,11 +43,14 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
                         post.createdDate,
                         view.count.sum().coalesce(0L)
                 )).from(post)
-                .leftJoin(post.user, user)
+                .innerJoin(post.user, user)
                 .leftJoin(post.comments, comment)
                 .leftJoin(post.views, view)
 
-                .where(getLike(target, keyword))
+                .where(
+                        getLike(target, keyword),
+                        post.deletedDate.isNull()
+                )
 
                 .groupBy(post.id)
 

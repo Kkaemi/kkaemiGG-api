@@ -19,8 +19,8 @@ public class CommentQueryRepositoryImpl implements CommentQueryRepository {
         QComment parentComment = new QComment("parentComment");
 
         QueryResults<Comment> queryResults = queryFactory.selectFrom(comment)
+                .innerJoin(comment.user).fetchJoin()
                 .leftJoin(comment.parentComment, parentComment).fetchJoin()
-                .leftJoin(comment.user).fetchJoin()
                 .where(
                         comment.post.id.eq(postId),
                         comment.deletedDate.isNull()

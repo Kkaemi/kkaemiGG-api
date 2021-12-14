@@ -24,7 +24,7 @@ public class CommentService {
     private final PostService postService;
 
     public Comment findById(Long commentId) {
-        return commentRepository.findById(commentId)
+        return commentRepository.findByIdAndDeletedDateIsNull(commentId)
                 .orElseThrow(() -> new BadRequestException("해당 아이디의 댓글을 찾을 수 없습니다."));
     }
 
@@ -79,15 +79,14 @@ public class CommentService {
             Comment parentComment
     ) {
         Comment childComment = Comment.builder(
-                requestUser,
-                postService.findById(postId),
-                content,
-                parentComment.getChildComments().stream()
-                        .mapToLong(Comment::getGroupOrder)
-                        .max().orElse(1L) + 1
-        ).build();
-
-        childComment.setParentComment(parentComment);
+                        requestUser,
+                        postService.findById(postId),
+                        content,
+                        parentComment.getChildComments().stream()
+                                .mapToLong(Comment::getGroupOrder)
+                                .max().orElse(1L) + 1
+                ).parentComment(parentComment)
+                .build();
 
         return commentRepository.save(childComment).getId();
     }

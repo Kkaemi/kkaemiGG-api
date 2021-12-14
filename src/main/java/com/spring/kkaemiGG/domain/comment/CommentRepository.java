@@ -24,6 +24,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
             "WHERE c.id = :parentCommentId")
     Optional<Comment> findCommentFetchedUserById(@Param("parentCommentId") Long parentCommentId);
 
+    Optional<Comment> findByIdAndDeletedDateIsNull(Long commentId);
+
     @Modifying
     @Query("UPDATE Comment c " +
             "SET c.deletedDate = :now " +
