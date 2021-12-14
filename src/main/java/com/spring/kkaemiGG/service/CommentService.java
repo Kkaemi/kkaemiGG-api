@@ -28,7 +28,7 @@ public class CommentService {
                 .orElseThrow(() -> new BadRequestException("해당 아이디의 댓글을 찾을 수 없습니다."));
     }
 
-    public CommentResponseDto save(User requestUser, CommentSaveRequestDto requestDto) {
+    public Long save(User requestUser, CommentSaveRequestDto requestDto) {
         // 만약 부모 댓글 ID가 없는 경우
         if (requestDto.getParentCommentId() == null && requestDto.getGroupId() == null) {
             return saveParentComment(requestUser, requestDto);
@@ -37,18 +37,18 @@ public class CommentService {
         return saveChildComment(requestUser, requestDto);
     }
 
-    private CommentResponseDto saveParentComment(User requestUser, CommentSaveRequestDto requestDto) {
-        Comment comment = commentRepository.save(Comment.builder(
+    private Long saveParentComment(User requestUser, CommentSaveRequestDto requestDto) {
+        Comment comment = Comment.builder(
                 requestUser,
                 postService.findById(requestDto.getPostId()),
                 requestDto.getContent(),
                 1L
-        ).build());
+        ).build();
 
-        return new CommentResponseDto(comment);
+        return commentRepository.save(comment).getId();
     }
 
-    private CommentResponseDto saveChildComment(User requestUser, CommentSaveRequestDto requestDto) {
+    private Long saveChildComment(User requestUser, CommentSaveRequestDto requestDto) {
         // 일반 댓글일 경우
         if (requestDto.getParentCommentId() != null && requestDto.getGroupId() == null) {
             Comment parentComment = commentRepository.findParentCommentFetchedChildCommentsById(requestDto.getParentCommentId())
@@ -72,7 +72,7 @@ public class CommentService {
         return mapToDto(requestUser, requestDto.getPostId(), content, parentComment);
     }
 
-    private CommentResponseDto mapToDto(
+    private Long mapToDto(
             User requestUser,
             Long postId,
             String content,
@@ -89,7 +89,7 @@ public class CommentService {
 
         childComment.setParentComment(parentComment);
 
-        return new CommentResponseDto(commentRepository.save(childComment));
+        return commentRepository.save(childComment).getId();
     }
 
     public void delete(Long commentId) {
@@ -109,5 +109,11 @@ public class CommentService {
                 .map(CommentResponseDto::new);
 
         return new CommentListResponseDto(data);
+    }
+
+    public Long update(Long commentId, String content) {
+        Comment comment = findById(commentId);
+        comment.updateContent(content);
+        return commentRepository.save(comment).getId();
     }
 }
