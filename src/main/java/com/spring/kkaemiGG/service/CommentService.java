@@ -13,10 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CommentService {
 
@@ -93,14 +93,7 @@ public class CommentService {
     }
 
     public void delete(Long commentId) {
-        Comment comment = commentRepository.findParentCommentFetchedChildCommentsById(commentId)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
-        List<Long> commentIdList = comment.getChildComments().stream()
-                .map(Comment::getId)
-                .collect(Collectors.toList());
-
-        commentIdList.add(comment.getId());
-        commentRepository.deleteWithChildComments(commentIdList);
+        commentRepository.deleteWithChildComments(commentId, LocalDateTime.now());
     }
 
     @Transactional(readOnly = true)

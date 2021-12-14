@@ -6,10 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static com.spring.kkaemiGG.domain.comment.QComment.comment;
 
@@ -35,14 +31,5 @@ public class CommentQueryRepositoryImpl implements CommentQueryRepository {
                 .fetchResults();
 
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
-    }
-
-    @Transactional
-    @Override
-    public void deleteWithChildComments(List<Long> commentIdList) {
-        queryFactory.update(comment)
-                .set(comment.deletedDate, LocalDateTime.now())
-                .where(comment.id.in(commentIdList))
-                .execute();
     }
 }

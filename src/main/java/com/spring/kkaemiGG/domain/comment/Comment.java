@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -42,9 +41,6 @@ public class Comment extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long groupOrder;
-
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedDate;
 
     public static CommentBuilder builder(
             User user,
