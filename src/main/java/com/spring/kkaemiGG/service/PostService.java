@@ -31,7 +31,7 @@ public class PostService {
                 requestDto.getTarget(),
                 requestDto.getKeyword(),
                 pageable
-        );
+        ).map(PostPageResponseDto.PostDto::new);
 
         return new PostPageResponseDto(data);
     }

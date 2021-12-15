@@ -12,7 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostQueryRepo
 
     @Query("SELECT p " +
             "FROM Post p " +
-            "LEFT JOIN FETCH p.user " +
+            "INNER JOIN FETCH p.user " +
             "LEFT JOIN FETCH p.views " +
             "WHERE p.id = :postId")
     Optional<Post> fetchUserAndViews(@Param("postId") Long postId);
