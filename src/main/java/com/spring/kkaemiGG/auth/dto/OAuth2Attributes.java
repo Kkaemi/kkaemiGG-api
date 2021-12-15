@@ -21,6 +21,10 @@ public class OAuth2Attributes {
             String userNameAttributeName,
             Map<String, Object> attributes
     ) {
+        if (registrationId.equalsIgnoreCase("naver")) {
+            return ofNaver("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
     }
 
@@ -33,6 +37,20 @@ public class OAuth2Attributes {
                 userNameAttributeName,
                 (String) attributes.get("name"),
                 (String) attributes.get("email")
+        );
+    }
+
+    private static OAuth2Attributes ofNaver(
+            String userNameAttributeName,
+            Map<String, Object> attributes
+    ) {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return new OAuth2Attributes(
+                response,
+                userNameAttributeName,
+                (String) response.get("nickname"),
+                (String) response.get("email")
         );
     }
 

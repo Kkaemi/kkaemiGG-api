@@ -21,6 +21,6 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("해당 아이디의 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BadRequestException("해당 이메일의 유저를 찾을 수 없습니다."));
     }
 }
