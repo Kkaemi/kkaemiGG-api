@@ -54,7 +54,7 @@ public class CommentService {
             Comment parentComment = commentRepository.findParentCommentFetchedChildCommentsById(requestDto.getParentCommentId())
                     .orElseThrow(() -> new BadRequestException("해당 아이디의 부모댓글을 찾울 수 없습니다."));
 
-            return mapToDto(requestUser, requestDto.getPostId(), requestDto.getContent(), parentComment);
+            return getIdAfterSave(requestUser, requestDto.getPostId(), requestDto.getContent(), parentComment);
         }
 
         // 대댓글일 경우
@@ -69,10 +69,10 @@ public class CommentService {
                 "@" + userNickname + "</span><br>" +
                 requestDto.getContent();
 
-        return mapToDto(requestUser, requestDto.getPostId(), content, parentComment);
+        return getIdAfterSave(requestUser, requestDto.getPostId(), content, parentComment);
     }
 
-    private Long mapToDto(
+    private Long getIdAfterSave(
             User requestUser,
             Long postId,
             String content,
