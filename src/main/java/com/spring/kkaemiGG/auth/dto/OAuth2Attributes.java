@@ -50,7 +50,7 @@ public class OAuth2Attributes {
                 response,
                 userNameAttributeName,
                 (String) response.get("nickname"),
-                (String) response.get("email")
+                "naver"
         );
     }
 

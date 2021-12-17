@@ -7,13 +7,17 @@ plugins {
 apply plugin: 'idea'
 
 group = 'com.spring'
-version = '1.0.1-SNAPSHOT-' + new Date().format("yyyyMMddHHmmss")
+version = 'kkaemigg'
 sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+bootJar {
+	launchScript()
 }
 
 repositories {

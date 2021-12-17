@@ -30,7 +30,7 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<View> views;
 
     @Column(length = 500, nullable = false)

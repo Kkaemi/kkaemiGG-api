@@ -1,5 +1,6 @@
 package com.spring.kkaemiGG.auth;
 
+import com.spring.kkaemiGG.config.AppProperties;
 import com.spring.kkaemiGG.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +19,7 @@ import static com.spring.kkaemiGG.auth.CookieOAuth2AuthorizationRequestRepositor
 @Component
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private final AppProperties appProperties;
     private final CookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository;
 
     @Override
@@ -28,7 +30,8 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     ) throws IOException {
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .orElse(("/"));
+                .orElseGet(() -> appProperties.getOAuth2().getAuthorizedRedirectUris().get(0));
+
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
