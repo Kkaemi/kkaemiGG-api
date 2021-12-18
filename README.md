@@ -1,645 +1,122 @@
-# KKAEMI.GG
+# KKAEMIGG
+> 온라인 게임 리그오브레전드의 전적 검색 사이트입니다.  
+> https://kkaemigg.com/
 
-> __테스트 계정__
->
-> ID : test@test.com
->
-> PW : Test1234
-> (첫번째 T는 대문자 입니다.)
+<br>
 
-## 개요
-- 온라인 게임 리그오브레전드의 게임 기록을 게임 닉네임을 통해서 검색 할 수 있습니다.
-  - 한국 서버의 계정만 검색 가능합니다.
+## 참여 인원 & 제작 기간
+- 개인 프로젝트
 
+- V1 : 2020-10-20 ~ 2021-04-06
+- V2 : 2021-11-16 ~ 2021-12-17
 
-- 구글계정으로 간편 로그인 기능을 만들었습니다.
-
-
-- 자유 게시판을 만들어서 글과 댓글을 쓰는 건 회원만 가능하지만 조회는 모두 가능하도록 만들었습니다.
+<br>
 
 ## 기술
-- #### JAVA 11
-- #### Spring 5.2.9
-  - Spring Boot 2.3.4
-  - Spring Security
-- #### Gradle 6.6.1
-- #### AWS
-  - EC2
-  - RDS
-  - S3
-  - CodeDeploy
-- #### DataBase
-  - MariaDB
-- #### ORM
-  - JPA
-- #### Web
-  - HTML
-  - Thymeleaf
-  - Bootstrap 5.0.0
-  - jQuery
-  - Ajax
-- #### Riot API Library
-  - Orianna
+`Back-End`
+- Java 11
+- Spring Boot 2.3
+- gradle 6.6
+- MySQL 8.0
+- JPA
+- Querydsl-JPA
 
-## 상세 내용
+<br>
 
-### 1. 전적 검색
-#### SummonerController
+`Front-End`
+- Vue.js 2.6
+- Vue Router 3.5
+- Vuex 3.6
+- Vuex Persistedstate 4.1
+- Vuetify 2.4
 
-```java  
-@RequiredArgsConstructor  
-@Controller  
-public class SummonerController {  
+<br>
 
-	private final SummonerService summonerService;  
+## ERD 설계
+<img width="985" alt="kkaemigg-erd" src="https://user-images.githubusercontent.com/64781807/146561292-b5145e15-e061-4ed8-af0d-d587b4bc9fae.png">
 
-	@GetMapping("/summoner") public ModelAndView summoner(@RequestParam String userName) {  
-		Summoner summoner = summonerService.getSummoner(userName);  
-		
-		// 등록되지 않은 유저면 user-not-found 뷰로 이동 
-		if (!summoner.exists()) { 
-			return new ModelAndView("summoner/not-found"); 
-		}  
-		
-		List<LeagueEntry> leagueEntryList = summonerService.getLeagueEntryList(summoner); 
-		MatchHistory matchHistory = summonerService.getMatchHistory(summoner);  
-		
-		return new ModelAndView("summoner/record")
-				.addObject("summoner", summoner)
-				.addObject("leagueEntryList", leagueEntryList)
-				.addObject("matchHistory", matchHistory); 
-	}  
-}
-```  
+<br>
 
-1. 매개변수로 받은 userName을 바탕으로 Summoner 객체를 불러오고 존재하지 않는 유저면 not-found 페이지로 이동하도록 구현했습니다.
-
-2. 유저가 존재한다면 모델에 summoner, leagueEntryList, matchHistory를 담아서 record 페이지로 이동합니다.
-   leagueEntryList - 유저의 랭크 정보를 담고있는 List입니다.
-   matchHistory - 유저의 전적 정보가 담겨있는 객체입니다.
-
-#### SummonerService
-
-```java  
-@Service  
-public class SummonerService {  
+## 구현 기능
+<details>
+<summary><b>닉네임으로 전적 검색</b></summary>
+<div markdown="1">
 	
-	public SummonerService(@Value("${RIOT_API_KEY}") String apiKey) { 
-		Orianna.setRiotAPIKey(apiKey); 
-		Orianna.setDefaultPlatform(Platform.KOREA); 
-		Orianna.setDefaultLocale(Platform.KOREA.getDefaultLocale());
-	}
+### 전체 흐름 시퀀스 다이어그램
 	
-	public Summoner getSummoner(String userName) { 
-		return Summoner.named(userName).get(); 
-	}
-	  
-	public List<LeagueEntry> getLeagueEntryList(Summoner summoner) {  
-		List<LeagueEntry> leagueEntryList = new ArrayList<>();  
-		
-		Queue.RANKED.forEach( queue -> { 
-			// 존재하는 리그 포지션만 리스트에 추가 
-			if (summoner.getLeaguePosition(queue) != null) { 
-				leagueEntryList.add(summoner.getLeaguePosition(queue)); 
-			} 
-		});  
-		
-		return leagueEntryList;  
-	}  
+<img width="677" alt="스크린샷 2021-12-18 오전 3 13 53" src="https://user-images.githubusercontent.com/64781807/146589641-042cb8f3-b917-434a-aeb3-ae83f290ffda.png">
 	
-	public MatchHistory getMatchHistory(Summoner summoner) { 
-		return MatchHistory.forSummoner(summoner).withEndIndex(20).get(); 
-	}
- }  
-```  
-
-1. 생성자로 application.properties에 있는 RIOT_API_KEY 값을 불러와서 Orianna 라이브러리에 기본 플랫폼과 함께 세팅해줍니다.
-
-
-2. getLeagueEntryList 함수는 소환사의 모든 랭크 큐 정보 중에 null이 아닌 값만 List에 담아서 반환해 줍니다.
-  - Queue 클래스의 RANKED 필드는 다음과 같습니다.
-
-```java  
-public static final Set<Queue> RANKED = ImmutableSet.of(RANKED_SOLO, RANKED_FLEX, RANKED_THREES, RANKED_TFT);  
-```  
-
-3. getMatchHistory 함수는 소환사의 최신 20 게임 전적들만 불러오도록 세팅했습니다.
-
----
-
-### 2. 로그인 / 회원가입
-
-#### SecurityConfig
-
-```java
-@RequiredArgsConstructor  
-@EnableWebSecurity  
-@Configuration  
-public class SecurityConfig extends WebSecurityConfigurerAdapter {  
+<br>
+<br>
 	
-	private final CustomOAuth2UserService customOAuth2UserService;  
-	private final UserRepository userRepository;  
+[SummonerService 보기](https://github.com/Kkaemi/kkaemiGG-api/blob/master/src/main/java/com/spring/kkaemiGG/service/SummonerService.java#L35)
 
-	@Bean  
-	protected CustomUsernamePasswordAuthenticationFilter getAuthenticationFilter() throws Exception {  
+- **Riot Api Library**
+  - Java의 Riot api 라이브러리인 Orianna와 R4J를 모두 사용해서 서비스 로직을 구현했습니다.
+  - Orianna 라이브러리가 2021-12-17 기준으로 최신 매치 리스트 riot-api 요청을 반영하고있지 않기 때문에 R4J와 함께 사용하게 되었습니다.
 	
-		CustomUsernamePasswordAuthenticationFilter authenticationFilter = new CustomUsernamePasswordAuthenticationFilter();  
+<br>
 
-		authenticationFilter.setFilterProcessesUrl("/api/v1/authentication/login");  
-		authenticationFilter.setAuthenticationManager(this.authenticationManagerBean());  
-		authenticationFilter.setUsernameParameter("email");  
-		authenticationFilter.setPasswordParameter("password");  
-		authenticationFilter.setAuthenticationSuccessHandler(new CustomLoginSuccessHandler());  
-		authenticationFilter.setAuthenticationFailureHandler(new CustomLoginFailureHandler());  
+- **properties 객체** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-api/blob/master/src/main/java/com/spring/kkaemiGG/config/AppProperties.java#L17)
+  - AppProperties라는 yml 파일의 프로젝트 설정 정보를 담고있는 불변 객체를 만들었습니다.
 
-		return authenticationFilter;  
-	}  
+<br>
 
-	@Bean  
-	public PasswordEncoder encoder() {  
-		return new BCryptPasswordEncoder();  
-	}  
+- **Vue 동적 컴포넌트** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-client/blob/master/src/components/summoner/UserCheck.vue#L21)
+  - 라우터 파라미터로 받은 userName을 api 서버에 전송해서 유효한 소환사인지 체크합니다.
+  - 유저가 존재하지 않으면 예외 컴포넌트를 보여주고, 유저가 존재한다면 프로필 정보, 리그 포지션 정보, 매치 정보 리스트를 비동기 요청합니다.
 
-	@Override  
-	protected void configure(HttpSecurity http) throws Exception {  
+<br>
+
+- **더보기 버튼** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-client/blob/master/src/components/summoner/MatchList.vue#L352)
+  - 더보기 버튼을 누를 때마다 beginIndex값을 20씩 증가시켜서 과거 전적을 계속해서 조회할 수 있습니다.
+
+</div>
+</details>
+
+<details>
+<summary><b>spring oauth2 client를 사용한 google, naver 로그인</b></summary>
+<div markdown="1">
+
+### 전체 흐름 시퀀스 다이어그램
+
+<img width="931" alt="스크린샷 2021-12-18 오전 5 41 30" src="https://user-images.githubusercontent.com/64781807/146605451-d43816e1-07dd-4b9a-8736-10c350b9c558.png">
 	
-		http  
-			.csrf().disable()  
-			.headers().frameOptions().disable()  
-			.and()  
-				.authorizeRequests()  
-				.antMatchers("/", "/css/**", "/img/**", "/js/**", "/h2-console/**", "/profile").permitAll()  
-				.antMatchers("/community/write", "/community/write/").hasRole(Role.USER.name())  
-			.and()  
-				.formLogin().loginPage("/user/login")  
-			.and()  
-				.addFilterAt(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  
-				.logout()  
-					.logoutSuccessUrl("/")  
-			.and()  
-				.oauth2Login()  
-					.userInfoEndpoint()  
-						.userService(customOAuth2UserService);  
+<br>
+<br>
 
-	}  
-
-	@Override  
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {  
-		auth  
-			.userDetailsService(email -> userRepository.findByEmail(email)
-					.orElseThrow(() ->  new UsernameNotFoundException("해당 유저가 존재하지 않습니다."))  
-			).passwordEncoder(encoder());  
-	}  
-}
-```
-
-1. Spring Security는 기본적으로 JSON 요청을 지원하지 않습니다. 그래서 JSON 요청도 받아서 처리할 수 있게 UsernamePasswordAuthenticationFilter를 상속받은 CustomUsernamePasswordAuthenticationFilter를 만들었습니다.
-
-2. SuccessHandler와 FailureHandler도 페이지를 리다이렉트 시키지 않고 JSON 형식으로 응답하도록 만들었습니다.
-
-3. 게시판 글쓰기는 로그인 한 유저만 가능하도록 권한 설정을 해줬습니다.
-
-4. UserDetailsService의 구현체를 만들어서 SecurityConfig의 생성자로 주입하면 순환 참조가 되는 문제가 있어서 람다식으로 구현했습니다.
-
-#### CustomLoginSuccessHandler
-
-```java
-public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {  
+- **CookieOAuth2AuthorizationRequestRepository** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-api/blob/master/src/main/java/com/spring/kkaemiGG/auth/CookieOAuth2AuthorizationRequestRepository.java#L15)
+  - REST API 서버이므로 세션을 사용하지 않습니다. 세션을 사용하지 않기 때문에 기본적으로 구현되어있는 HttpSessionOAuth2AuthorizationRequestRepository를 사용하지 않고 쿠키를 사용하도록 커스터마이징 했습니다.
 	
-	@Override  
-	public void onAuthenticationSuccess(HttpServletRequest request,  
-										HttpServletResponse response,  
-										Authentication authentication)  
-			throws IOException {  
+</div>
+</details>
 
-		String redirectUrl = "/";  
+- **조회수 증가 방지** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-api/blob/2aac06ffe3d3e5f534b0810a76870efad629b085/src/main/java/com/spring/kkaemiGG/service/ViewService.java#L19)
+  - api 요청 IP를 기준으로 30분에 한번씩 조회수가 증가합니다.
 
-		// 뷰 컨트롤러에서 만든 prevPage 세션 정보를 가져온다  
-		String prevPage = (String) request.getSession().getAttribute("prevPage");  
+- **댓글 -> 답글 -> 대댓글 형태의 댓글 작성** &nbsp; [코드 보기](https://github.com/Kkaemi/kkaemiGG-api/blob/master/src/main/java/com/spring/kkaemiGG/service/CommentService.java#L51)
+  - 답글과 대댓글을 구현하기 위해서 Comment 엔티티를 셀프 참조 형태로 설계했습니다.
+  - 대댓글을 달 경우 자동으로 답글 게시자의 아이디를 본문 앞부분에 추가해 줍니다.
+  - 객체 깊이가 무한으로 깊어지는 것을 방지하기 위해 대댓글을 저장 할 경우 그룹의 최상위 댓글을 부모 댓글로 취급합니다.
 
-		User user = (User) authentication.getPrincipal();  
-		request.getSession().setAttribute("user", new SessionUser(user));  
+<br>
 
-		/*  
-		* 유저가 권한이 필요한 요청을 하면 시큐리티가 요청을 가로채게 되는데, 
-		* 유저가 원래 요청한 URL 정보를 RequestCache 안에 SavedRequest에 저장한다. 
-		* 
-		* RequestCache와 SavedRequest는 인터페이스이다. 
-		* 이를 구현한 기본 구현체로는 HttpSessionRequestCache와 DefaultSavedRequest가 있다. 
-		* */  
-		RequestCache requestCache = new HttpSessionRequestCache();  
-		SavedRequest savedRequest = requestCache.getRequest(request, response);  
+## 핵심 트러블 슈팅
 
-		// Spring Security가 요청을 가로 챈 경우  
-		if (savedRequest != null) {  
-			redirectUrl = savedRequest.getRedirectUrl();  
+- 포스트 페이징 처리
+>  포스트 페이징을 할 때 댓글의 개수와 조회수를 한 화면에 같이 보여지도록 구현하고 싶었습니다.  
+>  Post 엔티티의 경우 댓글과 조회수가 OneToMany 관계의 컬렉션 필드이기 때문에 N+1 문제를 방지하기 위해 페치조인을 사용해야 했습니다.  
+>  하지만 페이징과 페치조인을 같이 사용하게 될 경우 모든 Post 엔티티를 DB에서 불러와서 메모리에서 페이징 처리를 하게되는 문제가 있었습니다.  
+>  [이동욱님의 게시글](https://jojoldu.tistory.com/457)을 참고해서 `hibernate.default_batch_fetch_size` 적용으로 문제를 해결 할 수 있었습니다.
 
-			// 세션에 저장된 객체를 다 사용한 뒤에는 지워줘서 메모리 누수 방지  
-			requestCache.removeRequest(request, response);  
+<br>
 
-			respondWithJson(response, redirectUrl);  
-			return;  
-		}  
+- 로그인 상태 관리
+> oauth2 로그인 후 access token이 클라이언트의 local storage에 저장되면 로그인 된 상태가 되도록 구현했습니다.  
+> 하지만 이럴 경우 access token이 만료됐을 때에도 계속 로그인 된 상태로 사용자에게 표시되는 문제가 있었습니다.  
+> 저는 문제 해결을 위해서 vue router의 네비게이션 가드로 화면이 바뀔 때마다 access token을 검증하도록 구현했습니다.  
+> 서버에 과부하가 걸릴 것을 염려하여 access token payload의 exp값을 클라이언트에서 검증하고  
+> 새로운 토큰 발급은 서버에서 하도록 역할을 나눴습니다.  
+> 그리고 한 페이지에 오래 머물러서 토큰이 만료된 경우에는 인증이 필요한 api 요청마다 토큰 검증 로직을 선행하도록 했습니다.
 
-		// 유저가 로그인 버튼을 눌러서 로그인 할 경우  
-		if (StringUtils.hasText(prevPage)) {  
-			redirectUrl = prevPage;  
-
-			// 세션에 저장된 객체를 다 사용한 뒤에는 지워줘서 메모리 누수 방지  
-			request.getSession().removeAttribute("prevPage");  
-
-			respondWithJson(response, redirectUrl);  
-			return;  
-		}  
-
-		respondWithJson(response, redirectUrl);  
-
-	}  
-
-	private void respondWithJson(HttpServletResponse response, String redirectUrl) throws IOException {  
-
-		UsersLoginResponseDto responseDto = UsersLoginResponseDto.builder()  
-				.status(HttpStatus.OK.value())  
-				.message("LOGIN_SUCCEEDED")  
-				.redirectUrl(redirectUrl)  
-				.build();  
-
-		response.setContentType(ContentType.APPLICATION_JSON.getMimeType());  
-		response.setCharacterEncoding(CharEncoding.UTF_8);  
-		response.setStatus(HttpStatus.OK.value());  
-		
-		PrintWriter out = response.getWriter();  
-		out.print(new Gson().toJson(responseDto));  
-		out.flush();  
-
-	}  
-
-}
-```
-
-1. 로그인이 성공하면 우선순위에 따라서 처음 요청했던 페이지로 이동하도록 만들었습니다.
-
-1순위 - 사용자가 권한이 필요한 페이지를 요청했을 때 Spring Security가 요청을 가로 챈 경우
-2순위 - 사용자가 로그인 버튼을 눌러서 로그인 페이지로 이동했을 경우
-디폴트 - 사용자가 url을 직접 입력하거나 즐겨찾기 등록을 해서 이전 페이지 정보가 없을 경우 홈페이지(/)로 이동
-
-```java
-@Controller  
-@RequestMapping("/user")  
-public class UserController {  
-  
-	@GetMapping("/login")  
-	public String loginForm(HttpServletRequest request) {  
-		Optional.ofNullable(request.getHeader("Referer"))  
-				.filter(url -> !url.contains("/login"))  
-				.filter(url -> !url.contains("/join"))  
-				.ifPresent(url -> request.getSession().setAttribute("prevPage", url));  
-
-		return "user/login-form";  
-	}  
-
-	...
-  
-}
-```
-
-2. prevPage 세션은 Referer 헤더의 값을 기준으로 만들어집니다.
-   Referer 헤더의 값이 null이 아니고 url에 /login 이나 /join 문자열이 없는 경우에만 세션이 만들어집니다.
-
----
-
-### 3. 자유 게시판
-
-#### Table ERD
-<img width="639" alt="스크린샷 2021-04-05 오전 10 49 11 2" src="https://user-images.githubusercontent.com/64781807/113529123-98567700-95fd-11eb-9dea-cd65f8d404e3.png">
-
-#### PostsService
-
-```java
-@RequiredArgsConstructor
-@Service
-public class PostsService {
-
-    private final PostsRepository postsRepository;
-    private final PostsQueryRepository queryRepository;
-    private final UserRepository userRepository;
-
-    @Transactional
-    public Long save(PostsSaveRequestDto requestDto, SessionUser sessionUser) {
-
-        User user = userRepository.findByEmail(sessionUser.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
-
-        Posts post = requestDto.toEntityWithUser(user);
-
-        user.getPosts().add(post);
-
-        userRepository.save(user);
-        postsRepository.save(post);
-
-        return post.getId();
-    }
-
-    @Transactional
-    public Long update(Long id, PostsUpdateRequestDto requestDto) {
-
-        Posts post = postsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
-
-        post.update(requestDto);
-
-        return id;
-    }
-
-    public void delete(Long id) {
-        postsRepository.deleteById(id);
-    }
-
-    public PostsUpdateResponseDto findById(Long id) {
-        return postsRepository.findById(id)
-                .map(PostsUpdateResponseDto::new)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시물이 없습니다."));
-    }
-
-    @Transactional
-    public PostsResponseDto findByIdWithSession(Long id, SessionUser sessionUser) {
-
-        PostsResponseDto responseDto = postsRepository.findById(id)
-                .map(entity -> {
-                    entity.hit(); // 조회수 증가
-                    return new PostsResponseDto(entity);
-                })
-                .orElseGet(() -> new PostsResponseDto(-1L));
-
-        if (sessionUser != null && sessionUser.getId().equals(responseDto.getUserId())) {
-            responseDto.setOwner(true);
-        }
-
-        return responseDto;
-
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PostsPageResponseDto> findPage(PostsPageRequestDto requestDto) {
-
-        PageRequest pageRequest = PageRequest
-                .of(requestDto.getPage(), 20);
-
-        // 인기순 정렬도 구현 예정
-
-        return queryRepository.findDynamic(requestDto, pageRequest);
-    }
-}
-```
-
-#### PostsQueryRepository
-
-```java
-@RequiredArgsConstructor
-@Repository
-public class PostsQueryRepository {
-
-    private final JPAQueryFactory queryFactory;
-
-    public Page<PostsPageResponseDto> findDynamic(PostsPageRequestDto requestDto, Pageable pageable) {
-        QueryResults<PostsPageResponseDto> results = queryFactory
-                .select(Projections.constructor(PostsPageResponseDto.class,
-                        post,
-                        comment.id.count()))
-                .from(post)
-                .leftJoin(post.comments, comment)
-                .where(eqKeyword(requestDto.getTarget(), requestDto.getKeyword()))
-                .groupBy(post.id)
-                .orderBy(post.createdDate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
-
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
-    }
-
-    private BooleanExpression eqKeyword(SearchType searchType, String keyword) {
-        if (!StringUtils.hasText(keyword)) {
-            return null;
-        }
-        return searchType.getEq(keyword);
-    }
-
-}
-```
-
-1. 포스트 뷰 페이지로 이동하면 조회수를 하나 증가시켜 주고 세션의 id 값과 post 엔티티에 저장되어있는 user의 id 값이 동일할 경우 글의 주인이므로 응답 Dto의 owner 값을 true로 바꿔줍니다.
-
-2. Querydsl을 사용해서 검색 페이징 동적 쿼리를 만들었습니다. 댓글의 개수를 불러오기 위해서 페치 조인을 사용하려 했으나 페치 조인과 페이징 API를 같이 사용할 수 없기 때문에 페치 조인 없이 left join으로 comment_id 튜플 개수를 가져오도록 구현했습니다.
-
-```java
-@Getter  
-@NoArgsConstructor  
-@Entity  
-public class Posts extends BaseTimeEntity {
-
-	...
-	
-	@OneToMany(mappedBy = "post", orphanRemoval = true)  
-	private List<Comment> comments = new ArrayList<>();
-	
-	...
-	
-}
-```
-
-3. orphanRemoval = true 옵션을 줘서 게시글이 삭제되면 관련 댓글들도 모두 같이 삭제되도록 구현했습니다.
-
-#### Comment
-
-```java
-@Getter  
-@NoArgsConstructor  
-@Entity  
-public class Comment extends BaseTimeEntity {
-	
-	...
-
-	@ManyToOne(fetch = FetchType.LAZY)  
-	@JoinColumn(name = "GROUP_ID")  
-	private Comment parentComment;  
-	  
-	@OneToMany(mappedBy = "parentComment")  
-	private List<Comment> childComments = new ArrayList<>();
-
-	...
-	
-}
-```
-
-1. 댓글과 대댓글을 구현하기 위해서 Comment 엔티티를 셀프 참조 형태로 만들었습니다.
-
-2. 자식 댓글(대댓글)이 있는 부모 댓글이라면 삭제되지 않고 상태만 변경해 주기 위해 deletion 칼럼을 만들었습니다.
-
-#### CommentController
-
-```java
-@RequiredArgsConstructor  
-@RestController  
-public class CommentApiController {
-
-	...
-	
-	@GetMapping("/api/v1/reply")  
-	public Boolean reply(@LoginUser SessionUser sessionUser) {  
-		return sessionUser == null;  
-	}
-	
-	...
-	
-}
-```
-
-1. 답글 달기 버튼을 누를 경우 세션이 없다면 로그인 페이지로 이동하도록 구현했습니다.
-
-#### CommentService
-
-```java
-@RequiredArgsConstructor
-@Service
-public class CommentService {
-
-    private final CommentRepository commentRepository;
-    private final PostsRepository postsRepository;
-    private final UserRepository userRepository;
-    private final CommentQueryRepository queryRepository;
-
-    public Long save(CommentSaveRequestDto requestDto) {
-
-        Posts post = postsRepository.findById(requestDto.getPostsId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다."));
-
-        User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저가 없습니다."));
-
-        // 만약 부모 댓글 ID가 있는 경우
-        if (requestDto.getParentCommentId() != null) {
-            Comment parentComment = queryRepository.findParentById(requestDto.getParentCommentId());
-            Comment childComment = requestDto.toEntity();
-
-            childComment.setPosts(post);
-            childComment.setUser(user);
-            childComment.setGroupOrder(parentComment.getChildComments().size() + 1);
-            childComment.setParentComment(parentComment);
-
-            // 최상위 댓글에게 단 답글이 아니라 자식 댓글에게 답글을 한 경우 내용 앞에 닉네임을 붙여준다.
-            if (!requestDto.getParentCommentId().equals(parentComment.getId())) {
-                childComment.addTargetNickname(requestDto.getTargetNickname());
-            }
-
-            commentRepository.save(parentComment);
-            postsRepository.save(post);
-
-            return commentRepository.save(childComment).getId();
-        }
-
-        Comment comment = requestDto.toEntity();
-        comment.setPosts(post);
-        comment.setUser(user);
-        comment.setParentComment(comment);
-        postsRepository.save(post);
-
-        return commentRepository.save(comment).getId();
-    }
-
-    public List<CommentResponseDto> find(Long postsId, SessionUser sessionUser) {
-        List<CommentResponseDto> responseDtoList = queryRepository.getCommentList(postsId);
-        if (sessionUser != null) {
-            responseDtoList.forEach(dto -> dto.setOwner(sessionUser.getId()));
-        }
-        return responseDtoList;
-    }
-
-    public void delete(Long commentId) {
-
-        Comment parentComment = queryRepository.findParentById(commentId);
-        Comment comment = parentComment.getChildComments().stream()
-                .filter(childComment -> childComment.getId().equals(commentId))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("잘못된 ID 입니다."));
-
-        // 부모 댓글일 경우 상태만 변경
-        if (comment.equals(parentComment) && parentComment.getChildComments().size() > 1) {
-            parentComment.setDeletion(true);
-            return;
-        }
-
-
-        // 부모 댓글의 상태가 삭제된 상태고 자식 댓글이 하나밖에 없으면 자식댓글과 부모댓글 같이 삭제
-        if (parentComment.getDeletion() && parentComment.getChildComments().size() == 2) {
-            commentRepository.deleteById(commentId);
-            commentRepository.delete(parentComment);
-            return;
-        }
-
-        // 삭제 되는 댓글 보다 뒤에 있는 댓글들의 groupOrder를 하나씩 빼줌
-        queryRepository.updateGroupOrder(parentComment.getId(), comment.getGroupOrder());
-
-        commentRepository.delete(comment);
-
-    }
-}
-```
-
-#### CommentQueryRepository
-
-```java
-@RequiredArgsConstructor
-@Repository
-public class CommentQueryRepository {
-
-    private final JPAQueryFactory queryFactory;
-
-    public List<CommentResponseDto> getCommentList(Long postId) {
-        List<Comment> commentList = queryFactory.selectFrom(comment)
-                .where(comment.post.id.eq(postId))
-                .orderBy(comment.parentComment.id.asc(), comment.groupOrder.asc())
-                .fetch();
-
-        return commentList.stream()
-                .map(CommentResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-    public Comment findParentById(Long id) {
-
-        QComment comment1 = new QComment("c1");
-        QComment comment2 = new QComment("c2");
-
-        return queryFactory.selectFrom(comment1)
-                .leftJoin(comment1.childComments, comment2)
-                .fetchJoin()
-                .where(comment1.id.eq(
-                        JPAExpressions.select(comment.parentComment.id)
-                        .from(comment)
-                        .where(comment.id.eq(id))
-                ))
-                .fetchOne();
-    }
-
-    @Transactional
-    public void updateGroupOrder(Long parentId, Integer groupOrder) {
-        queryFactory.update(comment)
-                .set(comment.groupOrder, comment.groupOrder.subtract(1))
-                .where(comment.parentComment.id.eq(parentId), comment.groupOrder.gt(groupOrder))
-                .execute();
-    }
-}
-```
-
-1. 댓글을 DB에 저장할 때 자식 댓글로 추가가되는 댓글이라면 최상위 댓글의 자식으로 추가되도록 구현했습니다. 셀프 참조 형태이기 때문에 최상위 댓글을 저장할 때도 자기 자신을 자식으로 추가되도록 구현했습니다.
-
-2. 댓글을 불러올 때 세션이 있다면 세션의 id와 comment의 user id가 일치한다면 댓글의 주인이므로 owner 값에 true를 세팅해주도록 구현했습니다.
-
-3. 댓글을 삭제할 경우 자식이 있는 최상위 댓글이라면 상태만 변경해주고
-   부모 댓글의 상태가 삭제된 상태이고 자식 댓글이 하나밖에 없다면 자식 댓글과 부모 댓글을 같이 삭제하도록 구현했습니다.
-   자식 댓글만 삭제 하는 경우라면 삭제되는 자식 댓글보다 최신 댓글들의 순서를 하나씩 앞당겨 주도록 구현했습니다.
-
-4. Querydsl을 활용해서 항상 최상위 부모 댓글을 반환하는 findParentById 메소드를 만들었습니다.
-
-5. stream API로 자식 댓글들 엔티티의 값을 바꾸면 값이 바뀌는 엔티티의 수만큼 update문이 실행되던 문제를 updateGroupOrder 메소드를 만들어서 해결했습니다. 
----
+<br>
