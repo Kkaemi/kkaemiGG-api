@@ -15,7 +15,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.spring.kkaemiGG.auth.Token.REFRESH_TOKEN_MAX_AGE;
 import static com.spring.kkaemiGG.auth.Token.REFRESH_TOKEN_NAME;
 
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class TokenController {
     private final UserService userService;
 
     @GetMapping("/v1/token")
-    public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public String refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         // refresh token id cookie 찾기
         // id 기반 refresh token entity 찾기
         Cookie refreshTokenIdCookie = CookieUtils.getCookie(request, REFRESH_TOKEN_NAME).orElse(null);
@@ -43,10 +42,6 @@ public class TokenController {
         User user = userService.findById(tokenService.getUserId(refreshTokenEntity.getRefreshToken()));
         Token token = tokenService.generateToken(user);
 
-        Long updatedRefreshTokenId = tokenService.updateRefreshToken(user, token.getRefreshToken());
-
-        refreshTokenIdCookie.setMaxAge(REFRESH_TOKEN_MAX_AGE);
-        refreshTokenIdCookie.setValue(updatedRefreshTokenId.toString());
         return token.getAccessToken();
     }
 
